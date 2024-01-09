@@ -1,0 +1,36 @@
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import "dotenv/config";
+
+const app = express();
+
+const port = process.env.PORT || 3000;
+
+import indexRouter from "./routes/index.js";
+import articleRouter from "./routes/articles.js";
+import userRouter from "./routes/user.js";
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(
+	cors({
+		origin: "http://localhost:5173",
+		credentials: true,
+	}),
+);
+
+app.use("/", indexRouter);
+app.use("/articles", articleRouter);
+app.use("/user", userRouter);
+
+mongoose
+	.connect(process.env.DB_URL)
+	.then(
+		app.listen(port, () => {
+			console.log(`Listening on port ${port}...`);
+		}),
+	)
+	.catch((error) =>
+		console.log(`Error while connecting to database: ${error}`),
+	);
