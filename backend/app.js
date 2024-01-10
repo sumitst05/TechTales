@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import "dotenv/config";
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(
 		credentials: true,
 	}),
 );
+app.use(cookieParser());
 
 app.use("/", indexRouter);
 app.use("/articles", articleRouter);

@@ -56,11 +56,83 @@ export const signin = async (req, res) => {
 		const token = jwt.sign(
 			{ id: validatedUser._id },
 			process.env.TOKEN_SECRET,
-			{ expiresIn: "1h" },
+			{ expiresIn: "1d" },
 		);
 
-		res.status(200).json({ token, id: user._id });
+		res
+			.cookie("access_token", token, {
+				httpOnly: true,
+				maxAge: 1024 * 60 * 60 * 24,
+				sameSite: "none",
+			})
+			.status(200)
+			.json(validatedUser);
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error!" });
 	}
+};
+
+export const googleAuth = async (req, res) => {
+	try {
+		const existingUser = await User.findOne({ email: req.body.email });
+		if (existingUser) {
+			const token = jwt.sign(
+				{ id: existingUser._id },
+				process.env.TOKEN_SECRET,
+				{ expiresIn: "1d" },
+			);
+
+			const { password: hashedPassword, ...user } = existingUser._doc;
+
+			res
+				.cookie("access_token", token, {
+					httpOnly: true,
+					maxAge: 1024 * 60 * 60 * 24,
+					sameSite: "none",
+				})
+				.status(200)
+				.json(user);
+		} else {
+			const generatedPassword =
+				Math.random().toString(36).slice(-8) +
+				Math.random().toString(36).slice(-8);
+
+			const hashedGeneratedPassword = await bcrypt.hash(generatedPassword, 12);
+
+			const newUser = new User({
+				username:
+					req.body.name.split(" ").join("").toLowerCase() +
+					Math.floor(Math.random() * 1000).toString(),
+				email: req.body.email,
+				password: hashedGeneratedPassword,
+				profilePicture: req.body.photo,
+			});
+
+			await newUser.save();
+
+			const { password: hashedPassword, ...user } = newUser._doc;
+
+			const token = jwt.sign({ id: newUser._id }, process.env.TOKEN_SECRET, {
+				expiresIn: "1d",
+			});
+
+			res
+				.cookie("access_token", token, {
+					httpOnly: true,
+					maxAge: 1024 * 60 * 60 * 24,
+					sameSite: "none",
+				})
+				.status(200)
+				.json(user);
+		}
+	} catch (error) {
+		res.status(500).json({ message: "Internal server error!" });
+	}
+};
+
+export const signout = (req, res) => {
+	res
+		.clearCookie("access_token")
+		.status(200)
+		.json({ message: "Signed out successfully!" });
 };
