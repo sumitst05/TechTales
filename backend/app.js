@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 
 import indexRouter from "./routes/index.js";
 import articleRouter from "./routes/articles.js";
-import userRouter from "./routes/user.js";
+import authRouter from "./routes/auth.js";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -22,7 +22,7 @@ app.use(
 
 app.use("/", indexRouter);
 app.use("/articles", articleRouter);
-app.use("/user", userRouter);
+app.use("/auth", authRouter);
 
 mongoose
 	.connect(process.env.DB_URL)
