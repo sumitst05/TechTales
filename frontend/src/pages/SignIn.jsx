@@ -1,40 +1,101 @@
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+
+import {
+	signInStart,
+	signInSuccess,
+	signInFailure,
+} from "../redux/user/userSlice";
 
 function SignIn() {
-  return (
-    <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-4xl text-center font-semibold p-4 my-7 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-800">
-        Sign In
-      </h1>
-      <form className="flex flex-col gap-4">
-        <input
-          type="text"
-          id="email"
-          placeholder="Email"
-          className="bg-slate-200 p-3 rounded-lg outline-none focus:outline-violet-700"
-        />
-        <input
-          type="password"
-          id="password"
-          placeholder="Password"
-          className="bg-slate-200 p-3 rounded-lg outline-none focus:outline-violet-700"
-        />
-        <button className="bg-slate-600 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
-          Sign In
-        </button>
-        <button className="bg-indigo-500 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-95">
-          Continue with Google
-        </button>
-      </form>
+	const [formData, setFormData] = useState({});
+	const { loading, error } = useSelector((state) => state.user);
 
-      <div className="flex gap-2 mt-5">
-        <p className="text-slate-700">Don't have an account?</p>
-        <Link to="/sign-up">
-          <span className="text-blue-500">Sign up</span>
-        </Link>
-      </div>
-    </div>
-  );
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(signInFailure(""));
+	}, [dispatch]);
+
+	function handleChange(e) {
+		setFormData({ ...formData, [e.target.id]: e.target.value });
+	}
+
+	async function handleSubmit(e) {
+		e.preventDefault();
+
+		try {
+			dispatch(signInStart());
+
+			const res = await axios.post("/api/auth/signin", formData, {
+				withCredentials: true,
+			});
+			const data = res.data;
+
+			dispatch(signInSuccess(data));
+
+			navigate("/explore");
+		} catch (error) {
+			error.message = error.response.data
+				? error.response.data.message
+				: error.response.statusText;
+			dispatch(signInFailure(error.message));
+		}
+	}
+
+	return (
+		<div className="p-3 max-w-lg mx-auto">
+			<h1 className="text-4xl text-center font-semibold p-4 my-7 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-800">
+				Sign In
+			</h1>
+
+			<form onSubmit={handleSubmit} className="flex flex-col gap-4">
+				<input
+					type="text"
+					id="email"
+					placeholder="Email"
+					className="bg-slate-200 p-3 rounded-lg outline-none focus:outline-violet-700"
+					onChange={handleChange}
+				/>
+				<input
+					type="password"
+					id="password"
+					placeholder="Password"
+					className="bg-slate-200 p-3 rounded-lg outline-none focus:outline-violet-700"
+					onChange={handleChange}
+				/>
+
+				<button
+					disabled={loading}
+					className="bg-slate-600 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+				>
+					{loading ? "Loading..." : "Sign In"}
+				</button>
+				<button
+					disabled={loading}
+					className="bg-indigo-500 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-95"
+				>
+					Continue with Google
+				</button>
+			</form>
+
+			<div className="flex gap-2 mt-5">
+				<p className="text-slate-700">Don't have an account?</p>
+				<Link to="/sign-up">
+					<span className="text-blue-500">Sign up</span>
+				</Link>
+			</div>
+
+			<div>
+				<p className="text-red-700 mt-5">
+					{error ? error || "Something went wrong!" : ""}
+				</p>
+			</div>
+		</div>
+	);
 }
 
 export default SignIn;

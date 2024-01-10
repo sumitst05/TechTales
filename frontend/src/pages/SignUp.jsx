@@ -19,7 +19,7 @@ function SignUp() {
     try {
       setLoading(true);
 
-      await axios.post("/api/user/signup", formData, {
+      await axios.post("/api/auth/signup", formData, {
         withCredentials: true,
       });
 
