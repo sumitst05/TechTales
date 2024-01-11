@@ -58,7 +58,9 @@ function Header() {
               {dropdown && <Dropdown dropdownRef={dropdownRef} />}
             </button>
           ) : (
-            <li className="font-semibold text-gray-300">Sign In</li>
+            <Link to="/sign-in">
+              <li className="font-semibold text-gray-300">Sign In</li>
+            </Link>
           )}
         </ul>
       </div>
@@ -66,4 +68,4 @@ function Header() {
   );
 }
 
-export default Header
+export default Header;
