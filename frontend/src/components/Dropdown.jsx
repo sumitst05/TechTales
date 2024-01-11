@@ -27,33 +27,33 @@ function Dropdown({ dropdownRef }) {
               Profile
             </li>
           </Link>
-          <Link to="/profile">
+          <Link to="/notifications">
             <li className="font-medium text-blue-600 hover:bg-slate-200">
               Notifications
             </li>
           </Link>
           <hr />
-          <Link to="/profile">
+          <Link to="/articles">
             <li className="font-medium text-blue-600 hover:bg-slate-200">
               Your Articles
             </li>
           </Link>
-          <Link to="/profile">
+          <Link to="/liked-articles">
             <li className="font-medium text-blue-600 hover:bg-slate-200">
               Liked Articles
             </li>
           </Link>
-          <Link to="/profile">
+          <Link to="/bookmarks">
             <li className="font-medium text-blue-600 hover:bg-slate-200">
               Bookmarks
             </li>
           </Link>
           <hr />
-          <button onClick={handleSignout}>
+          <div onClick={handleSignout}>
             <li className="font-medium text-red-400 hover:bg-slate-200">
               Sign out
             </li>
-          </button>
+          </div>
         </ul>
       </div>
     </div>

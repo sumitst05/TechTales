@@ -6,6 +6,10 @@ import Explore from "./pages/Explore";
 import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import Notifications from "./pages/Notifications";
+import Articles from "./pages/Articles";
+import LikedArticles from "./pages/LikedArticles";
+import Bookmarks from "./pages/Bookmarks";
 
 import Header from "./components/Header";
 import PrivateRoute from "./components/PrivateRoute";
@@ -23,6 +27,18 @@ export default function App() {
           <Route path="/sign-up" element={<SignUp />} />
           <Route element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/notifications" element={<Notifications />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/articles" element={<Articles />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/liked-articles" element={<LikedArticles />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/bookmarks" element={<Bookmarks />} />
           </Route>
         </Routes>
       </BrowserRouter>
