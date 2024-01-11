@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 import logoImage from "../../assets/icon_small.png";
 
 function Header() {
+  const { currentUser } = useSelector((state) => state.user);
+
   return (
     <div className="bg-gradient-to-r from-purple-700 to-indigo-700">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
@@ -18,8 +22,20 @@ function Header() {
           <Link to="/learn-more">
             <li className="font-semibold text-gray-300">Learn More</li>
           </Link>
-          <Link to="/sign-in">
-            <li className="font-semibold text-gray-300">Sign In</li>
+          <Link to="/profile">
+            {currentUser ? (
+              <img
+                src={
+                  currentUser.data
+                    ? currentUser.data.profilePicture
+                    : currentUser.profilePicture
+                }
+                alt="profile"
+                className="h-7 w-7 rounded-full object-cover"
+              />
+            ) : (
+              <li className="font-semibold text-gray-300">Sign In</li>
+            )}
           </Link>
         </ul>
       </div>
