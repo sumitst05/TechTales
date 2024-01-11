@@ -1,20 +1,21 @@
 import jwt from "jsonwebtoken";
 
-export const auth = (req, res, next) => {
-  let token = req.headers.authorization;
+export const auth = async (req, res, next) => {
+	const token = req.cookies.access_token;
 
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+	if (!token) {
+		return res
+			.status(401)
+			.json({ message: "Unauthenticated. Please sign in first." });
+	}
 
-  try {
-    token = token.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
-    req.userId = decoded.id;
+	jwt.verify(token, process.env.TOKEN_SECRET, (error, user) => {
+		if (error) {
+			return res.status(403).json({ message: "Token is not valid!" });
+		}
 
-    next();
-  } catch (error) {
-    console.error("Authentication error:", error);
-    return res.status(401).json({ message: "Invalid token!" });
-  }
+		req.user = user;
+
+		next();
+	});
 };

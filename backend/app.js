@@ -11,6 +11,7 @@ const port = process.env.PORT || 3000;
 import indexRouter from "./routes/index.js";
 import articleRouter from "./routes/articles.js";
 import authRouter from "./routes/auth.js";
+import userRouter from "./routes/users.js";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use("/", indexRouter);
 app.use("/articles", articleRouter);
 app.use("/auth", authRouter);
+app.use("/user", userRouter);
 
 mongoose
 	.connect(process.env.DB_URL)
