@@ -1,10 +1,16 @@
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { signOut } from "../redux/user/userSlice";
+import {
+	deleteUserStart,
+	deleteUserSuccess,
+	deleteUserFailure,
+	signOut,
+} from "../redux/user/userSlice";
 
 function Dropdown({ dropdownRef }) {
 	const dispatch = useDispatch();
+	const { currentUser } = useSelector((state) => state.user);
 
 	async function handleSignout() {
 		try {
