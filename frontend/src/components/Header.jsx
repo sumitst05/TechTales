@@ -40,7 +40,11 @@ function Header() {
 			<div className="flex justify-between items-center max-w-6xl mx-auto p-3">
 				<Link to="/">
 					<div className="flex items-center">
-						<img src={logoImage} alt="TechTales Logo" className="h-12 w-12" />
+						<img
+							src={logoImage}
+							alt="TechTales Logo"
+							className="h-9 w-9  object-cover"
+						/>
 						<h1 className="text-2xl text-gray-200 font-bold">TechTales</h1>
 					</div>
 				</Link>
