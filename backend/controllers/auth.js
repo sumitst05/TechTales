@@ -8,7 +8,7 @@ export const signup = async (req, res) => {
 
 	try {
 		if (!username || !email || !password) {
-			return res.status(400).json({ message: "Invalid credentials!" });
+			return res.status(401).json({ message: "Invalid credentials!" });
 		}
 
 		const existingUsername = await User.findOne({ username });
