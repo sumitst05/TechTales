@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.ql-editor {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 18px;
+  color: #333;
+}
+
+/* Remove outline from Quill editor input area */
+.ql-container {
+  outline: none;
+}
+
+/* Remove the blue outline when the Quill editor is focused */
+.ql-container:focus,
+.ql-container .ql-editor:focus {
+  outline: none;
+  box-shadow: none;
+}
