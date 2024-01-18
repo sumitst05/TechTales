@@ -49,14 +49,17 @@ function WriteArticle() {
   );
 
   useEffect(() => {
-    dispatch(createArticleFailure(""));
+    dispatch(createArticleFailure(false));
   }, [dispatch]);
 
   function handleTitleChange(e) {
     dispatch(updateArticleStart());
-    dispatch(
-      updateArticleSuccess({ ...currentArticle, title: e.target.value }),
-    );
+    dispatch((dispatch) => {
+      dispatch(updateArticleStart());
+      dispatch(
+        updateArticleSuccess({ ...currentArticle, title: e.target.value }),
+      );
+    });
   }
   function handleEditorChange(content) {
     dispatch(updateArticleStart());
@@ -65,6 +68,8 @@ function WriteArticle() {
 
   async function handlePublish(e) {
     e.preventDefault();
+    dispatch(updateArticleStart());
+    dispatch(updateArticleSuccess(null));
 
     try {
       dispatch(createArticleStart());
@@ -82,6 +87,8 @@ function WriteArticle() {
       dispatch(createArticleSuccess(data));
 
       navigate("/articles");
+
+      dispatch(updateArticleSuccess(null));
     } catch (error) {
       error.message = error.response.data
         ? error.response.data.message
@@ -95,21 +102,21 @@ function WriteArticle() {
       <input
         type="text"
         placeholder="TITLE"
-        value={currentArticle.title}
+        value={currentArticle ? currentArticle.title : ""}
         onChange={handleTitleChange}
         className="relative text-center outline-none font-bold text-4xl font-serif text-gray-800 w-2/3 placeholder-gray-500"
       />
       <ReactQuill
         theme="snow"
         style={editorStyle}
-        value={currentArticle.content}
+        value={currentArticle ? currentArticle.content : ""}
         modules={modules}
         formats={formats}
         onChange={handleEditorChange}
         placeholder="Write something amazing..."
       />
       <button
-        type="button"
+        type="submit"
         onClick={handlePublish}
         disabled={loading}
         className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white font-semibold px-5 py-2 rounded-lg hover:opacity-95 disabled:opacity-80"
