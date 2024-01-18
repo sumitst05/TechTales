@@ -15,7 +15,7 @@ export const createArticle = async (req, res) => {
   if (!title || !content) {
     return res
       .status(400)
-      .json({ message: "Article title and content cannot be empty." });
+      .json({ message: "Article title cannot be empty." });
   }
 
   try {
