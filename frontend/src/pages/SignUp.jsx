@@ -38,7 +38,7 @@ function SignUp() {
   }
 
   return (
-    <div className="p-3 max-w-lg mx-auto">
+    <div className="p-3 max-w-lg mx-auto mt-16">
       <h1 className="text-4xl text-center font-semibold p-4 my-7 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-800">
         Sign Up
       </h1>

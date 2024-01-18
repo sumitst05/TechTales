@@ -1,6 +1,6 @@
 function Explore() {
   return (
-    <div>Explore Articles</div>
+    <div className="mt-16">Explore Articles</div>
   )
 }
 

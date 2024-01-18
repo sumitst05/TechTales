@@ -1,6 +1,6 @@
 function LikedArticles() {
   return (
-    <div>LikedArticles</div>
+    <div className="mt-16">LikedArticles</div>
   )
 }
 

@@ -36,7 +36,7 @@ function Header() {
 	}, [dropdownRef, dropdown]);
 
 	return (
-		<div className="bg-gradient-to-r from-purple-700 to-indigo-700">
+		<div className="bg-gradient-to-r from-purple-700 to-indigo-700 fixed top-0 left-0 w-full z-50">
 			<div className="flex justify-between items-center max-w-6xl mx-auto p-3">
 				<Link to="/">
 					<div className="flex items-center">

@@ -82,7 +82,7 @@ function Profile() {
 	}
 
 	return (
-		<div className="p-3 max-w-lg mx-auto">
+		<div className="p-3 max-w-lg mx-auto mt-16">
 			<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
 				<input
 					type="file"

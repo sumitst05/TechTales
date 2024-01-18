@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 function Home() {
 	return (
 		<>
-			<div className="flex justify-between items-center mt-2 max-w-6xl mx-auto p-3 gap-16">
+			<div className="flex justify-between items-center mt-16 max-w-6xl mx-auto p-3 gap-16">
 				<input
 					type="text"
 					id="search_article"

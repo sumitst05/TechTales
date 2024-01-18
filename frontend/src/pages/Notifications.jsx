@@ -1,6 +1,6 @@
 function Notifications() {
 	return (
-		<div>Notifications</div>
+		<div className="mt-16">Notifications</div>
 	)
 }
 
