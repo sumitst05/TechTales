@@ -12,6 +12,7 @@ import OAuth from "../components/OAuth";
 
 function SignIn() {
   const [formData, setFormData] = useState({});
+  const [checked, setChecked] = useState(false);
   const { loading, error } = useSelector((state) => state.user);
 
   const navigate = useNavigate();
@@ -25,15 +26,23 @@ function SignIn() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   }
 
+  function checkboxToggle() {
+    setChecked(!checked);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
       dispatch(signInStart());
 
-      const res = await axios.post("/api/auth/signin", formData, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        "/api/auth/signin",
+        { ...formData, remember: checked },
+        {
+          withCredentials: true,
+        },
+      );
       const data = res.data;
 
       dispatch(signInSuccess(data));
@@ -83,6 +92,11 @@ function SignIn() {
         <Link to="/sign-up">
           <span className="text-blue-500">Sign up</span>
         </Link>
+      </div>
+
+      <div className="flex">
+        <input type="checkbox" onChange={checkboxToggle} />
+        <p className="text-slate-700 p-2">Remember me</p>
       </div>
 
       <div>
