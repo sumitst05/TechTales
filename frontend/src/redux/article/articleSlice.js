@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  currentArticle: null,
+  currentArticle: {},
   loading: false,
   error: false,
 };
@@ -14,8 +14,12 @@ const articleSlice = createSlice({
       state.loading = true;
     },
     createArticleSuccess: (state, action) => {
+      const author = action.payload.author;
+      if (!state.currentArticle[author]) {
+        state.currentArticle[author] = [];
+      }
+      state.currentArticle[author].push(action.payload);
       state.loading = false;
-      state.currentArticle = action.payload;
       state.error = false;
     },
     createArticleFailure: (state, action) => {

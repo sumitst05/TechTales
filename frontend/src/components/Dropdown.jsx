@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { signOut } from "../redux/user/userSlice";
 import {
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFailure,
+  signOut,
 } from "../redux/user/userSlice";
+import { updateArticleSuccess } from "../redux/article/articleSlice";
 
 function Dropdown({ dropdownRef }) {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ function Dropdown({ dropdownRef }) {
   async function handleSignout() {
     try {
       await axios.post(`/api/auth/signout`);
+      dispatch(updateArticleSuccess({}));
       dispatch(signOut());
     } catch (error) {
       error.message = error.response.data
@@ -32,6 +34,7 @@ function Dropdown({ dropdownRef }) {
       });
 
       dispatch(deleteUserSuccess());
+      dispatch(updateArticleSuccess({}));
     } catch (error) {
       error.message = error.response.data
         ? error.response.data.message

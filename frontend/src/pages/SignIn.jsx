@@ -47,7 +47,7 @@ function SignIn() {
 
       dispatch(signInSuccess(data));
 
-      navigate("/explore");
+      navigate("/");
     } catch (error) {
       error.message = error.response.data
         ? error.response.data.message

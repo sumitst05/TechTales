@@ -21,18 +21,16 @@ function WriteArticle() {
   const { currentArticle, loading, error } = useSelector(
     (state) => state.article,
   );
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(createArticleFailure(false));
-    dispatch(updateArticleStart());
-    dispatch(updateArticleSuccess(null));
   }, [dispatch]);
 
   function handleTitleChange(e) {
+    const title = e.target.value;
     dispatch(updateArticleStart());
-    dispatch(
-      updateArticleSuccess({ ...currentArticle, title: e.target.value }),
-    );
+    dispatch(updateArticleSuccess({ ...currentArticle, title }));
   }
   function handleEditorChange(content) {
     dispatch(updateArticleStart());
@@ -41,11 +39,14 @@ function WriteArticle() {
 
   async function handlePublish(e) {
     e.preventDefault();
+    dispatch(updateArticleStart());
+    dispatch(updateArticleSuccess({}));
 
     try {
       dispatch(createArticleStart());
 
       const articleData = {
+        author: currentArticle ? currentUser._id : "",
         title: currentArticle ? currentArticle.title : "",
         content: currentArticle ? currentArticle.content : "",
       };
@@ -59,7 +60,7 @@ function WriteArticle() {
 
       navigate("/articles");
 
-      dispatch(updateArticleSuccess(null));
+      dispatch(updateArticleSuccess({}));
     } catch (error) {
       error.message = error.response.data
         ? error.response.data.message
