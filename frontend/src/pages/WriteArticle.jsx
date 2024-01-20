@@ -10,7 +10,7 @@ import {
   createArticleFailure,
   updateArticleStart,
   updateArticleSuccess,
-} from "../redux/user/articleSlice";
+} from "../redux/article/articleSlice";
 import { useNavigate } from "react-router-dom";
 
 import { editorStyle, modules, formats } from "../editorConfig";

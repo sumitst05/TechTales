@@ -3,7 +3,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import userReducer from "./user/userSlice";
-import articleReducer from "./user/articleSlice";
+import articleReducer from "./article/articleSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
