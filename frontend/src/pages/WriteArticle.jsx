@@ -24,6 +24,8 @@ function WriteArticle() {
 
   useEffect(() => {
     dispatch(createArticleFailure(false));
+    dispatch(updateArticleStart());
+    dispatch(updateArticleSuccess(null));
   }, [dispatch]);
 
   function handleTitleChange(e) {
@@ -39,8 +41,6 @@ function WriteArticle() {
 
   async function handlePublish(e) {
     e.preventDefault();
-    dispatch(updateArticleStart());
-    dispatch(updateArticleSuccess(null));
 
     try {
       dispatch(createArticleStart());
