@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "backend/app.js",
+  "main": "app.js",
   "type": "module",
   "scripts": {
     "start": "nodemon app.js"
