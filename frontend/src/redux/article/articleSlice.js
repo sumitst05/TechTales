@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  currentArticle: { title: "", content: "" },
+  currentArticle: {},
   loading: false,
   error: false,
 };
@@ -14,7 +14,11 @@ const articleSlice = createSlice({
       state.loading = true;
     },
     createArticleSuccess: (state, action) => {
-      state.currentArticle = action.payload;
+      const author = action.payload.author;
+      if (!state.currentArticle[author]) {
+        state.currentArticle[author] = [];
+      }
+      state.currentArticle[author].push(action.payload);
       state.loading = false;
       state.error = false;
     },
@@ -38,7 +42,7 @@ const articleSlice = createSlice({
       state.loading = true;
     },
     deleteArticleSuccess: (state) => {
-      state.currentArticle = {};
+      state.currentArticle = null;
       state.loading = false;
       state.error = false;
     },
