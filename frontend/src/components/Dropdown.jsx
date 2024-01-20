@@ -20,7 +20,6 @@ function Dropdown({ dropdownRef }) {
       error.message = error.response.data
         ? error.response.data.message
         : error.response.statusText;
-      console.log(error.message);
     }
   }
 
