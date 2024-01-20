@@ -40,7 +40,7 @@ function WriteArticle() {
   async function handlePublish(e) {
     e.preventDefault();
     dispatch(updateArticleStart());
-    dispatch(updateArticleSuccess({}));
+    dispatch(updateArticleSuccess({ title: "", content: "" }));
 
     try {
       dispatch(createArticleStart());
@@ -60,7 +60,7 @@ function WriteArticle() {
 
       navigate("/articles");
 
-      dispatch(updateArticleSuccess({}));
+      dispatch(updateArticleSuccess({ title: "", content: "" }));
     } catch (error) {
       error.message = error.response.data
         ? error.response.data.message

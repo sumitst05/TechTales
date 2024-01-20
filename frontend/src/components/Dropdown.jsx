@@ -16,7 +16,7 @@ function Dropdown({ dropdownRef }) {
   async function handleSignout() {
     try {
       await axios.post(`/api/auth/signout`);
-      dispatch(updateArticleSuccess({}));
+      dispatch(updateArticleSuccess({ title: "", content: "" }));
       dispatch(signOut());
     } catch (error) {
       error.message = error.response.data
@@ -34,7 +34,6 @@ function Dropdown({ dropdownRef }) {
       });
 
       dispatch(deleteUserSuccess());
-      dispatch(updateArticleSuccess({}));
     } catch (error) {
       error.message = error.response.data
         ? error.response.data.message
