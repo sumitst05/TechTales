@@ -42,28 +42,24 @@ function WriteArticle() {
     dispatch(updateArticleStart());
     dispatch(updateArticleSuccess(null));
 
-    setToggleTagSelector(true);
-
     try {
-      if (!setToggleTagSelector) {
-        dispatch(createArticleStart());
+      dispatch(createArticleStart());
 
-        const articleData = {
-          title: currentArticle ? currentArticle.title : "",
-          content: currentArticle ? currentArticle.content : "",
-        };
+      const articleData = {
+        title: currentArticle ? currentArticle.title : "",
+        content: currentArticle ? currentArticle.content : "",
+      };
 
-        const res = await axios.post("/api/articles", articleData, {
-          withCredentials: true,
-        });
-        const data = res.data;
+      const res = await axios.post("/api/articles", articleData, {
+        withCredentials: true,
+      });
+      const data = res.data;
 
-        dispatch(createArticleSuccess(data));
+      dispatch(createArticleSuccess(data));
 
-        navigate("/articles");
+      navigate("/articles");
 
-        dispatch(updateArticleSuccess(null));
-      }
+      dispatch(updateArticleSuccess(null));
     } catch (error) {
       error.message = error.response.data
         ? error.response.data.message
@@ -100,7 +96,7 @@ function WriteArticle() {
       </button>
 
       <div>
-        <p className="text-red-700 mt-5">
+        <p className="text-red-700">
           {error ? error || "Something went wrong!" : ""}
         </p>
       </div>
