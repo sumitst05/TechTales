@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
 	cors({
-		origin: "https://tech-tales-frontend.vercel.app/",
+		origin: "https://localhost:5173/",
 		credentials: true,
 	}),
 );
