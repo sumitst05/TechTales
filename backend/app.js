@@ -23,10 +23,10 @@ app.use(
 );
 app.use(cookieParser());
 
-app.use("/", indexRouter);
-app.use("/articles", articleRouter);
-app.use("/auth", authRouter);
-app.use("/user", userRouter);
+app.use("/api", indexRouter);
+app.use("/api/articles", articleRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
 
 mongoose
 	.connect(process.env.DB_URL)

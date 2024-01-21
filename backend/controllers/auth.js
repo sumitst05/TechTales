@@ -63,7 +63,7 @@ export const signin = async (req, res) => {
       .cookie("access_token", token, {
         httpOnly: true,
         maxAge: remember ? 1024 * 60 * 60 * 24 * 30 : 1024 * 60 * 60 * 24,
-        sameSite: "none",
+        sameSite: "None",
       })
       .status(200)
       .json(validatedUser);
@@ -89,7 +89,7 @@ export const googleAuth = async (req, res) => {
         .cookie("access_token", token, {
           httpOnly: true,
           maxAge: 1024 * 60 * 60 * 24 * 30,
-          sameSite: "none",
+          sameSite: "None",
         })
         .status(200)
         .json(user);
@@ -121,7 +121,7 @@ export const googleAuth = async (req, res) => {
         .cookie("access_token", token, {
           httpOnly: true,
           maxAge: 1024 * 60 * 60 * 24 * 30,
-          sameSite: "none",
+          sameSite: "None",
         })
         .status(200)
         .json(user);
