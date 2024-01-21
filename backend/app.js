@@ -18,15 +18,15 @@ const __dirname = path.resolve();
 
 app.use(express.static(path.join(__dirname, "/frontend/dist")));
 app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
+  res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
-	cors({
-		origin: "http://localhost:5173",
-		credentials: true,
-	}),
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
 );
 app.use(cookieParser());
 
@@ -36,12 +36,12 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 
 mongoose
-	.connect(process.env.DB_URL)
-	.then(
-		app.listen(port, () => {
-			console.log(`Listening on port ${port}...`);
-		}),
-	)
-	.catch((error) =>
-		console.log(`Error while connecting to database: ${error}`),
-	);
+  .connect(process.env.DB_URL)
+  .then(
+    app.listen(port, () => {
+      console.log(`Listening on port ${port}...`);
+    }),
+  )
+  .catch((error) =>
+    console.log(`Error while connecting to database: ${error}`),
+  );

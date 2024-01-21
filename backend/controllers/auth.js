@@ -64,6 +64,7 @@ export const signin = async (req, res) => {
         httpOnly: true,
         maxAge: remember ? 1024 * 60 * 60 * 24 * 30 : 1024 * 60 * 60 * 24,
         sameSite: "None",
+        secure: true,
       })
       .status(200)
       .json(validatedUser);
@@ -122,6 +123,7 @@ export const googleAuth = async (req, res) => {
           httpOnly: true,
           maxAge: 1024 * 60 * 60 * 24 * 30,
           sameSite: "None",
+          secure: true,
         })
         .status(200)
         .json(user);

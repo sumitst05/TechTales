@@ -66,12 +66,14 @@ function SignIn() {
         <input
           type="text"
           id="email"
+          name="email"
           placeholder="Email"
           className="bg-slate-200 p-3 rounded-lg outline-none focus:outline-violet-700"
           onChange={handleChange}
         />
         <input
           type="password"
+          name="password"
           id="password"
           placeholder="Password"
           className="bg-slate-200 p-3 rounded-lg outline-none focus:outline-violet-700"
@@ -95,7 +97,7 @@ function SignIn() {
       </div>
 
       <div className="flex">
-        <input type="checkbox" onChange={checkboxToggle} />
+        <input id="check" type="checkbox" onChange={checkboxToggle} />
         <p className="text-slate-700 p-2">Remember me</p>
       </div>
 
