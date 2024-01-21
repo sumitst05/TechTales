@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
+import path from "path";
 
 const app = express();
 
@@ -13,13 +14,19 @@ import articleRouter from "./routes/articles.js";
 import authRouter from "./routes/auth.js";
 import userRouter from "./routes/users.js";
 
+const __dirname = path.resolve();
+
+app.use(express.static(path.join(__dirname, "/frontend/dist")));
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  }),
+	cors({
+		origin: "http://localhost:5173",
+		credentials: true,
+	}),
 );
 app.use(cookieParser());
 
