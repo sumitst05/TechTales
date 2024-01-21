@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://techtales-4ap2.onrender.com",
+        target: "http://localhost:3000",
       },
     },
   },
