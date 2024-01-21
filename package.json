@@ -1,8 +1,8 @@
 {
-  "name": "backend",
+  "name": "TechTales",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "backend/app.js",
   "type": "module",
   "scripts": {
     "start": "nodemon app.js"
