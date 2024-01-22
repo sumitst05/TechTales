@@ -30,7 +30,11 @@ function WriteArticle() {
   function handleTitleChange(e) {
     const title = e.target.value;
     dispatch(updateArticleStart());
-    dispatch(updateArticleSuccess({ ...currentArticle, title }));
+    if (currentArticle) {
+      dispatch(updateArticleSuccess({ ...currentArticle, title }));
+    } else {
+      dispatch(updateArticleSuccess({ title: "" }));
+    }
   }
   function handleEditorChange(content) {
     dispatch(updateArticleStart());
