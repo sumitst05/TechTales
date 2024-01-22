@@ -135,7 +135,7 @@ function PublishArticle({ setShowPublish }) {
 
         <img
           alt="close"
-          src="../../assets/close.png"
+          src="https://img.icons8.com/?size=48&id=pNXET7bXhanM&format=png"
           className="absolute w-5 h-5 top-2 right-2 hover:bg-zinc-300 cursor-pointer rounded-full"
           onClick={() => setShowPublish(false)}
         />
@@ -168,7 +168,7 @@ function PublishArticle({ setShowPublish }) {
                   >
                     <img
                       alt="close"
-                      src="../../assets/close.png"
+                      src="https://img.icons8.com/?size=48&id=pNXET7bXhanM&format=png"
                       className="w-4 h-4 hover:bg-zinc-300 cursor-pointer rounded-lg"
                       onClick={() => handleRemoveTag(tag)}
                     />
