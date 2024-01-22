@@ -10,6 +10,11 @@ const articleSchema = new mongoose.Schema(
 			ref: "User",
 			required: true,
 		},
+		coverImage: {
+			type: String,
+			default:
+				"https://cdn.pixabay.com/photo/2015/04/20/22/43/pen-732372_960_720.png",
+		},
 		likes: {
 			type: Number,
 			default: 0,
