@@ -57,12 +57,11 @@ function WriteArticle() {
           placeholder="Write something amazing..."
         />
         <button
-          type="submit"
           onClick={handlePublish}
           disabled={loading}
           className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white font-semibold px-5 py-2 rounded-lg hover:opacity-95 disabled:opacity-80"
         >
-          {loading ? "Publishing..." : "Publish"}
+					Publish
         </button>
 
         {showPublish && <PublishArticle setShowPublish={setShowPublish} />}

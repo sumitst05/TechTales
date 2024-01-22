@@ -7,8 +7,6 @@ import {
   createArticleStart,
   createArticleSuccess,
   createArticleFailure,
-  updateArticleStart,
-  updateArticleSuccess,
   resetCurrentArticle,
 } from "../redux/article/articleSlice";
 
@@ -16,7 +14,7 @@ function PublishArticle({ setShowPublish }) {
   const [selectedTags, setSelectedTags] = useState([]);
   const [tagInput, setTagInput] = useState("");
 
-  const { currentArticle } = useSelector((state) => state.article);
+  const { currentArticle, loading } = useSelector((state) => state.article);
   const { currentUser } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
@@ -93,7 +91,13 @@ function PublishArticle({ setShowPublish }) {
 
   return (
     <div className="top-0 left-0 fixed bg-slate-50 bg-opacity-50 w-full h-full flex justify-center items-center">
-      <div className="p-6 bg-gray-100 shadow-2xl fixed z-15 items-center w-1/3">
+      <div className="p-6 bg-gray-100 shadow-2xl fixed z-15 items-center md:w-1/3">
+        <img
+          alt="close"
+          src="../../assets/close.png"
+          className="absolute w-5 h-5 top-2 right-2 hover:bg-zinc-300 cursor-pointer rounded-full"
+          onClick={() => setShowPublish(false)}
+        />
         <h2 className="text-lg text-center font-semibold p-4 text-transparent bg-clip-text bg-gradient-to-r from-violet-800 to-indigo-600">
           Enter Tags
         </h2>
@@ -116,24 +120,25 @@ function PublishArticle({ setShowPublish }) {
             {selectedTags.map((tag) => (
               <div
                 key={tag}
-                className="bg-violet-300 rounded-lg px-2 py-1 flex items-center overflow-hidden select-none gap-2"
+                className="bg-violet-300 rounded-lg pl-1 px-2 flex items-center overflow-hidden select-none gap-1"
               >
-                <span
-                  className="font-extrabold text-xs text-indigo-700"
+                <img
+                  alt="close"
+                  src="../../assets/close.png"
+                  className="w-4 h-4 hover:bg-zinc-300 cursor-pointer rounded-full"
                   onClick={() => handleRemoveTag(tag)}
-                >
-                  X
-                </span>
+                />
                 <span className="font-medium text-violet-600">{tag}</span>
               </div>
             ))}
           </div>
           <button
             type="submit"
-            className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white font-semibold w-auto px-4 py-2 mt-2 rounded-lg hover:opacity-95 disabled:opacity-80"
+            disabled={loading}
+            className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white text-center font-semibold w-32 px-4 py-2 mt-2 rounded-lg hover:opacity-95 disabled:opacity-80"
             onClick={handleProceed}
           >
-            Proceed
+            {loading ? "Proceeding..." : "Proceed"}
           </button>
         </form>
       </div>
