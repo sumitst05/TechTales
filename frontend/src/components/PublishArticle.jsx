@@ -26,10 +26,6 @@ function PublishArticle({ setShowPublish }) {
   function handleTags(e) {
     setTagInput(e.target.value);
   }
-  function handleTagsChange(tags) {
-    dispatch(updateArticleStart());
-    dispatch(updateArticleSuccess({ ...currentArticle, tags }));
-  }
   function handleAddTag(tag) {
     if (tag.trim() !== "") {
       setSelectedTags((prevTags) => {
@@ -40,8 +36,6 @@ function PublishArticle({ setShowPublish }) {
         }
 
         const newTags = [...prevTags, tag];
-
-        handleTagsChange(newTags);
 
         return newTags;
       });
@@ -55,8 +49,6 @@ function PublishArticle({ setShowPublish }) {
       if (index !== -1) {
         const newTags = [...prevTags];
         newTags.splice(index, 1);
-
-        handleTagsChange(newTags);
 
         return newTags;
       }
@@ -76,7 +68,7 @@ function PublishArticle({ setShowPublish }) {
         author: currentArticle ? currentUser._id : "",
         title: currentArticle ? currentArticle.title : "",
         content: currentArticle ? currentArticle.content : "",
-        tags: currentArticle ? currentArticle.tags : [],
+        tags: selectedTags,
       };
 
       const res = await axios.post("/api/articles", articleData, {
@@ -100,49 +92,51 @@ function PublishArticle({ setShowPublish }) {
   }
 
   return (
-    <div className="p-6 bg-gray-100 shadow-2xl fixed z-15 items-center md:w-1/4">
-      <h2 className="text-lg text-center font-semibold p-4 text-transparent bg-clip-text bg-gradient-to-r from-violet-800 to-indigo-600">
-        Enter Tags
-      </h2>
-      <form className="flex flex-col items-center gap-2">
-        <input
-          id="tag"
-          className="p-1 bg-slate-50 rounded-lg text-center text-zinc-600 outline-none outline-violet-700"
-          placeholder="Tags"
-          onChange={handleTags}
-          onKeyDown={(e) => {
-            if (e.key === " " || e.key === "Spacebar") {
-              e.preventDefault();
-              handleAddTag(tagInput);
-            }
-          }}
-          value={tagInput}
-          autoComplete="off"
-        />
-        <div className="flex justify-center items-center flex-wrap gap-2 max-h-40 overflow-y-auto mt-4">
-          {selectedTags.map((tag) => (
-            <div
-              key={tag}
-              className="bg-violet-300 rounded-lg px-2 py-1 flex items-center overflow-hidden select-none gap-2"
-            >
-              <span
-                className="font-extrabold text-xs text-indigo-700"
-                onClick={() => handleRemoveTag(tag)}
+    <div className="top-0 left-0 fixed bg-slate-50 bg-opacity-50 w-full h-full flex justify-center items-center">
+      <div className="p-6 bg-gray-100 shadow-2xl fixed z-15 items-center w-1/3">
+        <h2 className="text-lg text-center font-semibold p-4 text-transparent bg-clip-text bg-gradient-to-r from-violet-800 to-indigo-600">
+          Enter Tags
+        </h2>
+        <form className="flex flex-col items-center gap-2">
+          <input
+            id="tag"
+            className="p-1 bg-slate-50 rounded-lg text-center text-zinc-600 outline-none outline-violet-700"
+            placeholder="Tags"
+            onChange={handleTags}
+            onKeyDown={(e) => {
+              if (e.key === " " || e.key === "Spacebar") {
+                e.preventDefault();
+                handleAddTag(tagInput);
+              }
+            }}
+            value={tagInput}
+            autoComplete="off"
+          />
+          <div className="flex justify-center items-center flex-wrap gap-2 max-h-40 overflow-y-auto mt-4">
+            {selectedTags.map((tag) => (
+              <div
+                key={tag}
+                className="bg-violet-300 rounded-lg px-2 py-1 flex items-center overflow-hidden select-none gap-2"
               >
-                X
-              </span>
-              <span className="font-medium text-violet-600">{tag}</span>
-            </div>
-          ))}
-        </div>
-        <button
-          type="submit"
-          className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white font-semibold w-1/2 p-2 mt-2 rounded-lg hover:opacity-95 disabled:opacity-80"
-          onClick={handleProceed}
-        >
-          Proceed
-        </button>
-      </form>
+                <span
+                  className="font-extrabold text-xs text-indigo-700"
+                  onClick={() => handleRemoveTag(tag)}
+                >
+                  X
+                </span>
+                <span className="font-medium text-violet-600">{tag}</span>
+              </div>
+            ))}
+          </div>
+          <button
+            type="submit"
+            className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white font-semibold w-auto px-4 py-2 mt-2 rounded-lg hover:opacity-95 disabled:opacity-80"
+            onClick={handleProceed}
+          >
+            Proceed
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

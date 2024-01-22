@@ -4,7 +4,6 @@ const initialState = {
   currentArticle: {
     title: "",
     content: "",
-    tags: [],
   },
   loading: false,
   error: false,
