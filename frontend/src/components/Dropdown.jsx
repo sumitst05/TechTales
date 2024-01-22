@@ -7,7 +7,7 @@ import {
   deleteUserFailure,
   signOut,
 } from "../redux/user/userSlice";
-import { updateArticleSuccess } from "../redux/article/articleSlice";
+import { resetCurrentArticle } from "../redux/article/articleSlice";
 
 function Dropdown({ dropdownRef }) {
   const dispatch = useDispatch();
@@ -16,7 +16,7 @@ function Dropdown({ dropdownRef }) {
   async function handleSignout() {
     try {
       await axios.post(`/api/auth/signout`);
-      dispatch(updateArticleSuccess({}));
+      dispatch(resetCurrentArticle());
       dispatch(signOut());
     } catch (error) {
       error.message = error.response.data
@@ -33,8 +33,8 @@ function Dropdown({ dropdownRef }) {
         withCredentials: true,
       });
 
+      dispatch(resetCurrentArticle());
       dispatch(deleteUserSuccess());
-      dispatch(updateArticleSuccess({}));
     } catch (error) {
       error.message = error.response.data
         ? error.response.data.message

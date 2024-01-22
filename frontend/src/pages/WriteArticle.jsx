@@ -1,27 +1,23 @@
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 
 import {
-  createArticleStart,
-  createArticleSuccess,
   createArticleFailure,
   updateArticleStart,
   updateArticleSuccess,
 } from "../redux/article/articleSlice";
-import { useNavigate } from "react-router-dom";
+import PublishArticle from "../components/PublishArticle";
 
 import { editorStyle, modules, formats } from "../editorConfig";
 
 function WriteArticle() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [showPublish, setShowPublish] = useState(false);
   const { currentArticle, loading, error } = useSelector(
     (state) => state.article,
   );
-  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(createArticleFailure(false));
@@ -30,47 +26,15 @@ function WriteArticle() {
   function handleTitleChange(e) {
     const title = e.target.value;
     dispatch(updateArticleStart());
-    if (currentArticle) {
-      dispatch(updateArticleSuccess({ ...currentArticle, title }));
-    } else {
-      dispatch(updateArticleSuccess({ title: "" }));
-    }
+    dispatch(updateArticleSuccess({ ...currentArticle, title }));
   }
   function handleEditorChange(content) {
     dispatch(updateArticleStart());
     dispatch(updateArticleSuccess({ ...currentArticle, content }));
   }
 
-  async function handlePublish(e) {
-    e.preventDefault();
-    dispatch(updateArticleStart());
-    dispatch(updateArticleSuccess({}));
-
-    try {
-      dispatch(createArticleStart());
-
-      const articleData = {
-        author: currentArticle ? currentUser._id : "",
-        title: currentArticle ? currentArticle.title : "",
-        content: currentArticle ? currentArticle.content : "",
-      };
-
-      const res = await axios.post("/api/articles", articleData, {
-        withCredentials: true,
-      });
-      const data = res.data;
-
-      dispatch(createArticleSuccess(data));
-
-      navigate("/articles");
-
-      dispatch(updateArticleSuccess({}));
-    } catch (error) {
-      error.message = error.response.data
-        ? error.response.data.message
-        : error.response.statusText;
-      dispatch(createArticleFailure(error.message));
-    }
+  function handlePublish() {
+    setShowPublish(!showPublish);
   }
 
   return (
@@ -100,6 +64,8 @@ function WriteArticle() {
         >
           {loading ? "Publishing..." : "Publish"}
         </button>
+
+        {showPublish && <PublishArticle setShowPublish={setShowPublish} />}
 
         <div>
           <p className="text-red-700">
