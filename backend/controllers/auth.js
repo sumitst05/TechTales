@@ -15,7 +15,9 @@ export const signup = async (req, res) => {
     const existingEmail = await User.findOne({ email });
 
     if (existingUsername || existingEmail) {
-      return res.status(403).json({ message: "User already exists!" });
+      return res
+        .status(403)
+        .json({ message: "That username/email already exisits!" });
     }
 
     const salt = 12;
