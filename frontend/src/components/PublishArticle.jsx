@@ -164,7 +164,11 @@ function PublishArticle({ setShowPublish }) {
                 placeholder="Tags"
                 onChange={handleTags}
                 onKeyDown={(e) => {
-                  if (e.key === "Spacebar" || e.key === " " || e.key === "Enter") {
+                  if (
+                    e.key === "Spacebar" ||
+                    e.key === " " ||
+                    e.key === "Enter"
+                  ) {
                     e.preventDefault();
                     handleAddTag(tagInput);
                   }
@@ -208,6 +212,7 @@ function PublishArticle({ setShowPublish }) {
                 ref={fileRef}
                 hidden
                 accept="image/*"
+                value=""
                 onChange={(e) => setImage(e.target.files[0])}
               />
               <img
@@ -240,6 +245,13 @@ function PublishArticle({ setShowPublish }) {
               >
                 {loading ? "Proceeding..." : "Proceed"}
               </button>
+              <img
+                src="https://img.icons8.com/?size=48&id=oC5ETdsLwwZL&format=png"
+                alt="back"
+                className="absolute w-5 h-5 bottom-2 left-2 hover:bg-zinc-300 cursor-pointer rounded-full"
+                onClick={() => setNext(false)}
+                hidden={!next}
+              />
             </>
           )}
         </form>
