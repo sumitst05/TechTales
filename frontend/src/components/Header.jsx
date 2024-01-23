@@ -45,15 +45,19 @@ function Header() {
               alt="TechTales Logo"
               className="h-9 w-9  object-cover"
             />
-            <h1 className="text-2xl text-gray-200 font-bold">TechTales</h1>
+            <h1 className="text-2xl text-gray-200 font-bold select-none">
+              TechTales
+            </h1>
           </div>
         </Link>
         <ul className="flex items-center gap-4">
           <Link to="/explore">
-            <li className="font-semibold text-gray-300">Explore</li>
+            <li className="font-semibold text-gray-300 select-none">Explore</li>
           </Link>
           <Link to="/learn-more">
-            <li className="font-semibold text-gray-300">Learn More</li>
+            <li className="font-semibold text-gray-300 select-none">
+              Learn More
+            </li>
           </Link>
           {currentUser ? (
             <button onClick={toggleDropdown}>
