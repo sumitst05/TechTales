@@ -152,7 +152,11 @@ function PublishArticle({ setShowPublish }) {
                 placeholder="Tags"
                 onChange={handleTags}
                 onKeyDown={(e) => {
-                  if (e.key === " " || e.key === "Spacebar") {
+                  if (
+                    e.key === " " ||
+                    e.key === "Spacebar" ||
+                    e.key === "Enter"
+                  ) {
                     e.preventDefault();
                     handleAddTag(tagInput);
                   }
