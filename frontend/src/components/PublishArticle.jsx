@@ -149,7 +149,7 @@ function PublishArticle({ setShowPublish }) {
         <h2 className="text-lg text-center font-semibold p-4 text-transparent bg-clip-text bg-gradient-to-r from-violet-800 to-indigo-600">
           {!next ? "Enter Tags" : "Add Cover Image"}
         </h2>
-        <p className="text-sm font-medium text-zinc-800 opacity-60 self-center mb-2">
+        <p className="flex justify-center text-sm font-medium text-zinc-800 opacity-60 mb-2">
           {!next
             ? "Type tag name and press Space/Enter"
             : "Image size must be under 2MB"}
