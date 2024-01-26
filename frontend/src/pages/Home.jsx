@@ -115,7 +115,7 @@ function Home() {
                     <img
                       src={person.profilePicture}
                       alt="profile-pic"
-                      className="rounded-full mt-1 mr-4 w-8 h-8"
+                      className="rounded-full mr-4 w-8 h-8"
                     />
                     <p className="font-medium text-slate-500">
                       {person.username}
@@ -145,7 +145,7 @@ function Home() {
                     <img
                       src={article.coverImage}
                       alt="cover-img"
-                      className="rounded-lg mt-1 mr-4 w-8 h-8"
+                      className="rounded-lg mr-4 w-8 h-8"
                     />
                     <p className="font-medium text-slate-500">
                       {article.title}
