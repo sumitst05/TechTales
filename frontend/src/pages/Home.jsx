@@ -19,11 +19,13 @@ function Home() {
     const fetchSuggestions = async () => {
       try {
         const people = await axios.get(`/api/user/?query=${search}`);
-        const articles = await axios.get(`/api/articles?query=${search}`);
+        const articles = await axios.get(
+          `/api/articles?query=${search}&limit=3`,
+        );
 
         setSuggestions({ people: people.data, articles: articles.data });
       } catch (error) {
-        console.log(error);
+        console.log(error.message);
       }
     };
 
@@ -108,7 +110,7 @@ function Home() {
                 suggestions.people.map((person, index) => (
                   <div
                     key={person._id}
-                    className={`flex justify-center items-center hover:bg-slate-200 ${
+                    className={`flex mt-2 justify-center items-center hover:bg-slate-200 ${
                       highlightIndex === index ? "bg-slate-200" : ""
                     }`}
                   >
@@ -123,7 +125,7 @@ function Home() {
                   </div>
                 ))
               ) : (
-                <p className="flex justify-center text-slate-400 pt-2">
+                <p className="flex mt-2 justify-center text-slate-400">
                   No users found
                 </p>
               )}
@@ -136,7 +138,7 @@ function Home() {
                 suggestions.articles.map((article, index) => (
                   <div
                     key={article._id}
-                    className={`flex justify-center items-center hover:bg-slate-200 ${
+                    className={`flex mt-2 justify-center items-center hover:bg-slate-200 ${
                       highlightIndex === suggestions.people.length + index
                         ? "bg-slate-200"
                         : ""
@@ -153,7 +155,7 @@ function Home() {
                   </div>
                 ))
               ) : (
-                <p className="flex justify-center text-slate-400 pt-2">
+                <p className="flex mt-2 justify-center text-slate-400">
                   No articles found
                 </p>
               )}

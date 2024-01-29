@@ -16,36 +16,39 @@ import Header from "./components/Header";
 import PrivateRoute from "./components/PrivateRoute";
 
 export default function App() {
-	return (
-		<div>
-			<BrowserRouter>
-				<Header />
-				<Routes>
-					<Route path="/" element={<Home />} />
-					<Route path="/explore" element={<Explore />} />
-					<Route path="/learn-more" element={<LearnMore />} />
-					<Route path="/sign-in" element={<SignIn />} />
-					<Route path="/sign-up" element={<SignUp />} />
-					<Route element={<PrivateRoute />}>
-						<Route path="/profile" element={<Profile />} />
-					</Route>
-					<Route element={<PrivateRoute />}>
-						<Route path="/notifications" element={<Notifications />} />
-					</Route>
-					<Route element={<PrivateRoute />}>
-						<Route path="/articles" element={<Articles />} />
-					</Route>
-					<Route element={<PrivateRoute />}>
-						<Route path="/liked-articles" element={<LikedArticles />} />
-					</Route>
-					<Route element={<PrivateRoute />}>
-						<Route path="/bookmarks" element={<Bookmarks />} />
-					</Route>
-					<Route element={<PrivateRoute />}>
-						<Route path="/write" element={<WriteArticle />} />
-					</Route>
-				</Routes>
-			</BrowserRouter>
-		</div>
-	);
+  return (
+    <div>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/explore" element={<Explore />} />
+          </Route>
+          <Route path="/learn-more" element={<LearnMore />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+
+          <Route element={<PrivateRoute />}>
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/notifications" element={<Notifications />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/articles" element={<Articles />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/liked-articles" element={<LikedArticles />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/bookmarks" element={<Bookmarks />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/write" element={<WriteArticle />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
 }
