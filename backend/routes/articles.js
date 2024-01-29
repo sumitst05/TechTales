@@ -5,12 +5,14 @@ import {
 	createArticle,
 	updateArticle,
 	deleteArticle,
+	getTags,
 } from "../controllers/articles.js";
 import { auth } from "../middleware/auth.js";
 
 const router = express.Router();
 
 router.get("/", getArticles);
+router.get("/tags", getTags);
 router.post("/", auth, createArticle);
 router.patch("/:id", auth, updateArticle);
 router.delete("/:id", auth, deleteArticle);
