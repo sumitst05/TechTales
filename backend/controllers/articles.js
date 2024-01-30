@@ -18,18 +18,11 @@ export const getArticles = async (req, res) => {
 		})
 			.limit(parseInt(limit))
 			.populate("author")
-			.exec((err, populatedArticles) => {
-				if (err) {
-					console.error(err);
-					return res.status(500).json({ message: "Internal server error!" });
-				}
-				console.log(populatedArticles);
-				res.status(200).json(populatedArticles);
-			});
+			.exec();
 
 		res.status(200).json(articles);
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error!" });
+		res.status(500).json({ message: error.message });
 	}
 };
 

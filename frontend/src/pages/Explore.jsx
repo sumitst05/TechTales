@@ -96,7 +96,7 @@ function Explore() {
   }
 
   return (
-    <div className="flex flex-col mt-16 mx-auto py-4 px-8 gap-8">
+    <div className="flex flex-col mt-16 mx-auto py-4 px-8 gap-8 select-none">
       <div className="relative self-center w-full md:w-1/4 mx-auto mt-2">
         {/* Filter Articles by Tags */}
         <input
@@ -138,18 +138,18 @@ function Explore() {
           {articles.map((article) => (
             <div
               key={article._id}
-              className="flex bg-slate-200 rounded-lg p-2 gap-6"
+              className="flex text-slate-700 hover:scale-105 hover:text-slate-200 bg-slate-200 hover:bg-gradient-to-r from-violet-600 to-indigo-500 rounded-lg px-2 py-4 gap-6"
             >
               <img
                 src={article.coverImage}
-                className="h-20 w-20 flex-shrink-0 rounded-lg"
+                className="h-20 w-20 flex-shrink-0 rounded-lg bg-slate-200"
                 alt="cover-image"
               />
               <div className="flex flex-col justify-between overflow-hidden mx-2">
-                <p className="text-slate-700 text-2xl font-semibold">
+                <p className="text-2xl font-semibold">
                   {article.title}
                 </p>
-                <p className="text-slate-600 text-lg">
+                <p className="text-lg">
                   Author: {article.author ? article.author.username : "Unknown"}
                 </p>
               </div>
