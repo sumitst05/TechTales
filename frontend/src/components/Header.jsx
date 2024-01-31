@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState, useRef, useEffect } from "react";
 
-import logoImage from "../../public/logo.png";
+import logoImage from "/logo.png";
 import Dropdown from "./Dropdown";
 
 function Header() {

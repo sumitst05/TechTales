@@ -22,7 +22,7 @@ function PublishArticle({ setShowPublish }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const defaultCover = "https://cdn.pixabay.com/photo/2015/04/20/22/43/pen-732372_960_720.png";
+  const defaultCover = "/article_cover.png?url";
   const [formData, setFormData] = useState({
     tags: [],
     coverImage: defaultCover,
@@ -141,7 +141,7 @@ function PublishArticle({ setShowPublish }) {
       <div className="p-6 bg-gray-100 shadow-2xl fixed z-15 items-center md:w-1/3">
         <img
           alt="close"
-          src="https://img.icons8.com/?size=48&id=pNXET7bXhanM&format=png"
+          src="/close.png"
           className="absolute w-5 h-5 top-2 right-2 hover:bg-zinc-300 cursor-pointer rounded-full"
           onClick={() => setShowPublish(false)}
         />
@@ -183,7 +183,7 @@ function PublishArticle({ setShowPublish }) {
                   >
                     <img
                       alt="close"
-                      src="https://img.icons8.com/?size=48&id=pNXET7bXhanM&format=png"
+                      src="/close.png"
                       className="w-4 h-4 hover:bg-zinc-300 cursor-pointer rounded-lg"
                       onClick={() => handleRemoveTag(tag)}
                     />
