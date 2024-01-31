@@ -156,7 +156,7 @@ function Explore() {
                 </p>
                 <div className="flex mt-2">
                   <img
-                    src="../../assets/like.png"
+                    src="../../public/like.png"
                     alt="like"
                     className="rounded-full w-6 h-6"
                   />
