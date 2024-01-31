@@ -158,7 +158,7 @@ function Explore() {
                   <img
                     src="../../public/like.png"
                     alt="like"
-                    className="rounded-full w-6 h-6"
+                    className="rounded-full w-5 h-5"
                   />
                 </div>
               </div>
