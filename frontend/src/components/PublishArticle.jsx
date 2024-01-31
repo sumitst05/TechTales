@@ -22,8 +22,7 @@ function PublishArticle({ setShowPublish }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const defaultCover = "https://cdn.pixabay.com/photo/2015/04/20/22/43/pen-732372_960_720.png";
-  const defaultCover = "../../assets/article_cover.png";
+  const defaultCover = "../../public/article_cover.png";
   const [formData, setFormData] = useState({
     tags: [],
     coverImage: defaultCover,
