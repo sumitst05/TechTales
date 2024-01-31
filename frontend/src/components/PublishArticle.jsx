@@ -73,7 +73,6 @@ function PublishArticle({ setShowPublish }) {
       const processedTags = tag
         .split(" ")
         .map((t) => t.trim())
-        .filter(Boolean);
 
       const newTags = processedTags.filter(
         (tag) => !formData.tags.includes(tag),
@@ -245,7 +244,7 @@ function PublishArticle({ setShowPublish }) {
                 {loading ? "Proceeding..." : "Proceed"}
               </button>
               <img
-                src="https://img.icons8.com/?size=48&id=oC5ETdsLwwZL&format=png"
+                src="/back.png"
                 alt="back"
                 className="absolute w-5 h-5 bottom-2 left-2 hover:bg-zinc-300 cursor-pointer rounded-full"
                 onClick={() => setNext(false)}
