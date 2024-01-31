@@ -79,7 +79,7 @@ function SignUp() {
 			</div>
 
 			<div>
-				<p className="text-red-700 mt-5">{error || "Signup failed" }</p>
+				<p className="text-red-700 mt-5">{error && "Signup failed" }</p>
 			</div>
 		</div>
 	);
