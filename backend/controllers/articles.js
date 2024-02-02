@@ -26,29 +26,6 @@ export const getArticles = async (req, res) => {
 	}
 };
 
-export const getTags = async (req, res) => {
-	try {
-		const { query } = req.query;
-
-		if (!query) {
-			return res.status(200).json({ tags: [] });
-		}
-
-		const allTags = await Article.distinct("tags");
-
-		const matchingTags = allTags.filter((tag) =>
-			new RegExp(`^${query}`, "i").test(tag),
-		);
-
-		const slicedTags = matchingTags.slice(0, 3);
-
-		return res.status(200).json(slicedTags);
-	} catch (error) {
-		console.error(error);
-		return res.status(500).json({ message: error.message });
-	}
-};
-
 export const createArticle = async (req, res) => {
 	const { author, title, content, tags, coverImage, likes } = req.body;
 
@@ -114,5 +91,28 @@ export const deleteArticle = async (req, res) => {
 		}
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error!" });
+	}
+};
+
+export const getTags = async (req, res) => {
+	try {
+		const { query } = req.query;
+
+		if (!query) {
+			return res.status(200).json({ tags: [] });
+		}
+
+		const allTags = await Article.distinct("tags");
+
+		const matchingTags = allTags.filter((tag) =>
+			new RegExp(`^${query}`, "i").test(tag),
+		);
+
+		const slicedTags = matchingTags.slice(0, 3);
+
+		return res.status(200).json(slicedTags);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ message: error.message });
 	}
 };
