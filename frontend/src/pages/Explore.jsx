@@ -2,6 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 import ArticleCard from "../components/ArticleCard";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+} from "../redux/user/userSlice";
 
 function Explore() {
   const [tagInput, setTagInput] = useState("");
@@ -12,6 +18,9 @@ function Explore() {
   const [likedStatus, setLikedStatus] = useState({});
 
   const suggestionRef = useRef(null);
+  const dispatch = useDispatch();
+
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -19,8 +28,10 @@ function Explore() {
         const res = await axios.get("/api/articles");
         setArticles(res.data);
 
+        const likedArticleIds = currentUser.likedArticles || [];
+
         const initialLikedStatus = res.data.reduce((acc, article) => {
-          acc[article._id] = false;
+          acc[article._id] = likedArticleIds.includes(article._id);
           return acc;
         }, {});
         setLikedStatus(initialLikedStatus);
@@ -33,7 +44,7 @@ function Explore() {
     };
 
     fetchArticles();
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     const closeSuggestions = (e) => {
@@ -112,10 +123,41 @@ function Explore() {
 
   async function handleLike(articleId) {
     const index = articles.findIndex((article) => article._id === articleId);
+    const likeCount = articles[index].likes + (likedStatus[articleId] ? -1 : 1);
 
     if (index !== -1) {
-      const likeCount =
-        articles[index].likes + (likedStatus[articleId] ? -1 : 1);
+      try {
+        dispatch(updateUserStart());
+
+        const isAlreadyLiked = currentUser.likedArticles.includes(articleId);
+
+        const updatedLikedArticles = isAlreadyLiked
+          ? currentUser.likedArticles.filter((id) => id !== articleId)
+          : [...currentUser.likedArticles, articleId];
+
+        const res = await axios.patch(`/api/user/${currentUser._id}`, {
+          ...currentUser,
+          likedArticles: updatedLikedArticles,
+        });
+
+        const data = res.data;
+
+        dispatch(updateUserSuccess(data));
+      } catch (error) {
+        error.message = error.response
+          ? error.response.data.message
+          : error.response.statusText;
+        dispatch(updateUserFailure(error.message));
+      }
+
+      try {
+        await axios.patch(`/api/articles/${articleId}`, { likes: likeCount });
+      } catch (error) {
+        error.message = error.response
+          ? error.response.data.message
+          : error.response.statusText;
+        console.log(error.message);
+      }
 
       setArticles((prevArticles) => {
         const updatedArticles = [...prevArticles];
@@ -131,15 +173,6 @@ function Explore() {
         ...prevLikedStatus,
         [articleId]: !prevLikedStatus[articleId],
       }));
-
-      try {
-        await axios.patch(`/api/articles/${articleId}`, { likes: likeCount });
-      } catch (error) {
-        error.message = error.response
-          ? error.response.data.message
-          : error.response.statusText;
-        console.log(error.message);
-      }
     }
   }
 

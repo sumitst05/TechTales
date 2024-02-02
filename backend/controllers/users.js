@@ -38,6 +38,7 @@ export const updateUser = async (req, res) => {
         email: req.body.email,
         password: req.body.password,
         profilePicture: req.body.profilePicture,
+        likedArticles: req.body.likedArticles,
       },
       { new: true },
     );
