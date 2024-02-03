@@ -11,7 +11,9 @@ export const auth = async (req, res, next) => {
 
 	jwt.verify(token, process.env.TOKEN_SECRET, (error, user) => {
 		if (error) {
-			return res.status(403).json({ message: "Token is not valid!" });
+			return res
+				.status(401)
+				.json({ message: "Session expired. Please sign in again." });
 		}
 
 		req.user = user;

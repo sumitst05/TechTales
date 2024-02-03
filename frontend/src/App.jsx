@@ -1,4 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { signOut } from "./redux/user/userSlice";
+import { resetCurrentArticle } from "./redux/article/articleSlice";
 
 import Home from "./pages/Home";
 import LearnMore from "./pages/LearnMore";
@@ -15,7 +18,25 @@ import WriteArticle from "./pages/WriteArticle";
 import Header from "./components/Header";
 import PrivateRoute from "./components/PrivateRoute";
 
+import axios from "axios";
+
 export default function App() {
+  const dispatch = useDispatch();
+  const authError = useSelector((state) => state.user.error);
+
+  async function handleSignOut() {
+    try {
+      await axios.post("/api/auth/signout");
+      dispatch(resetCurrentArticle());
+      dispatch(signOut());
+    } catch (error) {
+      error.message = error.response
+        ? error.response.message
+        : error.response.statusText;
+      console.log(error.message);
+    }
+  }
+
   return (
     <div>
       <BrowserRouter>
@@ -49,6 +70,21 @@ export default function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      {authError && location.pathname !== "/sign-in" && (
+        <div className="fixed inset-0 flex justify-center items-center bg-slate-900 bg-opacity-50">
+          <div className="flex flex-col items-center bg-white p-8 rounded-md">
+            <p className="text-red-700 mb-5">
+              {authError || "Something went wrong!"}
+            </p>
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+              onClick={handleSignOut}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
