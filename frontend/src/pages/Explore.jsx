@@ -8,6 +8,7 @@ import {
   updateUserStart,
   updateUserSuccess,
 } from "../redux/user/userSlice";
+import Tags from "../components/Tags";
 
 function Explore() {
   const [tagInput, setTagInput] = useState("");
@@ -172,38 +173,15 @@ function Explore() {
     <div className="flex flex-col mt-16 max-w-6xl mx-auto p-4 gap-8 select-none">
       <div className="relative self-center w-full md:w-1/4 mx-auto mt-2">
         {/* Filter Articles by Tags */}
-        <input
-          type="text"
-          id="search_tags"
-          placeholder="Enter tags to filter"
+        <Tags
+          value={tagInput}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          value={tagInput}
-          className="text-center bg-slate-100 p-1 rounded-lg outline-none outline-violet-700 outline-2 w-full"
+          toggleSuggestions={toggleSuggestions}
+          suggestionRef={suggestionRef}
+          suggestions={suggestions}
+          highlightIndex={highlightIndex}
         />
-        {toggleSuggestions && (
-          <div
-            className="absolute z-10 w-full bg-slate-100 p-2 mt-2 rounded-lg shadow-lg overflow-auto"
-            ref={suggestionRef}
-          >
-            {suggestions.tags.length > 0 ? (
-              suggestions.tags.map((tag, index) => (
-                <div
-                  key={index}
-                  className={`flex justify-center items-center hover:bg-slate-200 ${
-                    highlightIndex === index ? "bg-slate-200" : ""
-                  }`}
-                >
-                  <p className="font-medium text-slate-500">{tag}</p>
-                </div>
-              ))
-            ) : (
-              <p className="flex mt-2 justify-center text-slate-400">
-                No tags found
-              </p>
-            )}
-          </div>
-        )}
       </div>
       {/* Render articles */}
       <div className="flex justify-center mx-auto w-full">
