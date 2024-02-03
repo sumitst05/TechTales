@@ -1,4 +1,54 @@
-function ArticleCard({ article, likedStatus, handleLike }) {
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  updateUserFailure,
+  updateUserStart,
+  updateUserSuccess,
+} from "../redux/user/userSlice";
+
+function ArticleCard({ article }) {
+  const [likedStatus, setLikedStatus] = useState(false);
+
+  const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const likedArticleIds = currentUser.likedArticles || [];
+    setLikedStatus(likedArticleIds.includes(article._id));
+  }, [article._id, currentUser.likedArticles]);
+
+  const handleLike = async () => {
+    const likeCount = article.likes + (likedStatus ? -1 : 1);
+
+    try {
+      dispatch(updateUserStart());
+
+      const isAlreadyLiked = currentUser.likedArticles.includes(article._id);
+
+      const updatedLikedArticles = isAlreadyLiked
+        ? currentUser.likedArticles.filter((id) => id !== article._id)
+        : [...currentUser.likedArticles, article._id];
+
+      const res = await axios.patch(`/api/user/${currentUser._id}`, {
+        ...currentUser,
+        likedArticles: updatedLikedArticles,
+      });
+      const data = res.data;
+
+      await axios.patch(`/api/articles/${article._id}`, { likes: likeCount });
+
+      dispatch(updateUserSuccess(data));
+    } catch (error) {
+      error.message = error.response
+        ? error.response.data.message
+        : error.response.statusText;
+      dispatch(updateUserFailure(error.message));
+    }
+
+    setLikedStatus(!likedStatus);
+  };
+
   return (
     <div
       className={`flex items-center text-slate-700 hover:scale-105 hover:text-slate-200 bg-slate-200 hover:bg-gradient-to-r from-violet-600 to-indigo-400 rounded-lg px-4 py-4 pb-2 gap-6 w-full`}
@@ -19,10 +69,10 @@ function ArticleCard({ article, likedStatus, handleLike }) {
         </p>
         <div className="flex mt-2 items-center gap-1">
           <img
-            src={likedStatus[article._id] ? "/liked.png" : "/like.png"}
+            src={likedStatus ? "/liked.png" : "/like.png"}
             alt="like"
-            className="rounded-full w-5 h-5 sm:w-8 sm:h-8"
-            onClick={() => handleLike(article._id)}
+            className="rounded-full h-5 w-5"
+            onClick={handleLike}
           />
           <p className="font-medium">{article.likes}</p>
         </div>
