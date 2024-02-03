@@ -64,7 +64,7 @@ function SignIn() {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
-          type="text"
+          type="email"
           id="email"
           name="email"
           placeholder="Email"
