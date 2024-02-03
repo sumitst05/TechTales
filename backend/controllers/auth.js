@@ -61,6 +61,9 @@ export const signin = async (req, res) => {
       { expiresIn: remember ? "30d" : "1d" },
     );
 
+    user.accessToken = token;
+    await user.save();
+
     res
       .cookie("access_token", token, {
         httpOnly: true,
