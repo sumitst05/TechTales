@@ -21,7 +21,7 @@ function ArticleCard({ article, likedStatus, handleLike }) {
           <img
             src={likedStatus[article._id] ? "/liked.png" : "/like.png"}
             alt="like"
-            className="rounded-full w-5 h-5"
+            className="rounded-full w-5 h-5 sm:w-8 sm:h-8"
             onClick={() => handleLike(article._id)}
           />
           <p className="font-medium">{article.likes}</p>
