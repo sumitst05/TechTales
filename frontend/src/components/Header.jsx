@@ -37,7 +37,7 @@ function Header() {
 
 	return (
 		<div className="bg-gradient-to-r from-purple-700 to-indigo-700 fixed top-0 left-0 w-full z-50">
-			<div className="flex justify-between items-center max-w-6xl mx-auto p-3">
+			<div className="flex justify-between items-center max-w-6xl mx-auto md:px-3 py-3">
 				<Link to="/">
 					<div className="flex items-center">
 						<img
@@ -77,7 +77,7 @@ function Header() {
 						</button>
 					) : (
 						<Link to="/sign-in">
-							<li className="font-semibold text-gray-300">Sign In</li>
+							<li className="md:font-semibold text-gray-300">Sign In</li>
 						</Link>
 					)}
 				</ul>
