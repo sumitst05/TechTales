@@ -4,6 +4,7 @@ import axios from "axios";
 import ArticleCard from "../components/ArticleCard";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  updateUserFailure,
   updateUserStart,
   updateUserSuccess,
 } from "../redux/user/userSlice";
@@ -147,7 +148,7 @@ function Explore() {
         error.message = error.response
           ? error.response.data.message
           : error.response.statusText;
-        console.log(error);
+        dispatch(updateUserFailure(error.message));
       }
 
       setArticles((prevArticles) => {
