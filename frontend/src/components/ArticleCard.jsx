@@ -14,8 +14,8 @@ function ArticleCard({ article }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const likedArticleIds = currentUser.likedArticles || [];
-    setLikedStatus(likedArticleIds.includes(article._id));
+    const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
+    setLikedStatus(likedArticleIdsSet.has(article._id));
   }, [article._id, currentUser.likedArticles]);
 
   const handleLike = async () => {
@@ -24,16 +24,21 @@ function ArticleCard({ article }) {
     try {
       dispatch(updateUserStart());
 
-      const isAlreadyLiked = currentUser.likedArticles.includes(article._id);
+      const isAlreadyLiked = likedStatus;
 
-      const updatedLikedArticles = isAlreadyLiked
-        ? currentUser.likedArticles.filter((id) => id !== article._id)
-        : [...currentUser.likedArticles, article._id];
+      const updatedLikedArticles = new Set(currentUser.likedArticles);
+
+      if (isAlreadyLiked) {
+        updatedLikedArticles.delete(article._id);
+      } else {
+        updatedLikedArticles.add(article._id);
+      }
 
       const res = await axios.patch(`/api/user/${currentUser._id}`, {
         ...currentUser,
-        likedArticles: updatedLikedArticles,
+        likedArticles: Array.from(updatedLikedArticles),
       });
+
       const data = res.data;
 
       await axios.patch(`/api/articles/${article._id}`, { likes: likeCount });
