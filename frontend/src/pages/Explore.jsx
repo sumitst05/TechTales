@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   updateUserStart,
   updateUserSuccess,
-  updateUserFailure,
 } from "../redux/user/userSlice";
 
 function Explore() {
@@ -139,24 +138,16 @@ function Explore() {
           ...currentUser,
           likedArticles: updatedLikedArticles,
         });
-
         const data = res.data;
+
+        await axios.patch(`/api/articles/${articleId}`, { likes: likeCount });
 
         dispatch(updateUserSuccess(data));
       } catch (error) {
         error.message = error.response
           ? error.response.data.message
           : error.response.statusText;
-        dispatch(updateUserFailure(error.message));
-      }
-
-      try {
-        await axios.patch(`/api/articles/${articleId}`, { likes: likeCount });
-      } catch (error) {
-        error.message = error.response
-          ? error.response.data.message
-          : error.response.statusText;
-        console.log(error.message);
+        console.log(error);
       }
 
       setArticles((prevArticles) => {
