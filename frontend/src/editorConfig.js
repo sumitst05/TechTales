@@ -7,7 +7,6 @@ const editorStyle = {
 const modules = {
   toolbar: [
     ["bold", "italic", "underline", "strike"],
-    [{ header: 1 }, { header: 2 }],
     [{ list: "ordered" }, { list: "bullet" }],
     [{ align: [] }],
     ["link"],
@@ -16,7 +15,6 @@ const modules = {
 };
 
 const formats = [
-  "header",
   "bold",
   "italic",
   "underline",

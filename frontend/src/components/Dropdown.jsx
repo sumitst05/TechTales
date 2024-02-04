@@ -58,7 +58,7 @@ function Dropdown({ dropdownRef }) {
             </li>
           </Link>
           <hr />
-          <Link to="/articles">
+          <Link to="/your-articles">
             <li className="font-medium text-blue-600 hover:bg-slate-200">
               Your Articles
             </li>

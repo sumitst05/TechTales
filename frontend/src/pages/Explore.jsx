@@ -39,7 +39,7 @@ function Explore() {
   }, [page, pageSize, currentUser, selectedTag]);
 
   return (
-    <div className="flex flex-col justify-between mt-16 max-w-6xl mx-auto p-3 gap-6 select-none-hidden overflow-hidden">
+    <div className="flex flex-col justify-between mt-16 max-w-6xl mx-auto p-3 gap-6 select-none overflow-hidden">
       <Tags handleTagSelection={handleTagSelection} />
 
       <div className="flex justify-center mx-auto w-full">

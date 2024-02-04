@@ -70,9 +70,7 @@ function PublishArticle({ setShowPublish }) {
   }
   function handleAddTag(tag) {
     if (tag.trim() !== "") {
-      const processedTags = tag
-        .split(" ")
-        .map((t) => t.trim())
+      const processedTags = tag.split(" ").map((t) => t.trim());
 
       const newTags = processedTags.filter(
         (tag) => !formData.tags.includes(tag),
@@ -122,7 +120,7 @@ function PublishArticle({ setShowPublish }) {
 
       dispatch(createArticleSuccess(data));
 
-      navigate("/articles");
+      navigate("/article");
 
       dispatch(resetCurrentArticle());
 

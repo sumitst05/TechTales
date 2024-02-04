@@ -10,7 +10,8 @@ import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Notifications from "./pages/Notifications";
-import Articles from "./pages/Articles";
+import YourArticles from "./pages/YourArticles";
+import Article from "./pages/Article";
 import LikedArticles from "./pages/LikedArticles";
 import Bookmarks from "./pages/Bookmarks";
 import WriteArticle from "./pages/WriteArticle";
@@ -57,7 +58,10 @@ export default function App() {
             <Route path="/notifications" element={<Notifications />} />
           </Route>
           <Route element={<PrivateRoute />}>
-            <Route path="/articles" element={<Articles />} />
+            <Route path="/article/:articleId" element={<Article />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/your-articles" element={<YourArticles />} />
           </Route>
           <Route element={<PrivateRoute />}>
             <Route path="/liked-articles" element={<LikedArticles />} />

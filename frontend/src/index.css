@@ -6,8 +6,8 @@
   font-family: Georgia, "Times New Roman", Times, serif;
   font-size: 18px;
   color: #333;
-	height: 54vh;
-	max-height: 54vh;
+  height: 60vh;
+  max-height: 60vh;
 }
 
 /* Remove the blue outline when the Quill editor is focused */
