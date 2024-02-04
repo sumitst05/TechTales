@@ -1,27 +1,41 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-function Tags() {
+function Tags({ handleTagSelection }) {
   const [value, setValue] = useState("");
   const [suggestions, setSuggestions] = useState({ tags: [] });
   const [toggleSuggestions, setToggleSuggestions] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const suggestionRef = useRef(null);
 
-  const handleChange = (e) => {
+  function handleChange(e) {
     setValue(e.target.value);
-    setToggleSuggestions(true);
-  };
+    setToggleSuggestions(e.target.value.trim() !== "");
+    setHighlightIndex(-1);
 
-  const handleKeyDown = (e) => {
+    if (e.target.value.trim() === "") {
+      handleTagSelection("");
+    }
+  }
+
+  function handleKeyDown(e) {
     if (e.key === "Escape") {
       setToggleSuggestions(false);
       setHighlightIndex(-1);
     } else if (e.key === "ArrowUp" || e.key === "ArrowDown") {
       e.preventDefault();
       setToggleSuggestions(true);
+    } else if (e.key === "Enter") {
+      if (highlightIndex !== -1 && suggestions.tags.length > 0) {
+        handleTagClick(suggestions.tags[highlightIndex]);
+      }
     }
-  };
+  }
+
+  function handleTagClick(tag) {
+    handleTagSelection(tag);
+    setToggleSuggestions(false);
+  }
 
   useEffect(() => {
     const closeSuggestions = (e) => {
@@ -104,6 +118,7 @@ function Tags() {
             suggestions.tags.map((tag, index) => (
               <div
                 key={index}
+                onClick={() => handleTagClick(tag)}
                 className={`flex justify-center items-center hover:bg-slate-200 ${
                   highlightIndex === index ? "bg-slate-200" : ""
                 }`}
