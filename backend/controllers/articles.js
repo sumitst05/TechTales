@@ -38,6 +38,22 @@ export const getArticles = async (req, res) => {
 	}
 };
 
+export const getArticleById = async (req, res) => {
+	const articleId = req.params.id;
+
+	try {
+		const article = await Article.findById(articleId).populate("author");
+
+		if (!article) {
+			return res.status(404).json({ message: "Article not found!" });
+		}
+
+		res.status(200).json(article);
+	} catch (error) {
+		res.status(500).json({ message: "Internal server error!" });
+	}
+};
+
 export const createArticle = async (req, res) => {
 	const { author, title, content, tags, coverImage, likes } = req.body;
 
