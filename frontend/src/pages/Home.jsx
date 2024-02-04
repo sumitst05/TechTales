@@ -20,10 +20,13 @@ function Home() {
       try {
         const people = await axios.get(`/api/user/?query=${search}`);
         const articles = await axios.get(
-          `/api/articles?query=${search}&limit=3`,
+          `/api/articles?query=${search}&pageSize=3`,
         );
 
-        setSuggestions({ people: people.data, articles: articles.data });
+        setSuggestions({
+          people: people.data,
+          articles: articles.data.articles,
+        });
       } catch (error) {
         console.log(error.message);
       }
