@@ -39,7 +39,7 @@ function Explore() {
   }, [page, pageSize, currentUser, selectedTag]);
 
   return (
-    <div className="flex flex-col justify-between mt-16 max-w-6xl mx-auto p-4 gap-8 select-none-hidden overflow-hidden">
+    <div className="flex flex-col justify-between mt-16 max-w-6xl mx-auto p-3 gap-6 select-none-hidden overflow-hidden">
       <Tags handleTagSelection={handleTagSelection} />
 
       <div className="flex justify-center mx-auto w-full">
@@ -50,7 +50,7 @@ function Explore() {
         </div>
       </div>
 
-      <div className="self-center flex items-center gap-2">
+      <div className="self-center flex items-center gap-2 md:fixed md:bottom-2 md:z-10">
         <button
           className="disabled:bg-gray-400 disabled:scale-75 rounded-full"
           disabled={page === 1}
