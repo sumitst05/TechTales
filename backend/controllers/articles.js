@@ -2,25 +2,37 @@ import Article from "../models/article.js";
 
 export const getArticles = async (req, res) => {
 	try {
-		const { query, limit } = req.query;
+		const { query, page = 1, pageSize = 6 } = req.query;
 
 		let articles;
 		if (!query) {
-			articles = await Article.find().populate("author");
-			return res.status(200).json(articles);
+			const skip = (page - 1) * pageSize;
+
+			articles = await Article.find()
+				.populate("author")
+				.skip(skip)
+				.limit(pageSize);
+
+			const totalArticles = await Article.countDocuments();
+			return res.status(200).json({ articles, totalArticles });
 		}
 
-		articles = await Article.find({
+		const regexQuery = {
 			$or: [
 				{ title: { $regex: query, $options: "i" } },
 				{ tags: { $regex: query, $options: "i" } },
 			],
-		})
+		};
+		const skip = (page - 1) * pageSize;
+
+		articles = await Article.find(regexQuery)
+			.skip(skip)
 			.limit(parseInt(limit))
 			.populate("author")
 			.exec();
 
-		res.status(200).json(articles);
+		const totalArticles = await Article.countDocuments(regexQuery);
+		res.status(200).json({ articles, totalArticles });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
