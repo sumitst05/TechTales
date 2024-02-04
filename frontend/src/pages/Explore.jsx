@@ -59,7 +59,7 @@ function Explore() {
           <img
             src="/first.png"
             alt="first"
-            className={`w-6 h-6 hover:${page === 1 ? "scale-100" : "scale-125"}`}
+            className="w-6 h-6 hover:scale-125"
           />
         </button>
         <button
@@ -67,11 +67,7 @@ function Explore() {
           disabled={page === 1}
           onClick={() => setPage(1)}
         >
-          <img
-            src="/prev.png"
-            alt="prev"
-            className={`w-6 h-6 hover:${page === 1 ? "scale-100" : "scale-125"}`}
-          />
+          <img src="/prev.png" alt="prev" className="w-6 h-6 hover:scale-125" />
         </button>
         <span className="font-medium text-center text-slate-700 p-2">
           {`${page} / ${totalPages}`}
@@ -81,22 +77,14 @@ function Explore() {
           disabled={page === totalPages}
           onClick={() => setPage(totalPages)}
         >
-          <img
-            src="/next.png"
-            alt="next"
-            className={`w-6 h-6 hover:${page === totalPages ? "scale-100" : "scale-125"}`}
-          />
+          <img src="/next.png" alt="next" className="w-6 h-6 hover:scale-125" />
         </button>
         <button
           className="disabled:bg-gray-400 disabled:scale-75 rounded-full"
           disabled={page === totalPages}
           onClick={() => setPage(totalPages)}
         >
-          <img
-            src="/last.png"
-            alt="prev"
-            className={`w-6 h-6 hover:${page === totalPages ? "scale-100" : "scale-125"}`}
-          />
+          <img src="/last.png" alt="prev" className="w-6 h-6 hover:scale-125" />
         </button>
       </div>
     </div>
