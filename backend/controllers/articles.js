@@ -27,14 +27,14 @@ export const getArticles = async (req, res) => {
 
 		articles = await Article.find(regexQuery)
 			.skip(skip)
-			.limit(parseInt(limit))
+			.limit(pageSize)
 			.populate("author")
 			.exec();
 
 		const totalArticles = await Article.countDocuments(regexQuery);
 		res.status(200).json({ articles, totalArticles });
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		res.status(500).json({ message: "Internal server error!" });
 	}
 };
 
