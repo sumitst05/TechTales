@@ -2,12 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-.ql-editor {
+.write-article .ql-editor {
   font-family: Georgia, "Times New Roman", Times, serif;
   font-size: 18px;
   color: #333;
   height: 60vh;
   max-height: 60vh;
+}
+
+.article .ql-editor {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 18px;
+  color: #333;
 }
 
 /* Remove the blue outline when the Quill editor is focused */

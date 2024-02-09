@@ -38,7 +38,7 @@ function WriteArticle() {
   }
 
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="write-article h-screen overflow-hidden">
       <div className="p-8 flex flex-col justify-center items-center gap-4 mt-12">
         <input
           type="text"

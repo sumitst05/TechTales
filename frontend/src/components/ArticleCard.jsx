@@ -16,6 +16,12 @@ function ArticleCard({ article }) {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const publishDate = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(article.createdAt));
+
   useEffect(() => {
     const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
     setLikedStatus(likedArticleIdsSet.has(article._id));
@@ -140,8 +146,10 @@ function ArticleCard({ article }) {
             <p className="font-medium truncate">
               {article.author ? article.author.username : "Unknown"}
             </p>
+            <p className="font-light">•</p>
+            <p className="text-sm">{publishDate}</p>
           </div>
-          <p className="text-2xl font-bold truncate max-h-12">
+          <p className="text-2xl font-bold truncate">
             {article.title}
             <br />
           </p>
