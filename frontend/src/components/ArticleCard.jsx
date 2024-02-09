@@ -111,7 +111,9 @@ function ArticleCard({ article }) {
     e.stopPropagation();
 
     try {
-      await navigator.clipboard.writeText(location.href);
+      await navigator.clipboard.writeText(
+        location.origin + "/article/" + article._id,
+      );
       setLinkCopied(true);
     } catch (error) {
       console.log(error.message);
