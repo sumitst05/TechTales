@@ -21,7 +21,7 @@ function Article() {
     };
 
     fetchArticle();
-  }, [articleId]);
+  }, []);
 
   return (
     <div className="h-screen overflow-hidden">
