@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -6,11 +7,11 @@ import {
   updateUserStart,
   updateUserSuccess,
 } from "../redux/user/userSlice";
-import { Link } from "react-router-dom";
 
 function ArticleCard({ article }) {
   const [likedStatus, setLikedStatus] = useState(false);
   const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -24,6 +25,14 @@ function ArticleCard({ article }) {
     );
     setBookmarkedStatus(bookmarkedArticleIdsSet.has(article._id));
   }, [article._id, currentUser.likedArticles, currentUser.bookmarkedArticles]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLinkCopied(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [linkCopied]);
 
   async function handleLike(e) {
     e.preventDefault();
@@ -97,11 +106,28 @@ function ArticleCard({ article }) {
     setBookmarkedStatus(!bookmarkedStatus);
   }
 
+  async function handleCopyLink(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      await navigator.clipboard.writeText(location.href);
+      setLinkCopied(true);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
   return (
     <Link to={`/article/${article._id}`}>
       <div
         className={`flex items-center text-slate-700 hover:scale-105 hover:text-slate-200 bg-slate-200 hover:bg-gradient-to-r from-violet-600 to-indigo-400 rounded-lg px-4 w-full h-32 relative`}
       >
+        {linkCopied && (
+          <div className="absolute top-0 right-0 z-10 flex items-center mt-1 mr-1 px-2 bg-indigo-500 opacity-60 rounded">
+            <span className="text-white ">Link copied to clipboard!</span>
+          </div>
+        )}
         <div className="flex flex-col justify-between w-4/5">
           <div className="flex gap-2 items-center">
             <img
@@ -122,7 +148,7 @@ function ArticleCard({ article }) {
               <img
                 src={likedStatus ? "/liked.png" : "/like.png"}
                 alt="like"
-                className="rounded-full h-5 w-5"
+                className="rounded-full h-5 w-5 hover:scale-125"
                 onClick={handleLike}
               />
               <p className="font-medium">{article.likes}</p>
@@ -130,8 +156,14 @@ function ArticleCard({ article }) {
             <img
               src={bookmarkedStatus ? "/bookmarked.png" : "/bookmark.png"}
               alt="bookmark"
-              className="rounded-full h-5 w-5"
+              className="rounded-full h-5 w-5 hover:scale-125"
               onClick={handleBookmark}
+            />
+            <img
+              src={"/link.png"}
+              alt="copy-link"
+              className="rounded-full h-6 w-6 hover:scale-125"
+              onClick={handleCopyLink}
             />
           </div>
         </div>

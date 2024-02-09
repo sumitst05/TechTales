@@ -24,30 +24,33 @@ function Article() {
   }, [articleId]);
 
   return (
-    <div className="flex flex-col mt-16 max-w-3xl mx-auto p-3 gap-4 overflow-hidden">
-      <p className="mt-6 font-serif font-bold text-4xl text-slate-900">
-        {article.title}
-      </p>
-      <div className="flex items-center gap-1">
-        <img
-          src={article.author?.profilePicture}
-          alt="profile"
-          className="w-6 h-6 rounded-full"
-        />
-        <p className="text-slate-700 text-xl font-serif font-medium">
-          {article.author ? article.author.username : "Unknown"}
+    <div className="h-screen overflow-hidden">
+      {" "}
+      <div className="flex flex-col mt-16 max-w-3xl mx-auto p-2 gap-4">
+        <p className="mt-6 font-serif font-bold text-4xl text-slate-900">
+          {article.title}
         </p>
-      </div>
+        <div className="flex items-center gap-1">
+          <img
+            src={article.author?.profilePicture}
+            alt="profile"
+            className="w-6 h-6 rounded-full"
+          />
+          <p className="text-slate-700 text-xl font-serif font-medium">
+            {article.author ? article.author.username : "Unknown"}
+          </p>
+        </div>
 
-      <div className="flex justify-center items-center font-serif text-justify text-xl">
-        <ReactQuill
-          theme="bubble"
-          modules={{
-            toolbar: false,
-          }}
-          value={article.content}
-          readOnly={true}
-        />
+        <div className="flex justify-center items-center font-serif text-justify text-xl">
+          <ReactQuill
+            theme="bubble"
+            modules={{
+              toolbar: false,
+            }}
+            value={article.content}
+            readOnly={true}
+          />
+        </div>
       </div>
     </div>
   );
