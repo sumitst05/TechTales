@@ -43,16 +43,16 @@ function Explore() {
       <Tags handleTagSelection={handleTagSelection} />
 
       <div className="flex justify-center mx-auto w-full">
-        <div className="relative w-full md:max-w-screen-2xl grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="relative w-full md:max-w-screen-2xl grid grid-cols-1 md:grid-cols-2 gap-4">
           {articles.map((article) => (
             <ArticleCard key={article._id} article={article} />
           ))}
         </div>
       </div>
 
-      <div className="self-center flex items-center gap-2 md:fixed md:bottom-2 md:z-10">
+      <div className="flex items-center justify-center self-center w-full gap-2 md:fixed md:bottom-2 md:z-10">
         <button
-          className="disabled:bg-gray-400 disabled:scale-75 rounded-full"
+          className="disabled:scale-75 rounded-full"
           disabled={page === 1}
           onClick={() => setPage(1)}
         >
@@ -63,9 +63,9 @@ function Explore() {
           />
         </button>
         <button
-          className="disabled:bg-gray-400 disabled:scale-75 rounded-full"
+          className="disabled:scale-75 rounded-full"
           disabled={page === 1}
-          onClick={() => setPage(1)}
+          onClick={() => setPage(page - 1)}
         >
           <img src="/prev.png" alt="prev" className="w-6 h-6 hover:scale-125" />
         </button>
@@ -73,14 +73,14 @@ function Explore() {
           {`${page} / ${totalPages}`}
         </span>
         <button
-          className="disabled:bg-gray-400 disabled:scale-75 rounded-full"
+          className="disabled:scale-75 rounded-full"
           disabled={page === totalPages}
-          onClick={() => setPage(totalPages)}
+          onClick={() => setPage(page + 1)}
         >
           <img src="/next.png" alt="next" className="w-6 h-6 hover:scale-125" />
         </button>
         <button
-          className="disabled:bg-gray-400 disabled:scale-75 rounded-full"
+          className="disabled:scale-75 rounded-full"
           disabled={page === totalPages}
           onClick={() => setPage(totalPages)}
         >

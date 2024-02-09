@@ -25,7 +25,10 @@ function ArticleCard({ article }) {
     setBookmarkedStatus(bookmarkedArticleIdsSet.has(article._id));
   }, [article._id, currentUser.likedArticles, currentUser.bookmarkedArticles]);
 
-  async function handleLike() {
+  async function handleLike(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
     const likeCount = article.likes + (likedStatus ? -1 : 1);
 
     try {
@@ -61,7 +64,10 @@ function ArticleCard({ article }) {
     setLikedStatus(!likedStatus);
   }
 
-  async function handleBookmark() {
+  async function handleBookmark(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
     try {
       dispatch(updateUserStart());
 
@@ -94,20 +100,20 @@ function ArticleCard({ article }) {
   return (
     <Link to={`/article/${article._id}`}>
       <div
-        className={`flex items-center text-slate-700 hover:scale-105 hover:text-slate-200 bg-slate-200 hover:bg-gradient-to-r from-violet-600 to-indigo-400 rounded-lg px-4 py-4 pb-2 gap-6 w-full`}
+        className={`flex items-center text-slate-700 hover:scale-105 hover:text-slate-200 bg-slate-200 hover:bg-gradient-to-r from-violet-600 to-indigo-400 rounded-lg px-4 w-full h-32 relative`}
       >
-        <div className="flex flex-col justify-between 2 mx-2 w-full line-clamp-1">
+        <div className="flex flex-col justify-between w-4/5">
           <div className="flex gap-2 items-center">
             <img
               src={article.author?.profilePicture}
               alt="profile"
               className="h-6 w-6 rounded-full"
             />
-            <p className="font-medium overflow-hidden overflow-ellipsis">
+            <p className="font-medium truncate">
               {article.author ? article.author.username : "Unknown"}
             </p>
           </div>
-          <p className="text-2xl font-bold overflow-hidden overflow-ellipsis">
+          <p className="text-2xl font-bold truncate max-h-12">
             {article.title}
             <br />
           </p>
@@ -132,7 +138,7 @@ function ArticleCard({ article }) {
         <img
           src={article.coverImage}
           alt="cover-image"
-          className="h-16 w-16 flex-shrink-0 rounded-lg bg-slate-200"
+          className="h-16 w-16 absolute right-4 flex-shrink-0 rounded-lg bg-slate-200"
         />
       </div>
     </Link>
