@@ -43,7 +43,7 @@ function Header() {
 						<img
 							src={logoImage}
 							alt="TechTales Logo"
-							className="h-9 w-9 object-cover"
+							className="h-10 w-10 object-cover"
 						/>
 						<h1 className="md:text-2xl text-gray-200 font-bold select-none">
 							TechTales

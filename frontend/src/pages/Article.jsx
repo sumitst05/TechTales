@@ -6,11 +6,15 @@ import axios from "axios";
 function Article() {
   const { articleId } = useParams();
   const [article, setArticle] = useState({});
+  const [readTime, setReadTime] = useState(0);
 
   useEffect(() => {
     const fetchArticle = async () => {
       try {
         const res = await axios.get(`/api/articles/${articleId}`);
+
+        setReadTime(Math.ceil(res.data.content.split(" ").length / 200));
+
         setArticle(res.data);
       } catch (error) {
         error.message = error.response
@@ -36,6 +40,11 @@ function Article() {
         />
         <p className="text-slate-700 text-xl font-serif font-medium">
           {article.author ? article.author.username : "Unknown"}
+        </p>
+        <p className="font-light mt-1">•</p>
+        <p className="text-slate-700 text-sm font-normal mt-1">
+          {readTime + " "}
+          {readTime > 1 ? "minutes read." : "minute read."}
         </p>
       </div>
 
