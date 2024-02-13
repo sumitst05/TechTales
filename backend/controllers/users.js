@@ -13,9 +13,61 @@ export const getUser = async (req, res) => {
 	try {
 		const users = await User.find({
 			username: { $regex: query, $options: "i" },
-		}).limit(3);
+		})
+			.limit(3)
+			.select("-password");
 
 		res.status(200).json(users);
+	} catch (error) {
+		res.status(500).json({ message: "Internal server error!" });
+	}
+};
+
+export const getBookmarkedArticles = async (req, res) => {
+	try {
+		const userId = req.params.id;
+		const { page = 1, pageSize = 6 } = req.query;
+
+		const skip = (page - 1) * pageSize;
+
+		const user = await User.findById(userId)
+			.populate("bookmarkedArticles")
+			.skip(skip)
+			.limit(pageSize);
+
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		}
+
+		const bookmarks = user.bookmarkedArticles;
+		const totalArticles = bookmarks.length;
+
+		res.status(200).json({ bookmarks, totalArticles });
+	} catch (error) {
+		res.status(500).json({ message: "Internal server error!" });
+	}
+};
+
+export const getLikedArticles = async (req, res) => {
+	try {
+		const userId = req.params.id;
+		const { page = 1, pageSize = 6 } = req.query;
+
+		const skip = (page - 1) * pageSize;
+
+		const user = await User.findById(userId)
+			.populate("likedArticles")
+			.skip(skip)
+			.limit(pageSize);
+
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		}
+
+		const likedArticles = user.likedArticles;
+		const totalArticles = likedArticles.length;
+
+		res.status(200).json({ likedArticles, totalArticles });
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error!" });
 	}
