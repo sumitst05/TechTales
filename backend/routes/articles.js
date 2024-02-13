@@ -14,7 +14,7 @@ import { auth } from "../middleware/auth.js";
 const router = express.Router();
 
 router.get("/", getArticles);
-router.get("/myarticles", getMyArticles);
+router.get("/myarticles", auth, getMyArticles);
 router.post("/", auth, createArticle);
 router.get("/tags", getTags);
 router.get("/:id", getArticleById);
