@@ -34,7 +34,26 @@ export const getArticles = async (req, res) => {
 		const totalArticles = await Article.countDocuments(regexQuery);
 		res.status(200).json({ articles, totalArticles });
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error!" });
+		res.status(500).json({ message: error.message });
+	}
+};
+
+export const getMyArticles = async (req, res) => {
+	try {
+		const { userId, page, pageSize = 6 } = req.query;
+		const skip = (page - 1) * pageSize;
+
+		const articles = await Article.find({ author: userId })
+			.populate("author")
+			.skip(skip)
+			.limit(pageSize)
+			.exec();
+
+		const totalArticles = await Article.countDocuments({ author: userId });
+
+		res.status(200).json({ articles, totalArticles });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
 	}
 };
 
@@ -50,7 +69,7 @@ export const getArticleById = async (req, res) => {
 
 		res.status(200).json(article);
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error!" });
+		res.status(500).json({ message: error.message });
 	}
 };
 
@@ -75,7 +94,7 @@ export const createArticle = async (req, res) => {
 
 		res.status(200).json(result);
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error!" });
+		res.status(500).json({ message: error.message });
 	}
 };
 
@@ -101,7 +120,7 @@ export const updateArticle = async (req, res) => {
 			res.status(404).json({ message: "Article not found!" });
 		}
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error!" });
+		res.status(500).json({ message: error.message });
 	}
 };
 
@@ -118,7 +137,7 @@ export const deleteArticle = async (req, res) => {
 			res.status(404).json({ message: "Article not found!" });
 		}
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error!" });
+		res.status(500).json({ message: error.message });
 	}
 };
 
