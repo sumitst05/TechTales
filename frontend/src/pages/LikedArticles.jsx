@@ -8,7 +8,7 @@ import Pagination from "../components/Pagination";
 function LikedArticles() {
 	const [articles, setArticles] = useState([]);
 	const [page, setPage] = useState(
-		parseInt(localStorage.getItem("yourArticlesPage")) || 1,
+		parseInt(localStorage.getItem("likedArticlesPage")) || 1,
 	);
 	const [pageSize, setPageSize] = useState(6);
 	const [totalPages, setTotalPages] = useState(0);
@@ -38,8 +38,7 @@ function LikedArticles() {
 	}, [page, pageSize, currentUser]);
 
 	useEffect(() => {
-		localStorage.setItem("yourArticlesPage", page.toString());
-	}, [page]);
+		localStorage.setItem("likedArticlesPage", page.toString()); }, [page]);
 
 	return (
 		<div className="flex flex-col justify-between mt-16 max-w-6xl mx-auto p-3 select-none overflow-hidden">
