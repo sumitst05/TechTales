@@ -15,7 +15,13 @@ function Dropdown({ dropdownRef }) {
 
   async function handleSignout() {
     try {
+      localStorage.removeItem("yourArticlesPage");
+      localStorage.removeItem("bookmarkPage");
+      localStorage.removeItem("likedArticlesPage");
+      localStorage.removeItem("explorePage");
+
       await axios.post(`/api/auth/signout`);
+
       dispatch(resetCurrentArticle());
       dispatch(signOut());
     } catch (error) {
