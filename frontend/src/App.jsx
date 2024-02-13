@@ -22,73 +22,75 @@ import PrivateRoute from "./components/PrivateRoute";
 import axios from "axios";
 
 export default function App() {
-  const dispatch = useDispatch();
-  const authError = useSelector((state) => state.user.error);
+	const dispatch = useDispatch();
+	const authError = useSelector((state) => state.user.error);
 
-  async function handleSignOut() {
-    try {
-      await axios.post("/api/auth/signout");
-      dispatch(resetCurrentArticle());
-      dispatch(signOut());
-    } catch (error) {
-      error.message = error.response
-        ? error.response.message
-        : error.response.statusText;
-      console.log(error.message);
-    }
-  }
+	async function handleSignOut() {
+		try {
+			await axios.post("/api/auth/signout");
+			dispatch(resetCurrentArticle());
+			dispatch(signOut());
+		} catch (error) {
+			error.message = error.response
+				? error.response.message
+				: error.response.statusText;
+			console.log(error.message);
+		}
+	}
 
-  return (
-    <div>
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route element={<PrivateRoute />}>
-            <Route path="/explore" element={<Explore />} />
-          </Route>
-          <Route path="/learn-more" element={<LearnMore />} />
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />} />
+	return (
+		<div>
+			<BrowserRouter>
+				<Header />
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route element={<PrivateRoute />}>
+						<Route path="/explore" element={<Explore />} />
+					</Route>
+					<Route path="/learn-more" element={<LearnMore />} />
+					<Route path="/sign-in" element={<SignIn />} />
+					<Route path="/sign-up" element={<SignUp />} />
 
-          <Route element={<PrivateRoute />}>
-            <Route path="/profile" element={<Profile />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
-            <Route path="/notifications" element={<Notifications />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
-            <Route path="/article/:articleId" element={<Article />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
-            <Route path="/your-articles" element={<YourArticles />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
-            <Route path="/liked-articles" element={<LikedArticles />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
-            <Route path="/bookmarks" element={<Bookmarks />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
-            <Route path="/write" element={<WriteArticle />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-      {authError && location.pathname !== "/sign-in" && (
-        <div className="fixed inset-0 flex justify-center items-center bg-slate-900 bg-opacity-50">
-          <div className="flex flex-col items-center bg-white p-8 rounded-md">
-            <p className="text-red-700 mb-5">
-              {authError || "Something went wrong!"}
-            </p>
-            <button
-              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-              onClick={handleSignOut}
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+					<Route element={<PrivateRoute />}>
+						<Route path="/profile" element={<Profile />} />
+					</Route>
+					<Route element={<PrivateRoute />}>
+						<Route path="/notifications" element={<Notifications />} />
+					</Route>
+					<Route element={<PrivateRoute />}>
+						<Route path="/article/:articleId" element={<Article />} />
+					</Route>
+					<Route element={<PrivateRoute />}>
+						<Route path="/your-articles" element={<YourArticles />} />
+					</Route>
+					<Route element={<PrivateRoute />}>
+						<Route path="/liked-articles" element={<LikedArticles />} />
+					</Route>
+					<Route element={<PrivateRoute />}>
+						<Route path="/bookmarks" element={<Bookmarks />} />
+					</Route>
+					<Route element={<PrivateRoute />}>
+						<Route path="/write" element={<WriteArticle />} />
+					</Route>
+				</Routes>
+			</BrowserRouter>
+			{authError &&
+				location.pathname !== "/sign-in" &&
+				location.pathname !== "/profile" && (
+					<div className="fixed inset-0 flex justify-center items-center bg-slate-900 bg-opacity-50">
+						<div className="flex flex-col items-center bg-white p-8 rounded-md">
+							<p className="text-red-700 mb-5">
+								{authError || "Something went wrong!"}
+							</p>
+							<button
+								className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+								onClick={handleSignOut}
+							>
+								OK
+							</button>
+						</div>
+					</div>
+				)}
+		</div>
+	);
 }

@@ -32,6 +32,14 @@ function Profile() {
 		}
 	}, [image]);
 
+	useEffect(() => {
+		dispatch(updateUserFailure(null));
+
+		return () => {
+			dispatch(updateUserFailure(null));
+		};
+	}, []);
+
 	async function handleImageUpload(image) {
 		const storage = getStorage(app);
 		const imageName = new Date().getTime() + image.name;
@@ -78,6 +86,7 @@ function Profile() {
 				? error.response.data.message
 				: error.response.statusText;
 			dispatch(updateUserFailure(error.message));
+			setUpdateSuccess(false);
 		}
 	}
 
@@ -86,7 +95,7 @@ function Profile() {
 			<h1 className="text-4xl text-center font-semibold p-4 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-800">
 				Profile
 			</h1>
-			<form className="flex flex-col gap-4 mt-2" onSubmit={handleSubmit}>
+			<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
 				<input
 					type="file"
 					ref={fileRef}
@@ -154,8 +163,10 @@ function Profile() {
 				</button>
 			</form>
 
-			<p className="text-red-700 mt-5">{error && "Something went wrong!"}</p>
-			<p className="text-green-700 mt-5">
+			<p className="text-red-700 mt-2">
+				{error ? error || "Something went wrong!" : ""}
+			</p>
+			<p className="text-green-700 mt-2">
 				{updateSuccess && "Profile updated successfully!"}
 			</p>
 		</div>

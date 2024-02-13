@@ -31,6 +31,24 @@ export const updateUser = async (req, res) => {
 			req.body.password = await bcrypt.hash(req.body.password, 12);
 		}
 
+		const usernameConflict = await User.findOne({
+			username: req.body.username,
+			_id: { $ne: req.params.id },
+		});
+		if (usernameConflict) {
+			return res.status(400).json({ message: "That username is taken!" });
+		}
+
+		const emailConflict = await User.findOne({
+			email: req.body.email,
+			_id: { $ne: req.params.id },
+		});
+		if (emailConflict) {
+			return res
+				.status(400)
+				.json({ message: "That email is already registered!" });
+		}
+
 		const updateUser = await User.findByIdAndUpdate(
 			req.params.id,
 			{
@@ -48,7 +66,7 @@ export const updateUser = async (req, res) => {
 
 		res.status(200).json(user);
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error!" });
+		res.status(500).json({ message: error.message });
 	}
 };
 
