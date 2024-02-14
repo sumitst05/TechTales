@@ -133,7 +133,9 @@ function ArticleCard({ article }) {
       >
         {linkCopied && (
           <div className="absolute top-0 right-0 z-10 flex items-center mt-1 mr-1 px-2 bg-indigo-500 opacity-60 rounded">
-            <span className="text-white ">Link copied to clipboard!</span>
+            <span className="text-white font-semibold">
+              Link copied to clipboard!
+            </span>
           </div>
         )}
         <div className="flex flex-col justify-between gap-2 w-4/5">
@@ -169,7 +171,7 @@ function ArticleCard({ article }) {
               <img
                 src={likedStatus ? "/liked.png" : "/like.png"}
                 alt="like"
-                className="rounded-full h-5 w-5 hover:scale-125"
+                className="h-5 w-5 hover:scale-125"
                 onClick={handleLike}
               />
               <p className="font-medium">{article.likes}</p>
@@ -177,13 +179,13 @@ function ArticleCard({ article }) {
             <img
               src={bookmarkedStatus ? "/bookmarked.png" : "/bookmark.png"}
               alt="bookmark"
-              className="rounded-full h-5 w-5 hover:scale-125"
+              className="h-5 w-5 hover:scale-125"
               onClick={handleBookmark}
             />
             <img
               src={"/link.png"}
               alt="copy-link"
-              className="rounded-full h-6 w-6 hover:scale-125"
+              className="h-7 w-7 hover:scale-125"
               onClick={handleCopyLink}
             />
           </div>
