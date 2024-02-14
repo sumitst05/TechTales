@@ -83,16 +83,10 @@ export const googleAuth = async (req, res) => {
     const existingUser = await User.findOne({ email: req.body.email });
 
     if (existingUser) {
-      const token = jwt.sign(
-        { id: existingUser._id },
-        process.env.TOKEN_SECRET,
-        { expiresIn: "30d" },
-      );
-
       const { password: hashedPassword, ...user } = existingUser._doc;
 
       res
-        .cookie("access_token", token, {
+        .cookie("access_token", existingUser.accessToken, {
           httpOnly: true,
           maxAge: 1024 * 60 * 60 * 24 * 30,
           sameSite: "None",
