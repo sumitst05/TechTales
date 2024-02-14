@@ -66,7 +66,20 @@ function SignUp() {
           disabled={loading}
           className="bg-slate-600 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
         >
-          {loading ? "Loading..." : "Sign Up"}
+          {loading ? (
+            <div className="flex items-center justify-center gap-4">
+              <img
+                alt="loader"
+                src="/loader_small.png"
+                className="animate-spin w-4 h-4"
+              />
+              <span>Loading...</span>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center">
+              <span>Sign Up</span>
+            </div>
+          )}
         </button>
         <OAuth />
       </form>

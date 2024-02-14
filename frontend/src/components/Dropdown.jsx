@@ -45,7 +45,7 @@ function Dropdown({ dropdownRef }) {
       error.message = error.response.data
         ? error.response.data.message
         : error.response.statusText;
-      dispatch(deleteUserFailure(error.message));
+			console.log(error.message)
     }
   }
 

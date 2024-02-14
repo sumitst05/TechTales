@@ -5,13 +5,16 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { signInSuccess } from "../redux/user/userSlice.js";
+import { useState } from "react";
 
 function OAuth() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   async function handleGoogleClick() {
     try {
+      setLoading(true);
       const provider = new GoogleAuthProvider();
       const auth = getAuth(app);
 
@@ -30,6 +33,8 @@ function OAuth() {
       navigate("/explore");
     } catch (error) {
       console.log("Failed to login with Google.", error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -39,7 +44,20 @@ function OAuth() {
       onClick={handleGoogleClick}
       className="bg-indigo-500 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-95"
     >
-      Continue with Google
+      {loading ? (
+        <div className="flex items-center justify-center gap-4">
+          <img
+            alt="loader"
+            src="/loader_small.png"
+            className="animate-spin w-4 h-4"
+          />
+          <span>Loading...</span>
+        </div>
+      ) : (
+        <div className="flex items-center justify-center">
+          <span>Continue with Google</span>
+        </div>
+      )}
     </button>
   );
 }

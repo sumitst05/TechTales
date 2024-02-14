@@ -4,6 +4,7 @@ import axios from "axios";
 
 import ArticleCard from "../components/ArticleCard";
 import Pagination from "../components/Pagination";
+import Loader from "../components/Loader";
 
 function YourArticles() {
   const [articles, setArticles] = useState([]);
@@ -12,12 +13,14 @@ function YourArticles() {
   );
   const [pageSize, setPageSize] = useState(6);
   const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
+        setLoading(true);
         const res = await axios.get(
           `/api/articles/myarticles/?userId=${currentUser._id}&page=${page}&pageSize=${pageSize}`,
         );
@@ -28,6 +31,8 @@ function YourArticles() {
           ? error.response.data.message
           : error.response.statusText;
         console.log(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -45,9 +50,11 @@ function YourArticles() {
       </h1>
       <div className="flex justify-center mx-auto w-full mt-2">
         <div className="relative w-full md:max-w-screen-2xl grid grid-cols-1 md:grid-cols-2 gap-4">
-          {articles.map((article) => (
-            <ArticleCard key={article._id} article={article} />
-          ))}
+          {loading && <Loader />}
+          {!loading &&
+            articles.map((article) => (
+              <ArticleCard key={article._id} article={article} />
+            ))}
         </div>
       </div>
 
@@ -55,6 +62,7 @@ function YourArticles() {
         currentPage={page}
         totalPages={totalPages}
         onPageChange={(newPage) => setPage(newPage)}
+        loading={loading}
       />
     </div>
   );
