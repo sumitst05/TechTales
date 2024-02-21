@@ -27,7 +27,6 @@ function Explore() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        setLoading(true);
         const res = await axios.get(
           `/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`,
         );
@@ -38,8 +37,6 @@ function Explore() {
           ? error.response.data.message
           : error.response.statusText;
         console.log(error.message);
-      } finally {
-        setLoading(false);
       }
     };
 
