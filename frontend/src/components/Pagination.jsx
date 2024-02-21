@@ -1,6 +1,6 @@
 function Pagination({ currentPage, totalPages, onPageChange, loading }) {
   return (
-    <div className="flex items-center justify-center self-center w-full gap-2 md:fixed md:bottom-2 md:z-10">
+    <div className="flex items-center justify-center self-center w-full gap-2 lg:fixed lg:bottom-2 lg:z-10">
       <button
         className="disabled:scale-75 rounded-full"
         disabled={currentPage === 1 || loading}

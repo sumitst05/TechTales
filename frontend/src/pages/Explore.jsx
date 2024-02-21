@@ -51,17 +51,15 @@ function Explore() {
   }, [page]);
 
   return (
-    <div className="flex flex-col justify-between mt-16 max-w-6xl mx-auto p-3 gap-6 select-none overflow-hidden">
+    <div className="flex flex-col mt-16 max-w-6xl mx-auto p-3 gap-6 select-none overflow-hidden">
       <Tags handleTagSelection={handleTagSelection} />
 
-      <div className="flex justify-evenly mx-auto w-full">
-        <div className="relative w-full md:max-w-screen-2xl grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {loading && <Loader />}
-          {!loading &&
-            articles.map((article) => (
-              <ArticleCard key={article._id} article={article} />
-            ))}
-        </div>
+      <div className="flex-grow w-full md:max-w-screen-2xl grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {loading && <Loader />}
+        {!loading &&
+          articles.map((article) => (
+            <ArticleCard key={article._id} article={article} />
+          ))}
       </div>
 
       <Pagination
