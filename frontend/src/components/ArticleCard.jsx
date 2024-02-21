@@ -117,8 +117,12 @@ function ArticleCard({ article }) {
     e.stopPropagation();
 
     try {
+      const slug = generateSlug(article.title);
       await navigator.clipboard.writeText(
-        location.origin + "/article/" + article._id,
+        location.origin +
+          "/article/" +
+          title.toLowerCase().replaceAll(" ", "-") +
+          article._id,
       );
       setLinkCopied(true);
     } catch (error) {
@@ -127,7 +131,9 @@ function ArticleCard({ article }) {
   }
 
   return (
-    <Link to={`/article/${article._id}`}>
+    <Link
+      to={`/article/${article.title.toLowerCase().replaceAll(" ", "-") + "-" + article._id}`}
+    >
       <div
         className={`flex items-center text-slate-700 hover:scale-105 hover:text-slate-200 hover:bg-gradient-to-r hover:from-violet-600 hover:to-indigo-400 rounded-lg px-4 w-full h-32 relative bg-gradient-to-r from-zinc-200 to-slate-100 transition-transform duration-300`}
       >
