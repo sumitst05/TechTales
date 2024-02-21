@@ -13,7 +13,7 @@ function Explore() {
   const [page, setPage] = useState(
     parseInt(localStorage.getItem("explorePage")) || 1,
   );
-  const [pageSize, setPageSize] = useState(6);
+  const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedTag, setSelectedTag] = useState("");
 
