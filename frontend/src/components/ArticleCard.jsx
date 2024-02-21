@@ -8,7 +8,7 @@ import {
   updateUserSuccess,
 } from "../redux/user/userSlice";
 
-function ArticleCard({ article }) {
+function ArticleCard({ article, setArticleUpdate }) {
   const [likedStatus, setLikedStatus] = useState(false);
   const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -48,9 +48,9 @@ function ArticleCard({ article }) {
 
     try {
       dispatch(updateUserStart());
+      setArticleUpdate(true);
 
       const isAlreadyLiked = likedStatus;
-
       const updatedLikedArticles = new Set(currentUser.likedArticles);
 
       if (isAlreadyLiked) {
@@ -85,6 +85,7 @@ function ArticleCard({ article }) {
 
     try {
       dispatch(updateUserStart());
+      setArticleUpdate(true);
 
       const isAlreadyBookmarked = bookmarkedStatus;
       const updatedBookmarkedArticles = new Set(currentUser.bookmarkedArticles);

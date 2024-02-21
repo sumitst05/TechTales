@@ -14,13 +14,16 @@ function LikedArticles() {
   const [pageSize, setPageSize] = useState(12);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [articleUpdate, setArticleUpdate] = useState(false);
 
   const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        setLoading(true);
+        if (!articleUpdate) {
+          setLoading(true);
+        }
         const res = await axios.get(
           `/api/user/liked/${currentUser._id}?page=${page}&pageSize=${pageSize}`,
         );
@@ -36,6 +39,7 @@ function LikedArticles() {
         console.log(error.message);
       } finally {
         setLoading(false);
+        setArticleUpdate(false);
       }
     };
 
@@ -56,7 +60,11 @@ function LikedArticles() {
         {loading && <Loader />}
         {!loading &&
           articles.map((article) => (
-            <ArticleCard key={article._id} article={article} />
+            <ArticleCard
+              key={article._id}
+              article={article}
+              setArticleUpdate={setArticleUpdate}
+            />
           ))}
       </div>
 

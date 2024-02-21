@@ -16,6 +16,7 @@ function Explore() {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedTag, setSelectedTag] = useState("");
+  const [articleUpdate, setArticleUpdate] = useState(false);
 
   const { currentUser } = useSelector((state) => state.user);
 
@@ -27,6 +28,9 @@ function Explore() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
+        if (!articleUpdate) {
+          setLoading(true);
+        }
         const res = await axios.get(
           `/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`,
         );
@@ -37,6 +41,9 @@ function Explore() {
           ? error.response.data.message
           : error.response.statusText;
         console.log(error.message);
+      } finally {
+        setLoading(false);
+        setArticleUpdate(false);
       }
     };
 
@@ -55,7 +62,11 @@ function Explore() {
         {loading && <Loader />}
         {!loading &&
           articles.map((article) => (
-            <ArticleCard key={article._id} article={article} />
+            <ArticleCard
+              key={article._id}
+              article={article}
+              setArticleUpdate={setArticleUpdate}
+            />
           ))}
       </div>
 
