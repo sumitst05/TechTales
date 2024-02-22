@@ -102,6 +102,8 @@ function ArticleCard({ article, setArticleUpdate }) {
 			dispatch(updateUserStart());
 			setArticleUpdate(true);
 
+			setBookmarkedStatus(!bookmarkedStatus);
+
 			const isAlreadyBookmarked = bookmarkedStatus;
 			const updatedBookmarkedArticles = new Set(currentUser.bookmarkedArticles);
 
@@ -124,8 +126,6 @@ function ArticleCard({ article, setArticleUpdate }) {
 				: error.response.statusText;
 			dispatch(updateUserFailure(error.message));
 		}
-
-		setBookmarkedStatus(!bookmarkedStatus);
 	}
 
 	async function handleCopyLink(e) {
