@@ -59,6 +59,8 @@ function ArticleCard({ article, setArticleUpdate }) {
 			dispatch(updateUserStart());
 			setArticleUpdate(true);
 
+			setLikedStatus(!likedStatus);
+
 			const isAlreadyLiked = likedStatus;
 			const updatedLikedArticles = new Set(currentUser.likedArticles);
 
@@ -84,8 +86,6 @@ function ArticleCard({ article, setArticleUpdate }) {
 				: error.response.statusText;
 			dispatch(updateUserFailure(error.message));
 		}
-
-		setLikedStatus(!likedStatus);
 	}
 
 	async function handleBookmark(e) {
