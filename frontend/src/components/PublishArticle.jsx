@@ -134,8 +134,8 @@ function PublishArticle({ setShowPublish }) {
 	}
 
 	return (
-		<div className="top-0 left-0 fixed bg-slate-50 bg-opacity-50 w-full h-full flex justify-center items-center">
-			<div className="p-6 bg-gray-100 shadow-2xl fixed z-15 items-center md:w-1/3">
+		<div className="fixed top-0 left-0 z-50 bg-slate-50 bg-opacity-50 w-full h-full flex justify-center items-center">
+			<div className="p-6 bg-gray-100 shadow-2xl fixed z-15 items-center md:w-1/3 select-none">
 				<img
 					alt="close"
 					src="/close.png"

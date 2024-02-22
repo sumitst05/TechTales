@@ -93,10 +93,10 @@ function ArticleCard({ article, setArticleUpdate }) {
 		e.stopPropagation();
 
 		const currentTime = new Date().getTime();
-		if (currentTime - lastLikeClickTime < 1000) {
+		if (currentTime - lastBookmarkClickTime < 1000) {
 			return;
 		}
-		setLastLikeClickTime(currentTime);
+		setLastBookmarkClickTime(currentTime);
 
 		try {
 			dispatch(updateUserStart());

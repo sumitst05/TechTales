@@ -2,12 +2,37 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+	updateUserStart,
+	updateUserSuccess,
+	updateUserFailure,
+} from "../redux/user/userSlice";
 
 function Article() {
 	const { slug } = useParams();
 	const [article, setArticle] = useState({});
 	const [readTime, setReadTime] = useState(0);
 	const [showAllTags, setShowAllTags] = useState(false);
+	const [likedStatus, setLikedStatus] = useState(false);
+	const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
+	const [linkCopied, setLinkCopied] = useState(false);
+	const [lastLikeClickTime, setLastLikeClickTime] = useState(0);
+	const [lastBookmarkClickTime, setLastBookmarkClickTime] = useState(0);
+
+	const { currentUser } = useSelector((state) => state.user);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
+		setLikedStatus(likedArticleIdsSet.has(article._id));
+
+		const bookmarkedArticleIdsSet = new Set(
+			currentUser.bookmarkedArticles || [],
+		);
+		setBookmarkedStatus(bookmarkedArticleIdsSet.has(article._id));
+	}, [article._id, currentUser.likedArticles, currentUser.bookmarkedArticles]);
 
 	useEffect(() => {
 		const fetchArticle = async () => {
@@ -17,7 +42,6 @@ function Article() {
 				const res = await axios.get(`/api/articles/${articleId}`);
 
 				setReadTime(Math.ceil(res.data.content.split(" ").length / 200));
-
 				setArticle(res.data);
 			} catch (error) {
 				error.message = error.response
@@ -28,10 +52,88 @@ function Article() {
 		};
 
 		fetchArticle();
-	}, []);
+	}, [slug, currentUser]);
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setLinkCopied(false);
+		}, 3000);
+
+		return () => clearTimeout(timer);
+	}, [linkCopied]);
 
 	function handleToggleTags() {
 		setShowAllTags(!showAllTags);
+	}
+
+	async function handleLike() {
+		const likeCount = article.likes + (likedStatus ? -1 : 1);
+
+		try {
+			dispatch(updateUserStart());
+
+			setLikedStatus(!likedStatus);
+
+			const updatedLikedArticles = likedStatus
+				? currentUser.likedArticles.filter((id) => id !== article._id)
+				: [...currentUser.likedArticles, article._id];
+
+			const res = await axios.patch(`/api/user/${currentUser._id}`, {
+				...currentUser,
+				likedArticles: updatedLikedArticles,
+			});
+			const data = res.data;
+
+			await axios.patch(`/api/articles/${article._id}`, { likes: likeCount });
+
+			dispatch(updateUserSuccess(data));
+		} catch (error) {
+			error.message = error.response
+				? error.response.data.message
+				: error.response.statusText;
+			dispatch(updateUserFailure(error.message));
+		}
+	}
+
+	async function handleBookmark() {
+		try {
+			dispatch(updateUserStart());
+
+			setBookmarkedStatus(!bookmarkedStatus);
+
+			const updatedBookmarkedArticles = bookmarkedStatus
+				? currentUser.bookmarkedArticles.filter((id) => id !== article._id)
+				: [...currentUser.bookmarkedArticles, article._id];
+
+			const res = await axios.patch(`/api/user/${currentUser._id}`, {
+				...currentUser,
+				bookmarkedArticles: updatedBookmarkedArticles,
+			});
+			const data = res.data;
+
+			dispatch(updateUserSuccess(data));
+		} catch (error) {
+			console.log(error.message);
+			error.message = error.response
+				? error.response.data.message
+				: error.response.statusText;
+			dispatch(updateUserFailure(error.message));
+		}
+	}
+
+	async function handleCopyLink() {
+		try {
+			await navigator.clipboard.writeText(
+				location.origin +
+				"/article/" +
+				article.title.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "") +
+				"-" +
+				article._id,
+			);
+			setLinkCopied(true);
+		} catch (error) {
+			console.log(error.message);
+		}
 	}
 
 	return (
@@ -55,7 +157,7 @@ function Article() {
 				</p>
 			</div>
 
-			<div className="flex flex-wrap items-center w-full gap-4 overflow-x-auto">
+			<div className="flex flex-wrap items-center w-full gap-4 overflow-x-auto select-none">
 				{showAllTags
 					? article.tags &&
 					article.tags.map((tag, index) => (
@@ -83,6 +185,51 @@ function Article() {
 					</span>
 				)}
 			</div>
+
+			<hr />
+
+			<div className="flex justify-between items-center gap-x-4 select-none">
+				<div className="flex items-center gap-1">
+					<img
+						src={likedStatus ? "/liked.png" : "/like.png"}
+						alt="like"
+						className="h-5 w-5 hover:scale-125 cursor-pointer"
+						onClick={handleLike}
+					/>
+					<p className="font-medium">{article.likes}</p>
+
+					<img
+						src="/comment.png"
+						alt="comment"
+						className="h-6 w-6 hover:scale-125 ml-5 cursor-pointer"
+					/>
+				</div>
+
+				<div className="flex items-center gap-x-6">
+					<img
+						src={bookmarkedStatus ? "/bookmarked.png" : "/bookmark.png"}
+						alt="bookmark"
+						className="h-5 w-5 hover:scale-125 cursor-pointer"
+						onClick={handleBookmark}
+					/>
+					<img
+						src={"/link.png"}
+						alt="copy-link"
+						className="h-7 w-7 hover:scale-125 cursor-pointer"
+						onClick={handleCopyLink}
+					/>
+				</div>
+			</div>
+
+			<hr />
+
+			{linkCopied && (
+				<div className="fixed top-18 right-2 flex items-center justify-center w-52 bg-indigo-500 opacity-60 rounded">
+					<span className="text-white font-semibold">
+						Link copied to clipboard!
+					</span>
+				</div>
+			)}
 
 			<div className="flex justify-center items-center font-serif text-justify text-xl">
 				<ReactQuill
