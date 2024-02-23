@@ -20,9 +20,18 @@ function Article() {
   const [linkCopied, setLinkCopied] = useState(false);
   const [lastLikeClickTime, setLastLikeClickTime] = useState(0);
   const [lastBookmarkClickTime, setLastBookmarkClickTime] = useState(0);
+  const [readOnly, setReadOnly] = useState(true);
 
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
+  const publishDate = article.createdAt
+    ? new Intl.DateTimeFormat("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }).format(new Date(article.createdAt))
+    : "";
 
   useEffect(() => {
     const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
@@ -33,6 +42,11 @@ function Article() {
     );
     setBookmarkedStatus(bookmarkedArticleIdsSet.has(article._id));
   }, [article._id, currentUser.likedArticles, currentUser.bookmarkedArticles]);
+
+  useEffect(() => {
+    const editMode = new URLSearchParams(location.search).get("edit");
+    setReadOnly(editMode === "true" ? false : true);
+  }, [location.search]);
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -69,6 +83,12 @@ function Article() {
   async function handleLike() {
     const likeCount = article.likes + (likedStatus ? -1 : 1);
 
+    const currentTime = new Date().getTime();
+    if (currentTime - lastLikeClickTime < 1000) {
+      return;
+    }
+    setLastLikeClickTime(currentTime);
+
     try {
       dispatch(updateUserStart());
 
@@ -96,6 +116,12 @@ function Article() {
   }
 
   async function handleBookmark() {
+    const currentTime = new Date().getTime();
+    if (currentTime - lastBookmarkClickTime < 1000) {
+      return;
+    }
+    setLastBookmarkClickTime(currentTime);
+
     try {
       dispatch(updateUserStart());
 
@@ -150,11 +176,17 @@ function Article() {
         <p className="text-slate-700 text-xl font-serif font-medium">
           {article.author ? article.author.username : "Unknown"}
         </p>
-        <p className="font-light mt-1">•</p>
+
+        <p className="font-light mt-1 mx-1">•</p>
+
         <p className="text-slate-700 text-sm font-normal mt-1">
           {" " + readTime + " "}
           {readTime > 1 ? "minutes read" : "minute read"}
         </p>
+
+        {publishDate && <p className="font-light mt-1 mx-1">•</p>}
+
+        <p className="text-slate-700 text-sm font-normal mt-1">{publishDate}</p>
       </div>
 
       <div className="flex flex-wrap items-center w-full gap-4 overflow-x-auto select-none">
@@ -238,7 +270,7 @@ function Article() {
             toolbar: false,
           }}
           value={article.content}
-          readOnly={true}
+          readOnly={readOnly}
         />
       </div>
     </div>

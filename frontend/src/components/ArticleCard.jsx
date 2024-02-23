@@ -1,225 +1,317 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
-	updateUserFailure,
-	updateUserStart,
-	updateUserSuccess,
+  deleteUserFailure,
+  updateUserFailure,
+  updateUserStart,
+  updateUserSuccess,
 } from "../redux/user/userSlice";
+import {
+  deleteArticleStart,
+  deleteArticleSuccess,
+} from "../redux/article/articleSlice";
 
 function ArticleCard({ article, setArticleUpdate }) {
-	const [likedStatus, setLikedStatus] = useState(false);
-	const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
-	const [linkCopied, setLinkCopied] = useState(false);
+  const [likedStatus, setLikedStatus] = useState(false);
+  const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
-	const [lastLikeClickTime, setLastLikeClickTime] = useState(0);
-	const [lastBookmarkClickTime, setLastBookmarkClickTime] = useState(0);
+  const [lastLikeClickTime, setLastLikeClickTime] = useState(0);
+  const [lastBookmarkClickTime, setLastBookmarkClickTime] = useState(0);
 
-	const { currentUser } = useSelector((state) => state.user);
-	const dispatch = useDispatch();
+  const [showDelete, setShowDelete] = useState(false);
 
-	const publishDate = new Intl.DateTimeFormat("en-US", {
-		month: "short",
-		day: "numeric",
-		year: "numeric",
-	}).format(new Date(article.createdAt));
+  const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-	useEffect(() => {
-		const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
-		setLikedStatus(likedArticleIdsSet.has(article._id));
+  const publishDate = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(article.createdAt));
 
-		const bookmarkedArticleIdsSet = new Set(
-			currentUser.bookmarkedArticles || [],
-		);
-		setBookmarkedStatus(bookmarkedArticleIdsSet.has(article._id));
-	}, [article._id, currentUser.likedArticles, currentUser.bookmarkedArticles]);
+  useEffect(() => {
+    const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
+    setLikedStatus(likedArticleIdsSet.has(article._id));
 
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			setLinkCopied(false);
-		}, 3000);
+    const bookmarkedArticleIdsSet = new Set(
+      currentUser.bookmarkedArticles || [],
+    );
+    setBookmarkedStatus(bookmarkedArticleIdsSet.has(article._id));
+  }, [article._id, currentUser.likedArticles, currentUser.bookmarkedArticles]);
 
-		return () => clearTimeout(timer);
-	}, [linkCopied]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLinkCopied(false);
+    }, 3000);
 
-	async function handleLike(e) {
-		e.preventDefault();
-		e.stopPropagation();
+    return () => clearTimeout(timer);
+  }, [linkCopied]);
 
-		const currentTime = new Date().getTime();
-		if (currentTime - lastLikeClickTime < 1000) {
-			return;
-		}
-		setLastLikeClickTime(currentTime);
+  async function handleLike(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
-		const likeCount = article.likes + (likedStatus ? -1 : 1);
+    const currentTime = new Date().getTime();
+    if (currentTime - lastLikeClickTime < 1000) {
+      return;
+    }
+    setLastLikeClickTime(currentTime);
 
-		try {
-			dispatch(updateUserStart());
-			setArticleUpdate(true);
+    const likeCount = article.likes + (likedStatus ? -1 : 1);
 
-			setLikedStatus(!likedStatus);
+    try {
+      dispatch(updateUserStart());
+      setArticleUpdate(true);
 
-			const isAlreadyLiked = likedStatus;
-			const updatedLikedArticles = new Set(currentUser.likedArticles);
+      setLikedStatus(!likedStatus);
 
-			if (isAlreadyLiked) {
-				updatedLikedArticles.delete(article._id);
-			} else {
-				updatedLikedArticles.add(article._id);
-			}
+      const isAlreadyLiked = likedStatus;
+      const updatedLikedArticles = new Set(currentUser.likedArticles);
 
-			const res = await axios.patch(`/api/user/${currentUser._id}`, {
-				...currentUser,
-				likedArticles: Array.from(updatedLikedArticles),
-			});
+      if (isAlreadyLiked) {
+        updatedLikedArticles.delete(article._id);
+      } else {
+        updatedLikedArticles.add(article._id);
+      }
 
-			const data = res.data;
+      const res = await axios.patch(`/api/user/${currentUser._id}`, {
+        ...currentUser,
+        likedArticles: Array.from(updatedLikedArticles),
+      });
 
-			await axios.patch(`/api/articles/${article._id}`, { likes: likeCount });
+      const data = res.data;
 
-			dispatch(updateUserSuccess(data));
-		} catch (error) {
-			error.message = error.response
-				? error.response.data.message
-				: error.response.statusText;
-			dispatch(updateUserFailure(error.message));
-		}
-	}
+      await axios.patch(`/api/articles/${article._id}`, { likes: likeCount });
 
-	async function handleBookmark(e) {
-		e.preventDefault();
-		e.stopPropagation();
+      dispatch(updateUserSuccess(data));
+    } catch (error) {
+      error.message = error.response
+        ? error.response.data.message
+        : error.response.statusText;
+      dispatch(updateUserFailure(error.message));
+    }
+  }
 
-		const currentTime = new Date().getTime();
-		if (currentTime - lastBookmarkClickTime < 1000) {
-			return;
-		}
-		setLastBookmarkClickTime(currentTime);
+  async function handleBookmark(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
-		try {
-			dispatch(updateUserStart());
-			setArticleUpdate(true);
+    const currentTime = new Date().getTime();
+    if (currentTime - lastBookmarkClickTime < 1000) {
+      return;
+    }
+    setLastBookmarkClickTime(currentTime);
 
-			setBookmarkedStatus(!bookmarkedStatus);
+    try {
+      dispatch(updateUserStart());
+      setArticleUpdate(true);
 
-			const isAlreadyBookmarked = bookmarkedStatus;
-			const updatedBookmarkedArticles = new Set(currentUser.bookmarkedArticles);
+      setBookmarkedStatus(!bookmarkedStatus);
 
-			if (isAlreadyBookmarked) {
-				updatedBookmarkedArticles.delete(article._id);
-			} else {
-				updatedBookmarkedArticles.add(article._id);
-			}
+      const isAlreadyBookmarked = bookmarkedStatus;
+      const updatedBookmarkedArticles = new Set(currentUser.bookmarkedArticles);
 
-			const res = await axios.patch(`/api/user/${currentUser._id}`, {
-				...currentUser,
-				bookmarkedArticles: Array.from(updatedBookmarkedArticles),
-			});
-			const data = res.data;
+      if (isAlreadyBookmarked) {
+        updatedBookmarkedArticles.delete(article._id);
+      } else {
+        updatedBookmarkedArticles.add(article._id);
+      }
 
-			dispatch(updateUserSuccess(data));
-		} catch (error) {
-			error.message = error.response
-				? error.response.data.message
-				: error.response.statusText;
-			dispatch(updateUserFailure(error.message));
-		}
-	}
+      const res = await axios.patch(`/api/user/${currentUser._id}`, {
+        ...currentUser,
+        bookmarkedArticles: Array.from(updatedBookmarkedArticles),
+      });
+      const data = res.data;
 
-	async function handleCopyLink(e) {
-		e.preventDefault();
-		e.stopPropagation();
+      dispatch(updateUserSuccess(data));
+    } catch (error) {
+      error.message = error.response
+        ? error.response.data.message
+        : error.response.statusText;
+      dispatch(updateUserFailure(error.message));
+    }
+  }
 
-		try {
-			await navigator.clipboard.writeText(
-				location.origin +
-				"/article/" +
-				article.title.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "") +
-				"-" +
-				article._id,
-			);
-			setLinkCopied(true);
-		} catch (error) {
-			console.log(error.message);
-		}
-	}
+  async function handleCopyLink(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
-	return (
-		<Link
-			to={`/article/${article.title.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "")}-${article._id}`}
-		>
-			<div
-				className={`flex items-center text-slate-700 hover:scale-105 hover:text-slate-200 hover:bg-gradient-to-r hover:from-violet-600 hover:to-indigo-400 rounded-lg px-4 w-full h-32 relative bg-gradient-to-r from-zinc-200 to-slate-100 transition-transform duration-300`}
-			>
-				{linkCopied && (
-					<div className="absolute top-0 right-0 z-10 flex items-center mt-1 mr-1 px-2 bg-indigo-500 opacity-60 rounded">
-						<span className="text-white font-semibold">
-							Link copied to clipboard!
-						</span>
-					</div>
-				)}
-				<div className="flex flex-col justify-between gap-2 w-4/5">
-					<div className="flex gap-2 items-center">
-						<img
-							src={article.author?.profilePicture}
-							alt="profile"
-							className="h-6 w-6 rounded-full"
-						/>
-						<p className="font-medium truncate">
-							{article.author ? article.author.username : "Unknown"}
-						</p>
+    try {
+      await navigator.clipboard.writeText(
+        location.origin +
+          "/article/" +
+          article.title.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "") +
+          "-" +
+          article._id,
+      );
+      setLinkCopied(true);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
-						<p className="font-light">•</p>
+  function handleEdit(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
-						<p className="text-sm truncate">{publishDate}</p>
+    navigate(
+      `/edit/${article.title.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "")}-${article._id}`,
+    );
+  }
 
-						<p className="font-light">•</p>
+  async function handleDelete(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
-						<p className="text-sm truncate">
-							{Math.ceil(article.content.split(" ").length / 200) + " "}
-							{Math.ceil(article.content.split(" ").length / 200) > 1
-								? "minutes read"
-								: "minute read"}
-						</p>
-					</div>
-					<p className="text-2xl font-bold truncate">
-						{article.title}
-						<br />
-					</p>
-					<div className="flex mt-2 items-center gap-4">
-						<div className="flex items-center gap-1">
-							<img
-								src={likedStatus ? "/liked.png" : "/like.png"}
-								alt="like"
-								className="h-5 w-5 hover:scale-125"
-								onClick={handleLike}
-							/>
-							<p className="font-medium">{article.likes}</p>
-						</div>
-						<img
-							src={bookmarkedStatus ? "/bookmarked.png" : "/bookmark.png"}
-							alt="bookmark"
-							className="h-5 w-5 hover:scale-125"
-							onClick={handleBookmark}
-						/>
-						<img
-							src={"/link.png"}
-							alt="copy-link"
-							className="h-7 w-7 hover:scale-125"
-							onClick={handleCopyLink}
-						/>
-					</div>
-				</div>
-				<img
-					src={article.coverImage}
-					alt="cover-image"
-					className="h-16 w-16 absolute right-4 flex-shrink-0 rounded-lg bg-slate-200"
-				/>
-			</div>
-		</Link>
-	);
+    try {
+      dispatch(deleteArticleStart());
+      await axios.delete(`/api/articles/${article._id}`);
+      dispatch(deleteArticleSuccess());
+    } catch (error) {
+      error.message = error.response
+        ? error.response.data.message
+        : error.response.statusText;
+      dispatch(deleteUserFailure(error.message));
+    } finally {
+      window.location.reload();
+    }
+  }
+
+  return (
+    <Link
+      to={`/article/${article.title.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "")}-${article._id}`}
+    >
+      <div
+        className={`flex items-center text-slate-700 hover:scale-105 hover:text-slate-200 hover:bg-gradient-to-r hover:from-violet-600 hover:to-indigo-400 rounded-lg px-4 w-full h-32 relative bg-gradient-to-r from-zinc-200 to-slate-100 transition-transform duration-300`}
+      >
+        {linkCopied && (
+          <div className="absolute top-0 right-0 z-10 flex items-center mt-1 mr-1 px-2 bg-indigo-500 opacity-60 rounded">
+            <span className="text-white font-semibold">
+              Link copied to clipboard!
+            </span>
+          </div>
+        )}
+        <div className="flex flex-col justify-between gap-2 w-4/5">
+          <div className="flex gap-2 items-center">
+            <img
+              src={article.author?.profilePicture}
+              alt="profile"
+              className="h-6 w-6 rounded-full"
+            />
+            <p className="font-medium truncate">
+              {article.author ? article.author.username : "Unknown"}
+            </p>
+
+            <p className="font-light">•</p>
+
+            <p className="text-sm truncate">{publishDate}</p>
+
+            <p className="font-light">•</p>
+
+            <p className="text-sm truncate">
+              {Math.ceil(article.content.split(" ").length / 200) + " "}
+              {Math.ceil(article.content.split(" ").length / 200) > 1
+                ? "minutes read"
+                : "minute read"}
+            </p>
+          </div>
+          <p className="text-2xl font-bold truncate">
+            {article.title}
+            <br />
+          </p>
+          <div className="flex mt-2 items-center gap-4">
+            <div className="flex items-center gap-1">
+              <img
+                src={likedStatus ? "/liked.png" : "/like.png"}
+                alt="like"
+                className="h-5 w-5 hover:scale-125"
+                onClick={handleLike}
+              />
+              <p className="font-medium">{article.likes}</p>
+            </div>
+            <img
+              src={bookmarkedStatus ? "/bookmarked.png" : "/bookmark.png"}
+              alt="bookmark"
+              className="h-5 w-5 hover:scale-125"
+              onClick={handleBookmark}
+            />
+            <img
+              src={"/link.png"}
+              alt="copy-link"
+              className="h-7 w-7 hover:scale-125"
+              onClick={handleCopyLink}
+            />
+
+            {article?.author._id === currentUser._id && (
+              <>
+                <img
+                  src="/edit.png"
+                  alt="edit"
+                  className="h-7 w-7 hover:scale-125"
+                  onClick={handleEdit}
+                />
+                <img
+                  src="/delete.png"
+                  alt="delete"
+                  className="h-6 w-6 hover:scale-125"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowDelete(!showDelete);
+                  }}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.src = "/delete-hover.png")
+                  }
+                  onMouseOut={(e) => (e.currentTarget.src = "/delete.png")}
+                />
+              </>
+            )}
+          </div>
+        </div>
+        <img
+          src={article.coverImage}
+          alt="cover-image"
+          className="h-16 w-16 absolute right-4 flex-shrink-0 rounded-lg bg-slate-200"
+        />
+      </div>
+
+      {showDelete && (
+        <div className="fixed top-0 left-0 z-50 bg-slate-50 bg-opacity-50 w-full h-full flex justify-center items-center cursor-auto">
+          <div className="p-6 bg-gray-100 shadow-2xl fixed z-15 items-center md:w-1/3 select-none">
+            <p className="font-medium text-red-500">
+              Are you sure you want to delete{" "}
+              <span className="font-bold text-slate-600 overflow-ellipsis break-words">
+                {article.title}
+              </span>{" "}
+              ?
+            </p>
+            <div className="flex justify-end mt-4">
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded-md mr-4"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+              <button
+                className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowDelete(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </Link>
+  );
 }
 
 export default ArticleCard;

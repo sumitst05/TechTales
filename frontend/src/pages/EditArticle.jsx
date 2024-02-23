@@ -1,33 +1,58 @@
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-
-import {
-  createArticleFailure,
-  updateArticleStart,
-  updateArticleSuccess,
-} from "../redux/article/articleSlice";
-import PublishArticle from "../components/PublishArticle";
 
 import { editorStyle, modules, formats } from "../editorConfig";
 
-function WriteArticle() {
-  const dispatch = useDispatch();
+import {
+  updateArticleStart,
+  updateArticleSuccess,
+  updateArticleFailure,
+  resetCurrentArticle,
+} from "../redux/article/articleSlice";
+import PublishArticle from "../components/PublishArticle";
+import { useParams } from "react-router-dom";
+
+function EditArticle() {
+  const { slug } = useParams();
+  const articleId = slug.split("-").pop();
+
   const [showPublish, setShowPublish] = useState(false);
+
   const { currentArticle, loading, error } = useSelector(
     (state) => state.article,
   );
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(createArticleFailure(false));
-  }, [dispatch]);
+    const fetchArticle = async () => {
+      try {
+        dispatch(updateArticleStart());
+        const res = await axios.get(`/api/articles/${articleId}`);
+        dispatch(updateArticleSuccess(res.data));
+      } catch (error) {
+        error.message = error.response
+          ? error.response.data.message
+          : error.response.statusText;
+        updateArticleFailure(error.message);
+      }
+    };
+
+    fetchArticle();
+
+    return () => {
+      dispatch(resetCurrentArticle());
+    };
+  }, [articleId]);
 
   function handleTitleChange(e) {
     const title = e.target.value;
     dispatch(updateArticleStart());
     dispatch(updateArticleSuccess({ ...currentArticle, title }));
   }
+
   function handleEditorChange(content) {
     dispatch(updateArticleStart());
     dispatch(updateArticleSuccess({ ...currentArticle, content }));
@@ -49,23 +74,24 @@ function WriteArticle() {
         />
         <ReactQuill
           theme="snow"
-          style={editorStyle}
           value={currentArticle ? currentArticle.content : ""}
-          modules={modules}
           formats={formats}
+          modules={modules}
+          style={editorStyle}
           onChange={handleEditorChange}
           placeholder="Write something amazing..."
         />
+
         <button
           onClick={handlePublish}
           disabled={loading}
           className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white font-semibold px-5 py-2 rounded-lg hover:opacity-95 disabled:opacity-80"
         >
-          Publish
+          Update
         </button>
 
         {showPublish && (
-          <PublishArticle setShowPublish={setShowPublish} newArticle={true} />
+          <PublishArticle setShowPublish={setShowPublish} newArticle={false} />
         )}
 
         <div>
@@ -78,4 +104,4 @@ function WriteArticle() {
   );
 }
 
-export default WriteArticle;
+export default EditArticle;

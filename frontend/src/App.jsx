@@ -15,6 +15,7 @@ import Article from "./pages/Article";
 import LikedArticles from "./pages/LikedArticles";
 import Bookmarks from "./pages/Bookmarks";
 import WriteArticle from "./pages/WriteArticle";
+import EditArticle from "./pages/EditArticle";
 
 import Header from "./components/Header";
 import PrivateRoute from "./components/PrivateRoute";
@@ -71,6 +72,9 @@ export default function App() {
           </Route>
           <Route element={<PrivateRoute />}>
             <Route path="/write" element={<WriteArticle />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/edit/:slug" element={<EditArticle />} />
           </Route>
         </Routes>
       </BrowserRouter>
