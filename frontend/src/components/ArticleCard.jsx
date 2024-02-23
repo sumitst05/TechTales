@@ -18,8 +18,7 @@ function ArticleCard({ article, setArticleUpdate }) {
   const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
-  const [lastLikeClickTime, setLastLikeClickTime] = useState(0);
-  const [lastBookmarkClickTime, setLastBookmarkClickTime] = useState(0);
+  const [lastClickTime, setLastClickTime] = useState(0);
 
   const [showDelete, setShowDelete] = useState(false);
 
@@ -56,10 +55,10 @@ function ArticleCard({ article, setArticleUpdate }) {
     e.stopPropagation();
 
     const currentTime = new Date().getTime();
-    if (currentTime - lastLikeClickTime < 1000) {
+    if (currentTime - lastClickTime < 500) {
       return;
     }
-    setLastLikeClickTime(currentTime);
+    setLastClickTime(currentTime);
 
     const likeCount = article.likes + (likedStatus ? -1 : 1);
 
@@ -101,10 +100,10 @@ function ArticleCard({ article, setArticleUpdate }) {
     e.stopPropagation();
 
     const currentTime = new Date().getTime();
-    if (currentTime - lastBookmarkClickTime < 1000) {
+    if (currentTime - lastClickTime < 500) {
       return;
     }
-    setLastBookmarkClickTime(currentTime);
+    setLastClickTime(currentTime);
 
     try {
       dispatch(updateUserStart());
