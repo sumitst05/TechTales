@@ -17,7 +17,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://techtales-564.firebaseapp.com"],
+    origin: [
+      "http://localhost:5173",
+      "https://tech-tales-sandy.vercel.app",
+      "https://techtales-564.firebaseapp.com",
+    ],
     credentials: true,
   }),
 );
@@ -37,4 +41,4 @@ mongoose
   )
   .catch((error) =>
     console.log(`Error while connecting to database: ${error}`),
-  )
+  );
