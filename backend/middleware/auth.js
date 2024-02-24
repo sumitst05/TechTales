@@ -4,6 +4,8 @@ import User from "../models/user.js";
 export const auth = async (req, res, next) => {
   const token = req.cookies.access_token;
 
+	console.log(token)
+
   if (!token) {
     return res
       .status(401)
