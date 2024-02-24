@@ -2,12 +2,12 @@
   "name": "TechTales",
   "version": "1.0.0",
   "description": "",
-  "main": "backend/app.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node backend/app.js",
-    "dev": "nodemon backend/app.js",
-    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "npm install"
   },
   "keywords": [],
   "author": "",
