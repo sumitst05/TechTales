@@ -23,9 +23,6 @@ app.use(
 );
 app.use(cookieParser());
 
-app.get("/", (req, res) => {
-  res.json({ message: "Hello" });
-});
 app.use("/api", indexRouter);
 app.use("/api/articles", articleRouter);
 app.use("/api/user", userRouter);
