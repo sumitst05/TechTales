@@ -37,7 +37,7 @@ function SignIn() {
       dispatch(signInStart());
 
       const res = await axios.post(
-        "/api/auth/signin",
+        import.meta.env.VITE_API_URL + "/api/auth/signin",
         { ...formData, remember: checked },
         {
           withCredentials: true,
