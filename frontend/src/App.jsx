@@ -23,6 +23,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import axios from "axios";
 
 export default function App() {
+  const mode = import.meta.env.VITE_MODE;
+
   const dispatch = useDispatch();
   const authError = useSelector((state) => state.user.error);
 
@@ -37,10 +39,10 @@ export default function App() {
       dispatch(resetCurrentArticle());
       dispatch(signOut());
     } catch (error) {
+      console.log(error.message);
       error.message = error.response
         ? error.response.message
         : error.response.statusText;
-      console.log(error.message);
     }
   }
 

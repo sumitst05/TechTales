@@ -21,7 +21,7 @@ function EditArticle() {
   const { slug } = useParams();
   const articleId = slug.split("-").pop();
 
-  const [showPublish, setShowPublish] = useState(false);
+  const [showUpdate, setShowUpdate] = useState(false);
 
   const { currentArticle, loading, error } = useSelector(
     (state) => state.article,
@@ -64,8 +64,8 @@ function EditArticle() {
     dispatch(updateArticleSuccess({ ...currentArticle, content }));
   }
 
-  function handlePublish() {
-    setShowPublish(!showPublish);
+  function handleUpdate() {
+    setShowUpdate(!showUpdate);
   }
 
   return (
@@ -89,15 +89,15 @@ function EditArticle() {
         />
 
         <button
-          onClick={handlePublish}
+          onClick={handleUpdate}
           disabled={loading}
           className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white font-semibold px-5 py-2 rounded-lg hover:opacity-95 disabled:opacity-80"
         >
           Update
         </button>
 
-        {showPublish && (
-          <PublishArticle setShowPublish={setShowPublish} newArticle={false} />
+        {showUpdate && (
+          <PublishArticle setShowPublish={setShowUpdate} newArticle={false} />
         )}
 
         <div>

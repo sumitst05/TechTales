@@ -134,7 +134,7 @@ function PublishArticle({ setShowPublish, newArticle }) {
             mode === "DEV"
               ? `/api/articles/${currentArticle._id}`
               : `https://tech-tales-api.vercel.app/api/articles/${currentArticle._id}`,
-            currentArticle,
+            articleData,
             {
               withCredentials: true,
             },
