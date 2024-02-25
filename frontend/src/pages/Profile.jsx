@@ -16,6 +16,8 @@ import {
 } from "../redux/user/userSlice";
 
 function Profile() {
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const fileRef = useRef(null);
@@ -74,9 +76,13 @@ function Profile() {
     try {
       dispatch(updateUserStart());
 
-      const res = await axios.patch(`/api/user/${currentUser._id}`, formData, {
-        withCredentials: true,
-      });
+      const res = await axios.patch(
+        apiUrl + `/api/user/${currentUser._id}`,
+        formData,
+        {
+          withCredentials: true,
+        },
+      );
       const data = res.data;
 
       dispatch(updateUserSuccess(data));
