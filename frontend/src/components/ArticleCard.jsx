@@ -14,6 +14,8 @@ import {
 } from "../redux/article/articleSlice";
 
 function ArticleCard({ article, setArticleUpdate }) {
+  const mode = import.meta.env.VITE_MODE;
+
   const [likedStatus, setLikedStatus] = useState(false);
   const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -77,15 +79,22 @@ function ArticleCard({ article, setArticleUpdate }) {
         updatedLikedArticles.add(article._id);
       }
 
-      const res = await axios.patch(`/api/user/${currentUser._id}`, {
-        ...currentUser,
-        likedArticles: Array.from(updatedLikedArticles),
-      });
+      const res = await axios.patch(
+        mode === "DEV"
+          ? `/api/user/${currentUser._id}`
+          : `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
+        {
+          ...currentUser,
+          likedArticles: Array.from(updatedLikedArticles),
+        },
+      );
 
       const data = res.data;
 
       await axios.patch(
-        `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
+        mode === "DEV"
+          ? `/api/articles/${article._id}`
+          : `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
         { likes: likeCount },
       );
 
@@ -123,10 +132,15 @@ function ArticleCard({ article, setArticleUpdate }) {
         updatedBookmarkedArticles.add(article._id);
       }
 
-      const res = await axios.patch(`/api/user/${currentUser._id}`, {
-        ...currentUser,
-        bookmarkedArticles: Array.from(updatedBookmarkedArticles),
-      });
+      const res = await axios.patch(
+        mode === "DEV"
+          ? `/api/user/${currentUser._id}`
+          : `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
+        {
+          ...currentUser,
+          bookmarkedArticles: Array.from(updatedBookmarkedArticles),
+        },
+      );
       const data = res.data;
 
       dispatch(updateUserSuccess(data));
@@ -171,7 +185,11 @@ function ArticleCard({ article, setArticleUpdate }) {
 
     try {
       dispatch(deleteArticleStart());
-      await axios.delete(`/api/articles/${article._id}`);
+      await axios.delete(
+        mode === "DEV"
+          ? `/api/articles/${article._id}`
+          : `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
+      );
       dispatch(deleteArticleSuccess());
     } catch (error) {
       error.message = error.response

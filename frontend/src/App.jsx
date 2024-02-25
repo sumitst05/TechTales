@@ -28,7 +28,11 @@ export default function App() {
 
   async function handleSignOut() {
     try {
-      await axios.post("/api/auth/signout");
+      await axios.post(
+        mode === "DEV"
+          ? "/api/auth/signout"
+          : "https://tech-tales-api.vercel.app/api/auth/signout",
+      );
       dispatch(resetCurrentArticle());
       dispatch(signOut());
     } catch (error) {

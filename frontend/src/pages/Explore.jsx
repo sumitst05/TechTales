@@ -32,7 +32,7 @@ function Explore() {
           setLoading(true);
         }
         const res = await axios.get(
-          `https://tech-tales-api.vercel.app/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`,
+          `/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`,
         );
         setArticles(res.data.articles);
         setTotalPages(Math.ceil(res.data.totalArticles / pageSize));

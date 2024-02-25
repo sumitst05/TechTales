@@ -18,9 +18,15 @@ function Home() {
 
     const fetchSuggestions = async () => {
       try {
-        const people = await axios.get(`/api/user/?query=${search}`);
+        const people = await axios.get(
+          mode === "DEV"
+            ? `/api/user/?query=${search}`
+            : `https://tech-tales-api.vercel.app/api/user/?query=${search}`,
+        );
         const articles = await axios.get(
-          `/api/articles?query=${search}&pageSize=3`,
+          mode === "DEV"
+            ? `/api/articles?query=${search}&pageSize=3`
+            : `https://tech-tales-api.vercel.app/api/articles?query=${search}&pageSize=3`,
         );
 
         setSuggestions({

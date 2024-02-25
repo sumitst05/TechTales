@@ -77,7 +77,9 @@ function Profile() {
       dispatch(updateUserStart());
 
       const res = await axios.patch(
-        apiUrl + `/api/user/${currentUser._id}`,
+        mode === "DEV"
+          ? `${apiUrl}/api/user/${currentUser._id}`
+          : `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
         formData,
         {
           withCredentials: true,

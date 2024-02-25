@@ -8,6 +8,8 @@ import { signInSuccess } from "../redux/user/userSlice.js";
 import { useState } from "react";
 
 function OAuth() {
+  const mode = import.meta.env.VITE_MODE;
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -25,7 +27,12 @@ function OAuth() {
         photo: result.user.photoURL,
       };
 
-      const response = await axios.post("/api/auth/google", requestBody);
+      const response = await axios.post(
+        mode === "DEV"
+          ? "/api/auth/google"
+          : "https://tech-tales-api.vercel.app/api/auth/google",
+        requestBody,
+      );
       const data = response.data;
 
       dispatch(signInSuccess(data));

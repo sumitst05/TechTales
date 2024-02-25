@@ -18,6 +18,8 @@ import {
 } from "../redux/article/articleSlice";
 
 function PublishArticle({ setShowPublish, newArticle }) {
+  const mode = import.meta.env.VITE_MODE;
+
   const { currentArticle, loading } = useSelector((state) => state.article);
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -119,11 +121,19 @@ function PublishArticle({ setShowPublish, newArticle }) {
       };
 
       const res = newArticle
-        ? await axios.post("/api/articles", articleData, {
-            withCredentials: true,
-          })
+        ? await axios.post(
+            mode === "DEV"
+              ? "/api/articles"
+              : "https://tech-tales-api.vercel.app/api/articles",
+            articleData,
+            {
+              withCredentials: true,
+            },
+          )
         : await axios.patch(
-            `/api/articles/${currentArticle._id}`,
+            mode === "DEV"
+              ? `/api/articles/${currentArticle._id}`
+              : `https://tech-tales-api.vercel.app/api/articles/${currentArticle._id}`,
             currentArticle,
             {
               withCredentials: true,

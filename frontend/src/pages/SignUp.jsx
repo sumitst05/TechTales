@@ -21,9 +21,15 @@ function SignUp() {
     try {
       setLoading(true);
 
-      await axios.post("/api/auth/signup", formData, {
-        withCredentials: true,
-      });
+      await axios.post(
+        mode === "DEV"
+          ? "/api/auth/signup"
+          : "https://tech-tales-api.vercel.app/api/auth/signup",
+        formData,
+        {
+          withCredentials: true,
+        },
+      );
 
       setError(false);
       setLoading(false);

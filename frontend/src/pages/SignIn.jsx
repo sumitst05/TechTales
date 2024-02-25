@@ -37,7 +37,9 @@ function SignIn() {
       dispatch(signInStart());
 
       const res = await axios.post(
-        import.meta.env.VITE_API_URL + "/api/auth/signin",
+        mode === "DEV"
+          ? "/api/auth/signin"
+          : "https://tech-tales-api.vercel.app/api/auth/signin",
         { ...formData, remember: checked },
         {
           withCredentials: true,

@@ -25,7 +25,9 @@ function YourArticles() {
           setLoading(true);
         }
         const res = await axios.get(
-          `/api/articles/myarticles/?userId=${currentUser._id}&page=${page}&pageSize=${pageSize}`,
+          mode === "DEV"
+            ? `/api/articles/myarticles/?userId=${currentUser._id}&page=${page}&pageSize=${pageSize}`
+            : `https://tech-tales-api.vercel.app/api/articles/myarticles/?userId=${currentUser._id}&page=${page}&pageSize=${pageSize}`,
         );
         setArticles(res.data.articles);
         setTotalPages(Math.ceil(res.data.totalArticles / pageSize));

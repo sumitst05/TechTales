@@ -30,7 +30,11 @@ function EditArticle() {
     const fetchArticle = async () => {
       try {
         dispatch(updateArticleStart());
-        const res = await axios.get(`/api/articles/${articleId}`);
+        const res = await axios.get(
+          mode === "DEV"
+            ? `/api/articles/${articleId}`
+            : `https://tech-tales-api.vercel.app/api/articles/${articleId}`,
+        );
         dispatch(updateArticleSuccess(res.data));
       } catch (error) {
         error.message = error.response

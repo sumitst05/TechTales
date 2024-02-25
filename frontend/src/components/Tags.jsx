@@ -46,7 +46,11 @@ function Tags({ handleTagSelection }) {
 
     const fetchSuggestions = async () => {
       try {
-        const tags = await axios.get(`/api/articles/tags?query=${value}`);
+        const tags = await axios.get(
+          mode === "DEV"
+            ? `/api/articles/tags?query=${value}`
+            : `https://tech-tales-api.vercel.app/api/articles/tags?query=${value}`,
+        );
         setSuggestions({ tags: tags.data });
       } catch (error) {
         error.message = error.response

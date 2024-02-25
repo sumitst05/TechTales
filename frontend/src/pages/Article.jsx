@@ -53,7 +53,11 @@ function Article() {
       const articleId = slug.split("-").pop();
 
       try {
-        const res = await axios.get(`/api/articles/${articleId}`);
+        const res = await axios.get(
+          mode === "DEV"
+            ? `/api/articles/${articleId}`
+            : `https://tech-tales-api.vercel.app/api/articles/${articleId}`,
+        );
 
         setReadTime(Math.ceil(res.data.content.split(" ").length / 200));
         setArticle(res.data);
@@ -98,13 +102,23 @@ function Article() {
         ? currentUser.likedArticles.filter((id) => id !== article._id)
         : [...currentUser.likedArticles, article._id];
 
-      const res = await axios.patch(`/api/user/${currentUser._id}`, {
-        ...currentUser,
-        likedArticles: updatedLikedArticles,
-      });
+      const res = await axios.patch(
+        mode === "DEV"
+          ? `/api/user/${currentUser._id}`
+          : `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
+        {
+          ...currentUser,
+          likedArticles: updatedLikedArticles,
+        },
+      );
       const data = res.data;
 
-      await axios.patch(`/api/articles/${article._id}`, { likes: likeCount });
+      await axios.patch(
+        mode === "DEV"
+          ? `/api/articles/${article._id}`
+          : `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
+        { likes: likeCount },
+      );
 
       dispatch(updateUserSuccess(data));
     } catch (error) {
@@ -131,10 +145,15 @@ function Article() {
         ? currentUser.bookmarkedArticles.filter((id) => id !== article._id)
         : [...currentUser.bookmarkedArticles, article._id];
 
-      const res = await axios.patch(`/api/user/${currentUser._id}`, {
-        ...currentUser,
-        bookmarkedArticles: updatedBookmarkedArticles,
-      });
+      const res = await axios.patch(
+        mode === "DEV"
+          ? `/api/user/${currentUser._id}`
+          : `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
+        {
+          ...currentUser,
+          bookmarkedArticles: updatedBookmarkedArticles,
+        },
+      );
       const data = res.data;
 
       dispatch(updateUserSuccess(data));
