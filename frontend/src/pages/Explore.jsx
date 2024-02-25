@@ -36,7 +36,7 @@ function Explore() {
         const res = await axios.get(
           mode === "DEV"
             ? `/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`
-            : `https://tech-tales-api.verce.app/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`,
+            : `https://tech-tales-api.vercel.app/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`,
         );
         setArticles(res.data.articles);
         setTotalPages(Math.ceil(res.data.totalArticles / pageSize));
