@@ -84,7 +84,10 @@ function ArticleCard({ article, setArticleUpdate }) {
 
       const data = res.data;
 
-      await axios.patch(`/api/articles/${article._id}`, { likes: likeCount });
+      await axios.patch(
+        `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
+        { likes: likeCount },
+      );
 
       dispatch(updateUserSuccess(data));
     } catch (error) {
