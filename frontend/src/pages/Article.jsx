@@ -157,6 +157,7 @@ function Article() {
           ...currentUser,
           bookmarkedArticles: updatedBookmarkedArticles,
         },
+        { withCredentials: true },
       );
       const data = res.data;
 
