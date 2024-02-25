@@ -30,6 +30,7 @@ function YourArticles() {
           mode === "DEV"
             ? `/api/articles/myarticles/?userId=${currentUser._id}&page=${page}&pageSize=${pageSize}`
             : `https://tech-tales-api.vercel.app/api/articles/myarticles/?userId=${currentUser._id}&page=${page}&pageSize=${pageSize}`,
+          { withCredentials: true },
         );
         setArticles(res.data.articles);
         setTotalPages(Math.ceil(res.data.totalArticles / pageSize));
