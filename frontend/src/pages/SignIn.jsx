@@ -11,6 +11,8 @@ import {
 import OAuth from "../components/OAuth";
 
 function SignIn() {
+  const mode = import.meta.env.VITE_MODE;
+
   const [formData, setFormData] = useState({});
   const [checked, setChecked] = useState(false);
   const { loading, error } = useSelector((state) => state.user);

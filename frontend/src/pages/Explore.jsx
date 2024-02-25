@@ -8,6 +8,8 @@ import Pagination from "../components/Pagination";
 import Loader from "../components/Loader";
 
 function Explore() {
+  const mode = import.meta.env.VITE_MODE;
+
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(
@@ -32,7 +34,9 @@ function Explore() {
           setLoading(true);
         }
         const res = await axios.get(
-          `/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`,
+          mode === "DEV"
+            ? `/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`
+            : `https://tech-tales-api.verce.app/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`,
         );
         setArticles(res.data.articles);
         setTotalPages(Math.ceil(res.data.totalArticles / pageSize));

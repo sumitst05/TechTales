@@ -16,6 +16,8 @@ import PublishArticle from "../components/PublishArticle";
 import { useParams } from "react-router-dom";
 
 function EditArticle() {
+  const mode = import.meta.env.VITE_MODE;
+
   const { slug } = useParams();
   const articleId = slug.split("-").pop();
 

@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 function Home() {
+  const mode = import.meta.env.VITE_MODE;
+
   const [search, setSearch] = useState("");
   const [suggestions, setSuggestions] = useState({ people: [], articles: [] });
   const [toggleSuggestions, setToggleSuggestions] = useState(false);

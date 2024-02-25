@@ -7,6 +7,8 @@ import Pagination from "../components/Pagination";
 import Loader from "../components/Loader";
 
 function YourArticles() {
+  const mode = import.meta.env.VITE_MODE;
+
   const [articles, setArticles] = useState([]);
   const [page, setPage] = useState(
     parseInt(localStorage.getItem("yourArticlesPage")) || 1,

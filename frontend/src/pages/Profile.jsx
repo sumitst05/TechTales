@@ -16,7 +16,7 @@ import {
 } from "../redux/user/userSlice";
 
 function Profile() {
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const mode = import.meta.env.VITE_MODE;
 
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -78,7 +78,7 @@ function Profile() {
 
       const res = await axios.patch(
         mode === "DEV"
-          ? `${apiUrl}/api/user/${currentUser._id}`
+          ? `/api/user/${currentUser._id}`
           : `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
         formData,
         {

@@ -11,6 +11,8 @@ import {
 } from "../redux/user/userSlice";
 
 function Article() {
+  const mode = import.meta.env.VITE_MODE;
+
   const { slug } = useParams();
   const [article, setArticle] = useState({});
   const [readTime, setReadTime] = useState(0);

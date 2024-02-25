@@ -5,6 +5,8 @@ import axios from "axios";
 import OAuth from "../components/OAuth";
 
 function SignUp() {
+  const mode = import.meta.env.VITE_MODE;
+
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);

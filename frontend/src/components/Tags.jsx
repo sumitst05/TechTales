@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 function Tags({ handleTagSelection }) {
+  const mode = import.meta.env.VITE_MODE;
+
   const [value, setValue] = useState("");
   const [suggestions, setSuggestions] = useState({ tags: [] });
   const [toggleSuggestions, setToggleSuggestions] = useState(false);
