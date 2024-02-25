@@ -19,7 +19,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://tech-tales-sandy.vercel.app",
+      "https://tech-tales-io.vercel.app",
       "https://techtales-564.firebaseapp.com",
     ],
     credentials: true,
