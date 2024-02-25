@@ -87,6 +87,7 @@ function ArticleCard({ article, setArticleUpdate }) {
           ...currentUser,
           likedArticles: Array.from(updatedLikedArticles),
         },
+        { withCredentials: true },
       );
 
       const data = res.data;
@@ -96,6 +97,7 @@ function ArticleCard({ article, setArticleUpdate }) {
           ? `/api/articles/${article._id}`
           : `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
         { likes: likeCount },
+        { withCredentials: true },
       );
 
       dispatch(updateUserSuccess(data));
@@ -140,6 +142,7 @@ function ArticleCard({ article, setArticleUpdate }) {
           ...currentUser,
           bookmarkedArticles: Array.from(updatedBookmarkedArticles),
         },
+        { withCredentials: true },
       );
       const data = res.data;
 
@@ -189,6 +192,7 @@ function ArticleCard({ article, setArticleUpdate }) {
         mode === "DEV"
           ? `/api/articles/${article._id}`
           : `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
+        { withCredentials: true },
       );
       dispatch(deleteArticleSuccess());
     } catch (error) {

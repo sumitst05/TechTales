@@ -26,6 +26,7 @@ function Dropdown({ dropdownRef }) {
         mode === "DEV"
           ? `/api/auth/signout`
           : `https://tech-tales-api.vercel.app/api/auth/signout`,
+        { withCredentials: true },
       );
 
       dispatch(resetCurrentArticle());

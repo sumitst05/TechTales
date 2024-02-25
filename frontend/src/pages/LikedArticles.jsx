@@ -30,6 +30,7 @@ function LikedArticles() {
           mode === "DEV"
             ? `/api/user/liked/${currentUser._id}?page=${page}&pageSize=${pageSize}`
             : `https://tech-tales-api.vercel.app/api/user/liked/${currentUser._id}?page=${page}&pageSize=${pageSize}`,
+          { withCredentials: true },
         );
 
         const likedArticles = res.data.likedArticles;

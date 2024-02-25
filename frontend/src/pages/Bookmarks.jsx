@@ -30,6 +30,7 @@ function Bookmarks() {
           mode === "DEV"
             ? `/api/user/bookmarks/${currentUser._id}?page=${page}&pageSize=${pageSize}`
             : `https://tech-tales-api.vercel.app/api/user/bookmarks/${currentUser._id}?page=${page}&pageSize=${pageSize}`,
+          { withCredentials: true },
         );
 
         const bookmarks = res.data.bookmarks;

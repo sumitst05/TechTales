@@ -52,6 +52,7 @@ function Tags({ handleTagSelection }) {
           mode === "DEV"
             ? `/api/articles/tags?query=${value}`
             : `https://tech-tales-api.vercel.app/api/articles/tags?query=${value}`,
+          { withCredentials: true },
         );
         setSuggestions({ tags: tags.data });
       } catch (error) {

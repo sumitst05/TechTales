@@ -112,6 +112,7 @@ function Article() {
           ...currentUser,
           likedArticles: updatedLikedArticles,
         },
+        { withCredentials: true },
       );
       const data = res.data;
 
@@ -120,6 +121,7 @@ function Article() {
           ? `/api/articles/${article._id}`
           : `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
         { likes: likeCount },
+        { withCredentials: true },
       );
 
       dispatch(updateUserSuccess(data));

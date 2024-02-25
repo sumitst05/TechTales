@@ -32,6 +32,7 @@ function OAuth() {
           ? "/api/auth/google"
           : "https://tech-tales-api.vercel.app/api/auth/google",
         requestBody,
+        { withCredentials: true },
       );
       const data = response.data;
 
