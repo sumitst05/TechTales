@@ -69,9 +69,8 @@ function ArticleCard({ article, setArticleUpdate }) {
 			setArticleUpdate(true);
 
 			setLikedStatus(!likedStatus);
-
-			const isAlreadyLiked = likedStatus;
 			const updatedLikedArticles = new Set(currentUser.likedArticles);
+			const isAlreadyLiked = likedStatus;
 
 			if (isAlreadyLiked) {
 				updatedLikedArticles.delete(article._id);
@@ -79,33 +78,35 @@ function ArticleCard({ article, setArticleUpdate }) {
 				updatedLikedArticles.add(article._id);
 			}
 
-			await axios.patch(
-				mode === "DEV"
-					? `/api/articles/${article._id}`
-					: `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
-				{ likes: likeCount },
-				{ withCredentials: true },
-			);
+			const [articleRes, userRes] = await Promise.all([
+				axios.patch(
+					mode === "DEV"
+						? `/api/articles/${article._id}`
+						: `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
+					{ likes: likeCount },
+					{ withCredentials: true },
+				),
+				axios.patch(
+					mode === "DEV"
+						? `/api/user/${currentUser._id}`
+						: `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
+					{
+						...currentUser,
+						likedArticles: Array.from(updatedLikedArticles),
+					},
+					{ withCredentials: true },
+				),
+			]);
 
-			const res = await axios.patch(
-				mode === "DEV"
-					? `/api/user/${currentUser._id}`
-					: `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
-				{
-					...currentUser,
-					likedArticles: Array.from(updatedLikedArticles),
-				},
-				{ withCredentials: true },
-			);
+			const userData = userRes.data;
 
-			const data = res.data;
-
-			dispatch(updateUserSuccess(data));
+			dispatch(updateUserSuccess(userData));
 		} catch (error) {
 			error.message = error.response
 				? error.response.data.message
 				: error.response.statusText;
 			dispatch(updateUserFailure(error.message));
+			setLikedStatus(likedStatus);
 		}
 	}
 
