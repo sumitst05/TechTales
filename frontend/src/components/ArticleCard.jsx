@@ -66,9 +66,10 @@ function ArticleCard({ article, setArticleUpdate }) {
 
 		try {
 			dispatch(updateUserStart());
-			setArticleUpdate(true);
 
+			setArticleUpdate(true);
 			setLikedStatus(!likedStatus);
+
 			const updatedLikedArticles = new Set(currentUser.likedArticles);
 			const isAlreadyLiked = likedStatus;
 
@@ -78,29 +79,21 @@ function ArticleCard({ article, setArticleUpdate }) {
 				updatedLikedArticles.add(article._id);
 			}
 
-			const [articleRes, userRes] = await Promise.all([
-				axios.patch(
-					mode === "DEV"
-						? `/api/articles/${article._id}`
-						: `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
-					{ likes: likeCount },
-					{ withCredentials: true },
-				),
-				axios.patch(
-					mode === "DEV"
-						? `/api/user/${currentUser._id}`
-						: `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
-					{
-						...currentUser,
-						likedArticles: Array.from(updatedLikedArticles),
-					},
-					{ withCredentials: true },
-				),
-			]);
+			const res = await axios.patch(
+				mode === "DEV"
+					? `/api/articles/like/${article._id}`
+					: `https://tech-tales-api.vercel.app/api/articles/like/${article._id}`,
+				{
+					likes: likeCount,
+					userId: currentUser._id,
+					likedArticles: Array.from(updatedLikedArticles),
+				},
+				{ withCredentials: true },
+			);
 
-			const userData = userRes.data;
+			const user = res.data.user;
 
-			dispatch(updateUserSuccess(userData));
+			dispatch(updateUserSuccess(user));
 		} catch (error) {
 			error.message = error.response
 				? error.response.data.message
