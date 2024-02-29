@@ -171,16 +171,20 @@ export const getTags = async (req, res) => {
 export const likeArticle = async (req, res) => {
 	const articleId = req.params.id;
 	const { likes, userId, likedArticles } = req.body;
+	const liked = req.query.liked === "true";
 
 	const articleFilter = { _id: articleId };
 	const userFilter = { _id: userId };
 
+	const updatedLikes = liked ? likes - 1 : likes + 1;
+
 	try {
 		const article = await Article.findOneAndUpdate(
 			articleFilter,
-			{ likes },
+			{ likes: updatedLikes },
 			{ new: true },
 		);
+
 		const user = await User.findOneAndUpdate(
 			userFilter,
 			{ likedArticles },
@@ -194,7 +198,7 @@ export const likeArticle = async (req, res) => {
 			res.status(404).json({ message: "User not found!" });
 		}
 
-		res.status(200).json({ article, user });
+		res.status(200).json({ user });
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error!" });
 	}

@@ -62,18 +62,15 @@ function ArticleCard({ article, setArticleUpdate }) {
 		}
 		setLastClickTime(currentTime);
 
-		const likeCount = article.likes + (likedStatus ? -1 : 1);
-
 		try {
 			dispatch(updateUserStart());
 
-			setArticleUpdate(true);
 			setLikedStatus(!likedStatus);
+			setArticleUpdate(true);
 
 			const updatedLikedArticles = new Set(currentUser.likedArticles);
-			const isAlreadyLiked = likedStatus;
 
-			if (isAlreadyLiked) {
+			if (likedStatus) {
 				updatedLikedArticles.delete(article._id);
 			} else {
 				updatedLikedArticles.add(article._id);
@@ -81,10 +78,10 @@ function ArticleCard({ article, setArticleUpdate }) {
 
 			const res = await axios.patch(
 				mode === "DEV"
-					? `/api/articles/like/${article._id}`
-					: `https://tech-tales-api.vercel.app/api/articles/like/${article._id}`,
+					? `/api/articles/like/${article._id}/?liked=${likedStatus}`
+					: `https://tech-tales-api.vercel.app/api/articles/like/${article._id}/?liked=${likedStatus}`,
 				{
-					likes: likeCount,
+					likes: article.likes,
 					userId: currentUser._id,
 					likedArticles: Array.from(updatedLikedArticles),
 				},
