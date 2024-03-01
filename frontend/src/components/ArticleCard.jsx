@@ -12,17 +12,18 @@ import {
 	deleteArticleStart,
 	deleteArticleSuccess,
 } from "../redux/article/articleSlice";
+import { io } from "socket.io-client";
 
 function ArticleCard({ article, setArticleUpdate }) {
 	const mode = import.meta.env.VITE_MODE;
 
 	const [likedStatus, setLikedStatus] = useState(false);
+	const [likes, setLikes] = useState(article.likes);
 	const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
 	const [linkCopied, setLinkCopied] = useState(false);
-
 	const [lastClickTime, setLastClickTime] = useState(0);
-
 	const [showDelete, setShowDelete] = useState(false);
+	const [socket, setSocket] = useState(null);
 
 	const { currentUser } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
@@ -33,6 +34,27 @@ function ArticleCard({ article, setArticleUpdate }) {
 		day: "numeric",
 		year: "numeric",
 	}).format(new Date(article.createdAt));
+
+	useEffect(() => {
+		const newSocket = io(
+			mode === "DEV"
+				? "http://localhost:3000"
+				: "https://tech-tales-api.vercel.app",
+		);
+
+		newSocket.on("articleLiked", (data) => {
+			if (data.articleId === article._id) {
+				setLikes(data.updatedLikes);
+			}
+		});
+
+		setSocket(newSocket);
+
+		return () => {
+			newSocket.off("articleLiked");
+			newSocket.disconnect();
+		};
+	}, [article._id]);
 
 	useEffect(() => {
 		const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
@@ -60,13 +82,17 @@ function ArticleCard({ article, setArticleUpdate }) {
 		if (currentTime - lastClickTime < 500) {
 			return;
 		}
+
 		setLastClickTime(currentTime);
+		setLikedStatus((prevLikedStatus) => !prevLikedStatus);
 
 		try {
 			dispatch(updateUserStart());
-
-			setLikedStatus(!likedStatus);
 			setArticleUpdate(true);
+
+			socket.on("userUpdated", (updatedUser) => {
+				dispatch(updateUserSuccess(updatedUser));
+			});
 
 			const updatedLikedArticles = new Set(currentUser.likedArticles);
 
@@ -76,27 +102,23 @@ function ArticleCard({ article, setArticleUpdate }) {
 				updatedLikedArticles.add(article._id);
 			}
 
-			const res = await axios.patch(
-				mode === "DEV"
-					? `/api/articles/like/${article._id}/?liked=${likedStatus}`
-					: `https://tech-tales-api.vercel.app/api/articles/like/${article._id}/?liked=${likedStatus}`,
-				{
-					likes: article.likes,
-					userId: currentUser._id,
+			socket.emit("likeArticle", {
+				articleId: article._id,
+				userId: currentUser._id,
+				likedArticles: Array.from(updatedLikedArticles),
+				liked: likedStatus,
+				likes: article.likes,
+			});
+
+			dispatch(
+				updateUserSuccess({
+					...currentUser,
 					likedArticles: Array.from(updatedLikedArticles),
-				},
-				{ withCredentials: true },
+				}),
 			);
-
-			const user = res.data.user;
-
-			dispatch(updateUserSuccess(user));
 		} catch (error) {
-			error.message = error.response
-				? error.response.data.message
-				: error.response.statusText;
 			dispatch(updateUserFailure(error.message));
-			setLikedStatus(likedStatus);
+			console.log(error.message);
 		}
 	}
 
@@ -213,12 +235,12 @@ function ArticleCard({ article, setArticleUpdate }) {
 				<div className="flex flex-col justify-between gap-2 w-4/5">
 					<div className="flex gap-2 items-center">
 						<img
-							src={article.author?.profilePicture}
+							src={article?.author?.profilePicture}
 							alt="profile"
 							className="h-6 w-6 rounded-full"
 						/>
 						<p className="font-medium truncate">
-							{article.author ? article.author.username : "Unknown"}
+							{article?.author ? article?.author.username : "Unknown"}
 						</p>
 
 						<p className="font-light">•</p>
@@ -246,7 +268,7 @@ function ArticleCard({ article, setArticleUpdate }) {
 								className="h-5 w-5 hover:scale-125"
 								onClick={handleLike}
 							/>
-							<p className="font-medium">{article.likes}</p>
+							<p className="font-medium">{likes}</p>
 						</div>
 						<img
 							src={bookmarkedStatus ? "/bookmarked.png" : "/bookmark.png"}
