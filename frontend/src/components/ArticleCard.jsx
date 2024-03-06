@@ -28,6 +28,8 @@ function ArticleCard({ article, setArticleUpdate }) {
 	const [linkCopied, setLinkCopied] = useState(false);
 	const [lastClickTime, setLastClickTime] = useState(0);
 	const [showDelete, setShowDelete] = useState(false);
+	const [loading, setLoading] = useState(false);
+
 	const { currentUser } = useSelector((state) => state.user);
 
 	const dispatch = useDispatch();
@@ -74,6 +76,8 @@ function ArticleCard({ article, setArticleUpdate }) {
 		e.preventDefault();
 		e.stopPropagation();
 
+		setLoading(true);
+
 		const currentTime = new Date().getTime();
 		if (currentTime - lastClickTime < 500) {
 			return;
@@ -112,9 +116,12 @@ function ArticleCard({ article, setArticleUpdate }) {
 					likedArticles: Array.from(updatedLikedArticles),
 				}),
 			);
+
+			setLoading(false);
 		} catch (error) {
 			dispatch(updateUserFailure(error.message));
 			console.log(error.message);
+			setLoading(false);
 		}
 	}
 
