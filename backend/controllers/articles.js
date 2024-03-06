@@ -1,5 +1,15 @@
+import Pusher from "pusher";
+
 import Article from "../models/article.js";
 import User from "../models/user.js";
+
+const pusher = new Pusher({
+	appId: process.env.PUSHER_APP_ID,
+	key: process.env.PUSHER_APP_KEY,
+	secret: process.env.PUSHER_APP_SECRET,
+	cluster: process.env.PUSHER_APP_CLUSTER,
+	useTLS: true,
+});
 
 export const getArticles = async (req, res) => {
 	try {
@@ -170,7 +180,8 @@ export const getTags = async (req, res) => {
 
 export const likeArticle = async (req, res) => {
 	const articleId = req.params.id;
-	const { likes, userId, likedArticles } = req.body;
+	const { userId, likedArticles, liked, likes } = req.body;
+	const updatedLikes = liked ? likes - 1 : likes + 1;
 
 	const articleFilter = { _id: articleId };
 	const userFilter = { _id: userId };
@@ -178,7 +189,7 @@ export const likeArticle = async (req, res) => {
 	try {
 		const article = await Article.findOneAndUpdate(
 			articleFilter,
-			{ likes },
+			{ likes: updatedLikes },
 			{ new: true },
 		);
 
@@ -195,8 +206,13 @@ export const likeArticle = async (req, res) => {
 			res.status(404).json({ message: "User not found!" });
 		}
 
-		res.status(200).json({ article, user });
+		pusher.trigger("likes", "articleLiked", {
+			articleId,
+			updatedLikes,
+		});
+
+		res.status(200).json({ message: "Article liked successfully" });
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error!" });
+		res.status(500).json({ message: error.message });
 	}
 };

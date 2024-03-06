@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import Pusher from "pusher-js/with-encryption";
+
 import {
 	deleteUserFailure,
 	updateUserFailure,
@@ -12,20 +14,22 @@ import {
 	deleteArticleStart,
 	deleteArticleSuccess,
 } from "../redux/article/articleSlice";
-import { io } from "socket.io-client";
+
+const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
+	cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+	encrypted: true,
+});
 
 function ArticleCard({ article, setArticleUpdate }) {
 	const mode = import.meta.env.VITE_MODE;
-
 	const [likedStatus, setLikedStatus] = useState(false);
 	const [likes, setLikes] = useState(article.likes);
 	const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
 	const [linkCopied, setLinkCopied] = useState(false);
 	const [lastClickTime, setLastClickTime] = useState(0);
 	const [showDelete, setShowDelete] = useState(false);
-	const [socket, setSocket] = useState(null);
-
 	const { currentUser } = useSelector((state) => state.user);
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -36,30 +40,23 @@ function ArticleCard({ article, setArticleUpdate }) {
 	}).format(new Date(article.createdAt));
 
 	useEffect(() => {
-		const newSocket = io(
-			mode === "DEV"
-				? "http://localhost:3000"
-				: "https://tech-tales-api.vercel.app",
-		);
+		const channel = pusher.subscribe("likes");
 
-		newSocket.on("articleLiked", (data) => {
+		channel.bind("articleLiked", function(data) {
 			if (data.articleId === article._id) {
 				setLikes(data.updatedLikes);
 			}
 		});
 
-		setSocket(newSocket);
-
 		return () => {
-			newSocket.off("articleLiked");
-			newSocket.disconnect();
+			channel.unbind("articleLiked");
+			pusher.unsubscribe("likes");
 		};
 	}, [article._id]);
 
 	useEffect(() => {
 		const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
 		setLikedStatus(likedArticleIdsSet.has(article._id));
-
 		const bookmarkedArticleIdsSet = new Set(
 			currentUser.bookmarkedArticles || [],
 		);
@@ -70,7 +67,6 @@ function ArticleCard({ article, setArticleUpdate }) {
 		const timer = setTimeout(() => {
 			setLinkCopied(false);
 		}, 3000);
-
 		return () => clearTimeout(timer);
 	}, [linkCopied]);
 
@@ -82,17 +78,13 @@ function ArticleCard({ article, setArticleUpdate }) {
 		if (currentTime - lastClickTime < 500) {
 			return;
 		}
-
 		setLastClickTime(currentTime);
+
 		setLikedStatus((prevLikedStatus) => !prevLikedStatus);
 
 		try {
 			dispatch(updateUserStart());
 			setArticleUpdate(true);
-
-			socket.on("userUpdated", (updatedUser) => {
-				dispatch(updateUserSuccess(updatedUser));
-			});
 
 			const updatedLikedArticles = new Set(currentUser.likedArticles);
 
@@ -102,13 +94,17 @@ function ArticleCard({ article, setArticleUpdate }) {
 				updatedLikedArticles.add(article._id);
 			}
 
-			socket.emit("likeArticle", {
-				articleId: article._id,
-				userId: currentUser._id,
-				likedArticles: Array.from(updatedLikedArticles),
-				liked: likedStatus,
-				likes: article.likes,
-			});
+			await axios.patch(
+				mode === "DEV"
+					? `/api/articles/like/${article._id}`
+					: `https://tech-tales-api.vercel.app/api/articles/like/${article._id}`,
+				{
+					userId: currentUser._id,
+					liked: likedStatus,
+					likes: article.likes,
+				},
+				{ withCredentials: true },
+			);
 
 			dispatch(
 				updateUserSuccess({
@@ -130,12 +126,12 @@ function ArticleCard({ article, setArticleUpdate }) {
 		if (currentTime - lastClickTime < 500) {
 			return;
 		}
+
 		setLastClickTime(currentTime);
 
 		try {
 			dispatch(updateUserStart());
 			setArticleUpdate(true);
-
 			setBookmarkedStatus(!bookmarkedStatus);
 
 			const isAlreadyBookmarked = bookmarkedStatus;
@@ -157,8 +153,8 @@ function ArticleCard({ article, setArticleUpdate }) {
 				},
 				{ withCredentials: true },
 			);
-			const data = res.data;
 
+			const data = res.data;
 			dispatch(updateUserSuccess(data));
 		} catch (error) {
 			error.message = error.response
@@ -180,6 +176,7 @@ function ArticleCard({ article, setArticleUpdate }) {
 				"-" +
 				article._id,
 			);
+
 			setLinkCopied(true);
 		} catch (error) {
 			console.log(error.message);
@@ -201,12 +198,14 @@ function ArticleCard({ article, setArticleUpdate }) {
 
 		try {
 			dispatch(deleteArticleStart());
+
 			await axios.delete(
 				mode === "DEV"
 					? `/api/articles/${article._id}`
 					: `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
 				{ withCredentials: true },
 			);
+
 			dispatch(deleteArticleSuccess());
 		} catch (error) {
 			error.message = error.response
@@ -242,13 +241,9 @@ function ArticleCard({ article, setArticleUpdate }) {
 						<p className="font-medium truncate">
 							{article?.author ? article?.author.username : "Unknown"}
 						</p>
-
 						<p className="font-light">•</p>
-
 						<p className="text-sm truncate">{publishDate}</p>
-
 						<p className="font-light">•</p>
-
 						<p className="text-sm truncate">
 							{Math.ceil(article.content.split(" ").length / 200) + " "}
 							{Math.ceil(article.content.split(" ").length / 200) > 1
@@ -282,7 +277,6 @@ function ArticleCard({ article, setArticleUpdate }) {
 							className="h-7 w-7 hover:scale-125"
 							onClick={handleCopyLink}
 						/>
-
 						{(location.pathname === "/explore" ||
 							location.pathname === "/your-articles"
 							? article?.author._id === currentUser._id
@@ -318,7 +312,6 @@ function ArticleCard({ article, setArticleUpdate }) {
 					className="h-16 w-16 absolute right-4 flex-shrink-0 rounded-lg bg-slate-200"
 				/>
 			</div>
-
 			{showDelete && (
 				<div className="fixed top-0 left-0 z-50 bg-slate-50 bg-opacity-50 w-full h-full flex justify-center items-center cursor-auto">
 					<div className="p-4 bg-gray-100 shadow-2xl fixed z-15 items-center w-full md:w-1/3 select-none">
