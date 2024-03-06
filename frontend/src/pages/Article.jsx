@@ -3,12 +3,18 @@ import { useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import Pusher from "pusher-js/with-encryption";
 
 import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
 } from "../redux/user/userSlice";
+
+const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
+  cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+  encrypted: true,
+});
 
 function Article() {
   const mode = import.meta.env.VITE_MODE;
@@ -18,6 +24,7 @@ function Article() {
   const [readTime, setReadTime] = useState(0);
   const [showAllTags, setShowAllTags] = useState(false);
   const [likedStatus, setLikedStatus] = useState(false);
+  const [likes, setLikes] = useState(article.likes);
   const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [lastLikeClickTime, setLastLikeClickTime] = useState(0);
@@ -34,6 +41,21 @@ function Article() {
         year: "numeric",
       }).format(new Date(article.createdAt))
     : "";
+
+  useEffect(() => {
+    const channel = pusher.subscribe("likes");
+
+    channel.bind("articleLiked", function (data) {
+      if (data.articleId === article._id) {
+        setLikes(data.updatedLikes);
+      }
+    });
+
+    return () => {
+      channel.unbind("articleLiked");
+      pusher.unsubscribe("likes");
+    };
+  }, [article._id]);
 
   useEffect(() => {
     const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
@@ -100,31 +122,32 @@ function Article() {
 
       setLikedStatus(!likedStatus);
 
-      const updatedLikedArticles = likedStatus
-        ? currentUser.likedArticles.filter((id) => id !== article._id)
-        : [...currentUser.likedArticles, article._id];
+      const updatedLikedArticles = new Set(currentUser.likedArticles);
 
-      const res = await axios.patch(
-        mode === "DEV"
-          ? `/api/user/${currentUser._id}`
-          : `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
-        {
-          ...currentUser,
-          likedArticles: updatedLikedArticles,
-        },
-        { withCredentials: true },
-      );
-      const data = res.data;
+      if (likedStatus) {
+        updatedLikedArticles.delete(article._id);
+      } else {
+        updatedLikedArticles.add(article._id);
+      }
 
       await axios.patch(
         mode === "DEV"
-          ? `/api/articles/${article._id}`
-          : `https://tech-tales-api.vercel.app/api/articles/${article._id}`,
-        { likes: likeCount },
+          ? `/api/articles/like/${article._id}`
+          : `https://tech-tales-api.vercel.app/api/articles/like/${article._id}`,
+        {
+          userId: currentUser._id,
+          liked: likedStatus,
+          likes: article.likes,
+        },
         { withCredentials: true },
       );
 
-      dispatch(updateUserSuccess(data));
+      dispatch(
+        updateUserSuccess({
+          ...currentUser,
+          likedArticles: Array.from(updatedLikedArticles),
+        }),
+      );
     } catch (error) {
       error.message = error.response
         ? error.response.data.message
