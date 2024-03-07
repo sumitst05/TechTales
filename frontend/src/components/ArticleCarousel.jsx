@@ -11,7 +11,7 @@ function ArticleCarousel() {
 
 	const settings = {
 		dots: true,
-		infiite: true,
+		infinite: true,
 		speed: 2000,
 		slidesToShow: 1,
 		slidesToScroll: 1,
@@ -23,9 +23,11 @@ function ArticleCarousel() {
 	};
 
 	const [articles, setArticles] = useState([]);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		const fetchTopArticles = async () => {
+			setLoading(true);
 			try {
 				const res = await axios.get(
 					mode === "DEV"
@@ -37,11 +39,38 @@ function ArticleCarousel() {
 				setArticles(data);
 			} catch (error) {
 				console.log(error.message);
+			} finally {
+				setLoading(false);
 			}
 		};
 
 		fetchTopArticles();
 	}, []);
+
+	if (loading) {
+		return (
+			<div className="animate-pulse flex items-center p-4 gap-4 md:mx-16 bg-gradient-to-r from-zinc-200 to-slate-100 rounded-xl">
+				<div className="h-32 w-32 bg-slate-400 rounded flex-shrink-0"></div>{" "}
+				<div className="flex flex-col overflow-hidden gap-2">
+					<div className="flex gap-2 items-center">
+						<div className="h-6 w-6 bg-slate-400 rounded-full"></div>{" "}
+						<div className="h-4 bg-slate-400 rounded w-32"></div>{" "}
+					</div>
+					<div className="h-4 bg-slate-400 rounded w-64"></div>{" "}
+					<div className="flex gap-4">
+						{[1, 2, 3].map((_, index) => (
+							<div key={index} className="h-4 bg-slate-400 rounded w-32"></div>
+						))}{" "}
+					</div>
+					<div className="flex items-center gap-1 md:gap-2">
+						<div className="h-4 bg-slate-400 rounded w-32"></div>{" "}
+						<div className="font-light">•</div>
+						<div className="h-4 bg-slate-400 rounded w-32"></div>{" "}
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<Slider {...settings}>
@@ -49,12 +78,12 @@ function ArticleCarousel() {
 				articles.map((article) => (
 					<div
 						key={article._id}
-						className="flex flex-col items-center justify-center w-full md:px-16 text-slate-700 rounded-lg"
+						className="flex flex-col items-center justify-center w-full px-0.5 md:px-16 text-slate-700"
 					>
 						<Link
 							to={`/article/${article.title.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "")}-${article._id}`}
 						>
-							<div className="flex items-center p-4 gap-4 bg-gradient-to-r from-zinc-200 to-slate-100 md:rounded-xl">
+							<div className="flex items-center p-4 gap-4 bg-gradient-to-r from-zinc-200 to-slate-100 rounded-xl">
 								<img
 									src={article?.coverImage}
 									alt="cover-image"

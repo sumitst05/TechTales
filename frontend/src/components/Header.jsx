@@ -50,7 +50,12 @@ function Header() {
 						</h1>
 					</div>
 				</Link>
-				<ul className="flex items-center gap-4">
+				<ul className="flex items-center gap-2 md:gap-4">
+					<Link to="/write">
+						<li className="md:font-semibold text-gray-300 select-none">
+							Write
+						</li>
+					</Link>
 					<Link to="/explore">
 						<li className="md:font-semibold text-gray-300 select-none">
 							Explore
