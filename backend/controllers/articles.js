@@ -20,7 +20,7 @@ export const getArticles = async (req, res) => {
 			const skip = (page - 1) * pageSize;
 
 			articles = await Article.find()
-				.sort({ _id: -1 })
+				.sort({ likes: -1 })
 				.populate("author")
 				.skip(skip)
 				.limit(pageSize);
@@ -38,7 +38,7 @@ export const getArticles = async (req, res) => {
 		const skip = (page - 1) * pageSize;
 
 		articles = await Article.find(regexQuery)
-			.sort({ _id: -1 })
+			.sort({ likes: -1 })
 			.skip(skip)
 			.limit(pageSize)
 			.populate("author")

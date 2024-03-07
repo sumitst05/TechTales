@@ -92,7 +92,7 @@ function SearchBar() {
 	}
 
 	return (
-		<div className="flex flex-grow items-center relative z-50">
+		<div className="flex flex-grow items-center relative z-10">
 			<input
 				type="text"
 				id="search_article"
