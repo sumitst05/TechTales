@@ -16,7 +16,6 @@
   color: #333;
 }
 
-/* Remove the blue outline when the Quill editor is focused */
 .ql-container:focus,
 .ql-container .ql-editor:focus {
   outline: none;
