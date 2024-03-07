@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 import ArticleCard from "../components/ArticleCard";
 import Tags from "../components/Tags";

@@ -13,7 +13,7 @@ function Home() {
 				<ArticleCarousel />
 			</div>
 
-			<h1 className="text-4xl text-center font-semibold py-1 px-3 mt-16 mb-8 md:mt-5 md:mb-0 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-800">
+			<h1 className="text-4xl text-center font-semibold py-1 px-3 mt-16 mb-8 md:mt-10 md:mb-0 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-800">
 				Top Authors
 			</h1>
 			<div className="px-6 md:px-32">
