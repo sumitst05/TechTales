@@ -6,7 +6,7 @@ import axios from "axios";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-function ArticleCarousel() {
+function UserCarousel() {
 	const mode = import.meta.env.VITE_MODE;
 
 	const NextArrow = ({ className, style, onClick }) => (
@@ -42,21 +42,21 @@ function ArticleCarousel() {
 		prevArrow: <PrevArrow />,
 	};
 
-	const [articles, setArticles] = useState([]);
+	const [users, setUsers] = useState([]);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		const fetchTopArticles = async () => {
+		const fetchTopUsers = async () => {
 			setLoading(true);
 			try {
 				const res = await axios.get(
 					mode === "DEV"
-						? `/api/articles?pageSize=5`
-						: `https://tech-tales-api.vercel.app/api/articles?pageSize=5`,
+						? `/api/user`
+						: `https://tech-tales-api.vercel.app/api/user`,
 				);
 
-				const data = res.data.articles;
-				setArticles(data);
+				const data = res.data;
+				setUsers(data);
 			} catch (error) {
 				console.log(error.message);
 			} finally {
@@ -64,7 +64,7 @@ function ArticleCarousel() {
 			}
 		};
 
-		fetchTopArticles();
+		fetchTopUsers();
 	}, []);
 
 	if (loading) {
@@ -94,66 +94,38 @@ function ArticleCarousel() {
 
 	return (
 		<Slider {...settings}>
-			{articles &&
-				articles.map((article) => (
+			{users &&
+				users.map((user) => (
 					<div
-						key={article._id}
+						key={user._id}
 						className="flex flex-col items-center justify-center w-full px-0.5 md:px-16 text-slate-700"
 					>
 						<Link
-							to={`/article/${article.title.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "")}-${article._id}`}
+							to={`/user/${user.username.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "")}-${user._id}`}
 						>
 							<div className="flex items-center p-4 gap-4 bg-gradient-to-r from-zinc-200 to-slate-100 rounded-xl">
 								<img
-									src={article?.coverImage}
+									src={
+										user.data ? user.data.profilePicture : user.profilePicture
+									}
 									alt="cover-image"
-									className="h-32 w-32 flex-shrink-0 rounded-lg bg-slate-200"
+									className="h-32 w-32 object-cover flex-shrink-0 rounded-lg bg-slate-200"
 								/>
 								<div className="flex flex-col overflow-hidden">
-									<div className="flex gap-2 items-center">
-										<img
-											src={article?.author?.profilePicture}
-											alt="profile"
-											className="h-6 w-6 rounded-full"
-										/>
-										<p className="font-medium truncate">
-											{article?.author ? article?.author.username : "Unknown"}
-										</p>
-									</div>
-									<div className="flex items-center gap-2">
-										<img src="/liked.png" alt="likes" className="h-5 w-5" />
-										<p className="font-medium">{article.likes}</p>
-									</div>
 									<p className="text-3xl font-bold truncate mt-1">
-										{article.title}
+										{user.data ? user.data.username : user.username}
 									</p>
-									<div className="flex gap-4 mt-1">
-										{article.tags.slice(0, 5).map((tag, index) => (
-											<div key={index}>
-												{index < 5 && (
-													<p className="px-2 bg-gradient-to-r from-slate-300 to-zinc-200 text-slate-600 text-sm font-medium rounded-lg">
-														{tag}
-													</p>
-												)}
-											</div>
-										))}
-									</div>
-									<div className="flex items-center gap-1 md:gap-2">
-										<p className="text-sm truncate">
-											{Math.ceil(article.content.split(" ").length / 200) + " "}
-											{Math.ceil(article.content.split(" ").length / 200) > 1
-												? "minutes read"
-												: "minute read"}
-										</p>
-										<p className="font-light">•</p>
-										<p className="text-sm truncate">
-											{Intl.DateTimeFormat("en-US", {
-												month: "short",
-												day: "numeric",
-												year: "numeric",
-											}).format(new Date(article.createdAt))}
-										</p>
-									</div>
+									<p className="text-sm truncate">
+										Joined:{" "}
+										{Intl.DateTimeFormat("en-US", {
+											month: "short",
+											day: "numeric",
+											year: "numeric",
+										}).format(new Date(user.createdAt))}
+									</p>
+									<p className="text-lg break-words line-clamp-2 mt-2">
+										{user?.bio}
+									</p>
 								</div>
 							</div>
 						</Link>
@@ -163,4 +135,4 @@ function ArticleCarousel() {
 	);
 }
 
-export default ArticleCarousel;
+export default UserCarousel;

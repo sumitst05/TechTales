@@ -3,18 +3,20 @@ import bcrypt from "bcryptjs";
 import User from "../models/user.js";
 
 export const getUser = async (req, res) => {
-	const { query } = req.query;
-
-	if (!query) {
-		const users = await User.find().limit(3);
-		return res.status(200).json(users);
-	}
+	const { query, limit = 3 } = req.query;
 
 	try {
-		const users = await User.find({
+		let users;
+
+		if (!query) {
+			users = await User.find().limit(5);
+			return res.status(200).json(users);
+		}
+
+		users = await User.find({
 			username: { $regex: query, $options: "i" },
 		})
-			.limit(3)
+			.limit(limit)
 			.select("-password");
 
 		res.status(200).json(users);
