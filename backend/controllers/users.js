@@ -108,6 +108,7 @@ export const updateUser = async (req, res) => {
 				email: req.body.email,
 				password: req.body.password,
 				profilePicture: req.body.profilePicture,
+				bio: req.body.bio,
 				likedArticles: req.body.likedArticles,
 				bookmarkedArticles: req.body.bookmarkedArticles,
 			},

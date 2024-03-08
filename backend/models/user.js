@@ -25,6 +25,9 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			default: "https://cdn-icons-png.freepik.com/128/3237/3237472.png",
 		},
+		bio: {
+			type: String,
+		},
 		likedArticles: {
 			type: [mongoose.Schema.Types.ObjectId],
 			ref: "Article",

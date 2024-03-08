@@ -104,19 +104,32 @@ function Profile() {
 				Profile
 			</h1>
 			<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-				<input
-					type="file"
-					ref={fileRef}
-					hidden
-					accept="image/*"
-					onChange={(e) => setImage(e.target.files[0])}
-				/>
-				<img
-					src={formData.profilePicture || currentUser.profilePicture}
-					alt="profile"
-					onClick={() => fileRef.current.click()}
-					className="h-24 w-24 self-center cursor-pointer rounded-full mt-2"
-				/>
+				<div className="flex justify-center items-center gap-4">
+					<input
+						type="file"
+						ref={fileRef}
+						hidden
+						accept="image/*"
+						onChange={(e) => setImage(e.target.files[0])}
+					/>
+					<img
+						src={formData.profilePicture || currentUser.profilePicture}
+						alt="profile"
+						onClick={() => fileRef.current.click()}
+						className="h-24 w-24 self-center cursor-pointer rounded-full mt-2"
+					/>
+
+					<textarea
+						id="bio"
+						name="Bio"
+						maxLength="300"
+						defaultValue={currentUser.bio}
+						placeholder="Write a short bio..."
+						className="bg-slate-200 p-3 rounded-lg outline-none focus:outline-violet-700 resize-none"
+						onChange={handleChange}
+					/>
+				</div>
+
 				<span className="text-sm font-medium text-sky-800 opacity-60 self-center">
 					Image size must be under 2MB
 				</span>
