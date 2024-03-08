@@ -9,7 +9,7 @@ export const getUser = async (req, res) => {
 		let users;
 
 		if (!query) {
-			users = await User.find().limit(5);
+			users = await User.find().limit(5).select("-password");
 			return res.status(200).json(users);
 		}
 
