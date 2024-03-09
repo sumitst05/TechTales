@@ -131,6 +131,8 @@ export const updateUser = async (req, res) => {
 				bio: req.body.bio,
 				likedArticles: req.body.likedArticles,
 				bookmarkedArticles: req.body.bookmarkedArticles,
+				xAccount: req.body.xAccount,
+				githubProfile: req.body.githubProfile,
 			},
 			{ new: true },
 		);

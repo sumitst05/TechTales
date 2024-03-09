@@ -101,6 +101,40 @@ function User() {
         </p>
       </div>
 
+      <div className="flex justify-center items-center gap-6">
+        {currentUser.xAccount ? (
+          <a
+            href={currentUser.xAccount}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="/X.png" alt="X" className="h-8 w-8" />
+          </a>
+        ) : (
+          <div className="cursor-not-allowed">
+            <img src="/no-X.png" alt="No X" className="h-8 w-8" />
+          </div>
+        )}
+
+        {currentUser.githubProfile ? (
+          <a
+            href={currentUser.githubProfile}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="/github.png" alt="GitHub" className="h-12 w-12" />
+          </a>
+        ) : (
+          <div className="cursor-not-allowed">
+            <img src="/no-github.png" alt="No GitHub" className="h-12 w-12" />
+          </div>
+        )}
+
+        <button className="">
+          <img src="/follow.png" alt="No GitHub" className="h-8 w-8" />
+        </button>
+      </div>
+
       <ul className="flex justify-center items-center gap-6 select-none mt-6 ">
         <li
           className={
@@ -125,8 +159,8 @@ function User() {
         <li
           className={
             articlesSelected
-              ? "text-xl text-indigo-600 font-bold bg-zinc-300 p-2 rounded-lg hover:shadow-md hover:shadow-indigo-600"
-              : "text-lg text-violet-800 font-bold bg-zinc-300 p-2 rounded-md shadow shadow-indigo-800 hover:scale-125 hover:shadow-md hover:shadow-indigo-600"
+              ? "text-xl text-indigo-600 font-bold bg-zinc-300 p-2 px-3 rounded-lg hover:shadow-md hover:shadow-indigo-600"
+              : "text-lg text-violet-800 font-bold bg-zinc-300 p-2 px-3 rounded-md shadow shadow-indigo-800 hover:scale-125 hover:shadow-md hover:shadow-indigo-600"
           }
           onClick={() => handleSelect("articles")}
         >

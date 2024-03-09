@@ -28,6 +28,12 @@ const userSchema = new mongoose.Schema(
 		bio: {
 			type: String,
 		},
+		xAccount: {
+			type: String,
+		},
+		githubProfile: {
+			type: String,
+		},
 		likedArticles: {
 			type: [mongoose.Schema.Types.ObjectId],
 			ref: "Article",
