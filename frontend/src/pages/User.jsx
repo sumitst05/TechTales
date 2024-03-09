@@ -51,6 +51,7 @@ function User() {
           mode === "DEV"
             ? `/api/user/${userId}`
             : `https://tech-tales-api.vercel.app/api/user/${userId}`,
+          { withCredentials: true },
         );
 
         setUser(res.data);
