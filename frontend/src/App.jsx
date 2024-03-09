@@ -12,6 +12,7 @@ import SignUp from "./pages/SignUp";
 import Notifications from "./pages/Notifications";
 import YourArticles from "./pages/YourArticles";
 import Article from "./pages/Article";
+import User from "./pages/User";
 import LikedArticles from "./pages/LikedArticles";
 import Bookmarks from "./pages/Bookmarks";
 import WriteArticle from "./pages/WriteArticle";
@@ -61,6 +62,9 @@ export default function App() {
 
           <Route element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/user/:slug" element={<User />} />
           </Route>
           <Route element={<PrivateRoute />}>
             <Route path="/notifications" element={<Notifications />} />

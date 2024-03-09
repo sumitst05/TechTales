@@ -53,11 +53,11 @@ export const getArticles = async (req, res) => {
 
 export const getMyArticles = async (req, res) => {
 	try {
-		const { userId, page = 1, pageSize = 6 } = req.query;
+		const { userId, page = 1, pageSize = 10 } = req.query;
 		const skip = (page - 1) * pageSize;
 
 		const articles = await Article.find({ author: userId })
-			.sort({ _id: -1 })
+			.sort({ likes: -1 })
 			.populate("author")
 			.skip(skip)
 			.limit(pageSize)

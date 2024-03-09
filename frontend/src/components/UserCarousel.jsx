@@ -109,7 +109,7 @@ function UserCarousel() {
 										user.data ? user.data.profilePicture : user.profilePicture
 									}
 									alt="cover-image"
-									className="h-32 w-32 object-cover flex-shrink-0 rounded-lg bg-slate-200"
+									className="h-32 w-32 object-cover flex-shrink-0 rounded-full bg-slate-200"
 								/>
 								<div className="flex flex-col overflow-hidden">
 									<p className="text-3xl font-bold truncate mt-1">
