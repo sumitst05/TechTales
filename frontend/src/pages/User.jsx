@@ -103,7 +103,7 @@ function User() {
       </div>
 
       <div className="flex justify-center items-center gap-6">
-        {currentUser.xAccount ? (
+        {user.xAccount ? (
           <a
             href={currentUser.xAccount}
             target="_blank"
@@ -117,9 +117,9 @@ function User() {
           </div>
         )}
 
-        {currentUser.githubProfile ? (
+        {user.githubProfile ? (
           <a
-            href={currentUser.githubProfile}
+            href={user.githubProfile}
             target="_blank"
             rel="noopener noreferrer"
           >
