@@ -34,6 +34,10 @@ const userSchema = new mongoose.Schema(
 		githubProfile: {
 			type: String,
 		},
+		articles: {
+			type: [mongoose.Schema.Types.ObjectId],
+			ref: "Article",
+		},
 		likedArticles: {
 			type: [mongoose.Schema.Types.ObjectId],
 			ref: "Article",

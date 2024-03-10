@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import ReactQuill from "react-quill";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -81,6 +81,7 @@ function Article() {
           mode === "DEV"
             ? `/api/articles/${articleId}`
             : `https://tech-tales-api.vercel.app/api/articles/${articleId}`,
+          { withCredentials: true },
         );
 
         setReadTime(Math.ceil(res.data.content.split(" ").length / 200));
@@ -109,8 +110,6 @@ function Article() {
   }
 
   async function handleLike() {
-    const likeCount = article.likes + (likedStatus ? -1 : 1);
-
     const currentTime = new Date().getTime();
     if (currentTime - lastLikeClickTime < 1000) {
       return;
@@ -215,14 +214,23 @@ function Article() {
         {article.title}
       </p>
       <div className="flex items-center gap-1 select-none">
-        <img
-          src={article.author?.profilePicture}
-          alt="profile"
-          className="w-6 h-6 rounded-full"
-        />
-        <p className="text-slate-700 text-xl font-serif font-medium">
-          {article.author ? article.author.username : "Unknown"}
-        </p>
+        <Link
+          to={
+            article.author
+              ? `/user/${article.author.username.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "")}-${article.author._id}`
+              : "/"
+          }
+          className="flex items-center gap-1 select-none"
+        >
+          <img
+            src={article.author?.profilePicture}
+            alt="profile"
+            className="w-8 h-8 rounded-full"
+          />
+          <p className="text-slate-700 text-xl font-serif font-medium">
+            {article.author ? article.author.username : "Unknown"}
+          </p>
+        </Link>
 
         <p className="font-light mt-1 mx-1">•</p>
 

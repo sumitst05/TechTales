@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 
 import User from "../models/user.js";
+import Article from "../models/article.js";
 
 export const getUser = async (req, res) => {
 	const { query, limit = 3 } = req.query;
@@ -151,7 +152,9 @@ export const deleteUser = async (req, res) => {
 	}
 
 	try {
+		await Article.deleteMany({ author: req.params.id });
 		await User.findByIdAndDelete(req.params.id);
+
 		res
 			.clearCookie("access_token")
 			.status(200)

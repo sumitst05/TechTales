@@ -1,19 +1,14 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-  deleteUserStart,
-  deleteUserSuccess,
-  deleteUserFailure,
-  signOut,
-} from "../redux/user/userSlice";
+
+import { signOut } from "../redux/user/userSlice";
 import { resetCurrentArticle } from "../redux/article/articleSlice";
 
-function Dropdown({ dropdownRef }) {
+function Dropdown({ dropdownRef, showDeleteModal }) {
   const mode = import.meta.env.VITE_MODE;
 
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
 
   async function handleSignout() {
     try {
@@ -38,27 +33,8 @@ function Dropdown({ dropdownRef }) {
     }
   }
 
-  async function handleDeleteAccount() {
-    try {
-      dispatch(deleteUserStart());
-
-      await axios.delete(
-        mode === "DEV"
-          ? `/api/user/${currentUser._id}`
-          : `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
-        {
-          withCredentials: true,
-        },
-      );
-
-      dispatch(resetCurrentArticle());
-      dispatch(deleteUserSuccess());
-    } catch (error) {
-      error.message = error.response.data
-        ? error.response.data.message
-        : error.response.statusText;
-      console.log(error.message);
-    }
+  function confirmDeleteAccount() {
+    showDeleteModal();
   }
 
   return (
@@ -97,7 +73,7 @@ function Dropdown({ dropdownRef }) {
               Sign out
             </li>
           </div>
-          <div onClick={handleDeleteAccount}>
+          <div onClick={confirmDeleteAccount}>
             <li className="font-medium text-red-400 hover:bg-red-200">
               Delete Account
             </li>
