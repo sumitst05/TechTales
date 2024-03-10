@@ -28,8 +28,8 @@ function Bookmarks() {
         }
         const res = await axios.get(
           mode === "DEV"
-            ? `/api/user/bookmarks/${currentUser._id}?page=${page}&pageSize=${pageSize}`
-            : `https://tech-tales-api.vercel.app/api/user/bookmarks/${currentUser._id}?page=${page}&pageSize=${pageSize}`,
+            ? `/api/user/bookmarks/?page=${page}&pageSize=${pageSize}`
+            : `https://tech-tales-api.vercel.app/api/user/bookmarks/?page=${page}&pageSize=${pageSize}`,
           { withCredentials: true },
         );
 

@@ -92,7 +92,6 @@ function ArticleCard({ article, setArticleUpdate }) {
           ? `/api/articles/like/${article._id}`
           : `https://tech-tales-api.vercel.app/api/articles/like/${article._id}`,
         {
-          userId: currentUser._id,
           liked: likedStatus,
           likes: article.likes,
         },
@@ -146,8 +145,8 @@ function ArticleCard({ article, setArticleUpdate }) {
 
       const res = await axios.patch(
         mode === "DEV"
-          ? `/api/user/${currentUser._id}`
-          : `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
+          ? "/api/user/update"
+          : "https://tech-tales-api.vercel.app/api/user/update",
         {
           ...currentUser,
           bookmarkedArticles: Array.from(updatedBookmarkedArticles),

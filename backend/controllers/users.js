@@ -46,7 +46,7 @@ export const getUserById = async (req, res) => {
 
 export const getBookmarkedArticles = async (req, res) => {
 	try {
-		const userId = req.params.id;
+		const userId = req.user.id;
 		const { page = 1, pageSize = 6 } = req.query;
 
 		const skip = (page - 1) * pageSize;
@@ -71,7 +71,7 @@ export const getBookmarkedArticles = async (req, res) => {
 
 export const getLikedArticles = async (req, res) => {
 	try {
-		const userId = req.params.id;
+		const userId = req.user.id;
 		const { page = 1, pageSize = 6 } = req.query;
 
 		const skip = (page - 1) * pageSize;
@@ -95,10 +95,6 @@ export const getLikedArticles = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-	if (req.user.id !== req.params.id) {
-		return res.status(401).json({ message: "Acess denied!" });
-	}
-
 	try {
 		if (req.body.password) {
 			req.body.password = await bcrypt.hash(req.body.password, 12);
@@ -106,7 +102,7 @@ export const updateUser = async (req, res) => {
 
 		const usernameConflict = await User.findOne({
 			username: req.body.username,
-			_id: { $ne: req.params.id },
+			_id: { $ne: req.user.id },
 		});
 		if (usernameConflict) {
 			return res.status(400).json({ message: "That username is taken!" });
@@ -114,7 +110,7 @@ export const updateUser = async (req, res) => {
 
 		const emailConflict = await User.findOne({
 			email: req.body.email,
-			_id: { $ne: req.params.id },
+			_id: { $ne: req.user.id },
 		});
 		if (emailConflict) {
 			return res
@@ -123,7 +119,7 @@ export const updateUser = async (req, res) => {
 		}
 
 		const updateUser = await User.findByIdAndUpdate(
-			req.params.id,
+			req.user.id,
 			{
 				username: req.body.username,
 				email: req.body.email,
@@ -146,14 +142,12 @@ export const updateUser = async (req, res) => {
 	}
 };
 
-export const deleteUser = async (req, res) => {
-	if (req.user.id !== req.params.id) {
-		return res.status(401).json({ message: "Access denied!" });
-	}
+export const follow = async (req, res) => { };
 
+export const deleteUser = async (req, res) => {
 	try {
-		await Article.deleteMany({ author: req.params.id });
-		await User.findByIdAndDelete(req.params.id);
+		await Article.deleteMany({ author: req.user.id });
+		await User.findByIdAndDelete(req.user.id);
 
 		res
 			.clearCookie("access_token")

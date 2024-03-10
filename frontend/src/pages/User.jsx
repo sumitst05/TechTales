@@ -69,8 +69,8 @@ function User() {
       try {
         const res = await axios.get(
           mode === "DEV"
-            ? `/api/articles/myarticles/?userId=${userId}`
-            : `https://tech-tales-api.vercel.app/api/articles/myarticles/?userId=${userId}`,
+            ? `/api/articles/myarticles`
+            : `https://tech-tales-api.vercel.app/api/articles/myarticles`,
           { withCredentials: true },
         );
 

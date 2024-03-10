@@ -21,6 +21,6 @@ router.get("/tags", getTags);
 router.get("/:id", getArticleById);
 router.patch("/:id", auth, updateArticle);
 router.delete("/:id", auth, deleteArticle);
-router.patch("/like/:id", likeArticle);
+router.patch("/like/:id", auth, likeArticle);
 
 export default router;

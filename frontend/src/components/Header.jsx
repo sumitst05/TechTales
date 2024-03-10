@@ -39,8 +39,8 @@ function Header() {
 
       await axios.delete(
         mode === "DEV"
-          ? `/api/user/${currentUser._id}`
-          : `https://tech-tales-api.vercel.app/api/user/${currentUser._id}`,
+          ? "/api/user/delete"
+          : "https://tech-tales-api.vercel.app/api/user/delete",
         {
           withCredentials: true,
         },

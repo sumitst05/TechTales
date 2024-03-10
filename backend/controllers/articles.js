@@ -53,7 +53,8 @@ export const getArticles = async (req, res) => {
 
 export const getMyArticles = async (req, res) => {
 	try {
-		const { userId, page = 1, pageSize = 10 } = req.query;
+		const { page = 1, pageSize = 10 } = req.query;
+		const userId = req.user.id;
 		const skip = (page - 1) * pageSize;
 
 		const articles = await Article.find({ author: userId })
@@ -180,7 +181,9 @@ export const getTags = async (req, res) => {
 
 export const likeArticle = async (req, res) => {
 	const articleId = req.params.id;
-	const { userId, likedArticles, liked, likes } = req.body;
+	const userId = req.user.id;
+
+	const { likedArticles, liked, likes } = req.body;
 	const updatedLikes = liked ? likes - 1 : likes + 1;
 
 	const articleFilter = { _id: articleId };
