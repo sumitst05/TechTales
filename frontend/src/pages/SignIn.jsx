@@ -15,10 +15,20 @@ function SignIn() {
 
   const [formData, setFormData] = useState({});
   const [checked, setChecked] = useState(false);
-  const { loading, error } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (currentUser) {
+      const timer = setTimeout(() => {
+        navigate("/");
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentUser, navigate]);
 
   useEffect(() => {
     dispatch(signInFailure(""));
