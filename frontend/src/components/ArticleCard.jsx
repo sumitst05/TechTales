@@ -84,36 +84,16 @@ function ArticleCard({ article, setArticleUpdate }) {
     setLikedStatus((prevLikedStatus) => !prevLikedStatus);
 
     try {
-      dispatch(updateUserStart());
       setArticleUpdate(true);
 
       await axios.patch(
         mode === "DEV"
           ? `/api/articles/like/${article._id}`
           : `https://tech-tales-api.vercel.app/api/articles/like/${article._id}`,
-        {
-          liked: likedStatus,
-          likes: article.likes,
-        },
+        {},
         { withCredentials: true },
       );
-
-      const updatedLikedArticles = new Set(currentUser.likedArticles);
-
-      if (likedStatus) {
-        updatedLikedArticles.delete(article._id);
-      } else {
-        updatedLikedArticles.add(article._id);
-      }
-
-      dispatch(
-        updateUserSuccess({
-          ...currentUser,
-          likedArticles: Array.from(updatedLikedArticles),
-        }),
-      );
     } catch (error) {
-      dispatch(updateUserFailure(error.message));
       console.log(error.message);
     }
   }
