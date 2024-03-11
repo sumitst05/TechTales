@@ -84,6 +84,7 @@ function ArticleCard({ article, setArticleUpdate }) {
     setLikedStatus((prevLikedStatus) => !prevLikedStatus);
 
     try {
+      dispatch(updateUserStart());
       setArticleUpdate(true);
 
       await axios.patch(
@@ -93,7 +94,23 @@ function ArticleCard({ article, setArticleUpdate }) {
         {},
         { withCredentials: true },
       );
+
+      const updatedLikedArticles = new Set(currentUser.likedArticles);
+
+      if (likedStatus) {
+        updatedLikedArticles.delete(article._id);
+      } else {
+        updatedLikedArticles.add(article._id);
+      }
+
+      dispatch(
+        updateUserSuccess({
+          ...currentUser,
+          likedArticles: Array.from(updatedLikedArticles),
+        }),
+      );
     } catch (error) {
+      dispatch(updateUserFailure(error.message));
       console.log(error.message);
     }
   }
