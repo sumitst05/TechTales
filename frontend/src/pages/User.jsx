@@ -7,193 +7,212 @@ import ArticleCard from "../components/ArticleCard";
 import Loader from "../components/Loader";
 
 function User() {
-  const mode = import.meta.env.VITE_MODE;
+	const mode = import.meta.env.VITE_MODE;
 
-  const { slug } = useParams();
-  const userId = slug.split("-").pop();
+	const { slug } = useParams();
+	const userId = slug.split("-").pop();
 
-  const [user, setUser] = useState({});
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [articleUpdate, setArticleUpdate] = useState(false);
-  const [followersSelected, setFollowersSelected] = useState(false);
-  const [followingSelected, setFollowingSelected] = useState(false);
-  const [articlesSelected, setArticlesSelected] = useState(true);
+	const [user, setUser] = useState({});
+	const [articles, setArticles] = useState([]);
+	const [loading, setLoading] = useState(false);
+	const [articleUpdate, setArticleUpdate] = useState(false);
+	const [followersSelected, setFollowersSelected] = useState(false);
+	const [followingSelected, setFollowingSelected] = useState(false);
+	const [articlesSelected, setArticlesSelected] = useState(true);
 
-  const { currentUser } = useSelector((state) => state.user);
+	const { currentUser } = useSelector((state) => state.user);
 
-  function handleSelect(tab) {
-    switch (tab) {
-      case "followers":
-        setFollowersSelected(true);
-        setFollowingSelected(false);
-        setArticlesSelected(false);
-        break;
-      case "following":
-        setFollowersSelected(false);
-        setFollowingSelected(true);
-        setArticlesSelected(false);
-        break;
-      case "articles":
-        setFollowersSelected(false);
-        setFollowingSelected(false);
-        setArticlesSelected(true);
-        break;
-      default:
-        break;
-    }
-  }
+	function handleSelect(tab) {
+		switch (tab) {
+			case "followers":
+				setFollowersSelected(true);
+				setFollowingSelected(false);
+				setArticlesSelected(false);
+				break;
+			case "following":
+				setFollowersSelected(false);
+				setFollowingSelected(true);
+				setArticlesSelected(false);
+				break;
+			case "articles":
+				setFollowersSelected(false);
+				setFollowingSelected(false);
+				setArticlesSelected(true);
+				break;
+			default:
+				break;
+		}
+	}
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get(
-          mode === "DEV"
-            ? `/api/user/${userId}`
-            : `https://tech-tales-api.vercel.app/api/user/${userId}`,
-          { withCredentials: true },
-        );
+	useEffect(() => {
+		const fetchUser = async () => {
+			try {
+				const res = await axios.get(
+					mode === "DEV"
+						? `/api/user/${userId}`
+						: `https://tech-tales-api.vercel.app/api/user/${userId}`,
+					{ withCredentials: true },
+				);
 
-        setUser(res.data);
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
+				setUser(res.data);
+			} catch (error) {
+				console.log(error.message);
+			}
+		};
 
-    const fetchArticles = async () => {
-      if (!articleUpdate) {
-        setLoading(true);
-      } else {
-        setLoading(false);
-      }
-      try {
-        const res = await axios.get(
-          mode === "DEV"
-            ? `/api/articles/myarticles`
-            : `https://tech-tales-api.vercel.app/api/articles/myarticles`,
-          { withCredentials: true },
-        );
+		const fetchArticles = async () => {
+			if (!articleUpdate) {
+				setLoading(true);
+			} else {
+				setLoading(false);
+			}
+			try {
+				const res = await axios.get(
+					mode === "DEV"
+						? `/api/articles/myarticles/${userId}`
+						: `https://tech-tales-api.vercel.app/api/articles/myarticles/${userId}`,
+					{ withCredentials: true },
+				);
 
-        setArticles(res.data.articles);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.log(error.message);
-      }
-    };
+				setArticles(res.data.articles);
+				setLoading(false);
+			} catch (error) {
+				setLoading(false);
+				console.log(error.message);
+			}
+		};
 
-    fetchUser();
-    fetchArticles();
-  }, [userId, currentUser]);
+		fetchUser();
+		fetchArticles();
+	}, [userId, currentUser]);
 
-  return (
-    <div className="p-3 max-w-6xl mx-auto mt-16">
-      <div className="flex flex-col items-center select-none">
-        <img
-          src={user.profilePicture}
-          alt="profile-pic"
-          className="h-32 w-32 object-cover rounded-full shadow-indigo-700 shadow-lg"
-        />
-        <span className="text-4xl text-slate-700 font-semibold mt-3">
-          {user.username}
-        </span>
-        <p className="mt-2 text-sm font-semibold text-center text-zinc-600">
-          {user?.bio}
-        </p>
-      </div>
+	useEffect(() => {
+		const fetchFollowersAndFollowing = async () => {
+			try {
+				const res = await axios.get(
+					mode === "DEV"
+						? "/api/user/follow"
+						: "https://tech-tales-api.vercel.app/api/user/follow",
+					{ withCredentials: true },
+				);
 
-      <div className="flex justify-center items-center gap-6">
-        {user.xAccount ? (
-          <a
-            href={currentUser.xAccount}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="/X.png" alt="X" className="h-8 w-8" />
-          </a>
-        ) : (
-          <div className="cursor-not-allowed">
-            <img src="/no-X.png" alt="No X" className="h-8 w-8" />
-          </div>
-        )}
+				console.log(res.data);
+			} catch (error) {
+				console.log(error.message);
+			}
+		};
 
-        {user.githubProfile ? (
-          <a
-            href={user.githubProfile}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src="/github.png" alt="GitHub" className="h-12 w-12" />
-          </a>
-        ) : (
-          <div className="cursor-not-allowed">
-            <img src="/no-github.png" alt="No GitHub" className="h-12 w-12" />
-          </div>
-        )}
+		fetchFollowersAndFollowing();
+	}, []);
 
-        <button className="">
-          <img src="/follow.png" alt="No GitHub" className="h-8 w-8" />
-        </button>
-      </div>
+	return (
+		<div className="p-3 max-w-6xl mx-auto mt-16">
+			<div className="flex flex-col items-center select-none">
+				<img
+					src={user.profilePicture}
+					alt="profile-pic"
+					className="h-32 w-32 object-cover rounded-full shadow-indigo-700 shadow-lg"
+				/>
+				<span className="text-4xl text-slate-700 font-semibold mt-3">
+					{user.username}
+				</span>
+				<p className="mt-2 text-sm font-semibold text-center text-zinc-600">
+					{user?.bio}
+				</p>
+			</div>
 
-      <ul className="flex justify-center items-center gap-6 select-none mt-6 ">
-        <li
-          className={
-            followersSelected
-              ? "text-xl text-indigo-600 font-bold bg-zinc-300 p-2 rounded-lg hover:shadow-md hover:shadow-indigo-600"
-              : "text-lg text-violet-800 font-bold bg-zinc-300 p-2 rounded-md shadow shadow-indigo-800 hover:scale-125 hover:shadow-md hover:shadow-indigo-600"
-          }
-          onClick={() => handleSelect("followers")}
-        >
-          Followers
-        </li>
-        <li
-          className={
-            followingSelected
-              ? "text-xl text-indigo-600 font-bold bg-zinc-300 p-2 rounded-lg hover:shadow-md hover:shadow-indigo-600"
-              : "text-lg text-violet-800 font-bold bg-zinc-300 p-2 rounded-md shadow shadow-indigo-800 hover:scale-125 hover:shadow-md hover:shadow-indigo-600"
-          }
-          onClick={() => handleSelect("following")}
-        >
-          Following
-        </li>
-        <li
-          className={
-            articlesSelected
-              ? "text-xl text-indigo-600 font-bold bg-zinc-300 p-2 px-3 rounded-lg hover:shadow-md hover:shadow-indigo-600"
-              : "text-lg text-violet-800 font-bold bg-zinc-300 p-2 px-3 rounded-md shadow shadow-indigo-800 hover:scale-125 hover:shadow-md hover:shadow-indigo-600"
-          }
-          onClick={() => handleSelect("articles")}
-        >
-          Articles
-        </li>
-      </ul>
+			<div className="flex justify-center items-center gap-6">
+				{user.xAccount ? (
+					<a
+						href={currentUser.xAccount}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<img src="/X.png" alt="X" className="h-8 w-8" />
+					</a>
+				) : (
+					<div className="cursor-not-allowed">
+						<img src="/no-X.png" alt="No X" className="h-8 w-8" />
+					</div>
+				)}
 
-      {followersSelected ? (
-        <p className="text-lg font-bold text-center text-gray-700 mt-4">
-          Followers
-        </p>
-      ) : followingSelected ? (
-        <p className="text-lg font-bold text-center text-gray-700 mt-4">
-          Following
-        </p>
-      ) : articlesSelected ? (
-        <div className="flex-grow w-full md:max-w-screen-2xl grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
-          {loading && <Loader />}
-          {!loading &&
-            articles.map((article) => (
-              <ArticleCard
-                key={article._id}
-                article={article}
-                setArticleUpdate={setArticleUpdate}
-              />
-            ))}
-        </div>
-      ) : (
-        ""
-      )}
-    </div>
-  );
+				{user.githubProfile ? (
+					<a
+						href={user.githubProfile}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<img src="/github.png" alt="GitHub" className="h-12 w-12" />
+					</a>
+				) : (
+					<div className="cursor-not-allowed">
+						<img src="/no-github.png" alt="No GitHub" className="h-12 w-12" />
+					</div>
+				)}
+
+				<button className="">
+					<img src="/follow.png" alt="No GitHub" className="h-8 w-8" />
+				</button>
+			</div>
+
+			<ul className="flex justify-center items-center gap-6 select-none mt-6 ">
+				<li
+					className={
+						followersSelected
+							? "text-xl text-indigo-600 font-bold bg-zinc-300 p-2 rounded-lg hover:shadow-md hover:shadow-indigo-600"
+							: "text-lg text-violet-800 font-bold bg-zinc-300 p-2 rounded-md shadow shadow-indigo-800 hover:scale-125 hover:shadow-md hover:shadow-indigo-600"
+					}
+					onClick={() => handleSelect("followers")}
+				>
+					Followers
+				</li>
+				<li
+					className={
+						followingSelected
+							? "text-xl text-indigo-600 font-bold bg-zinc-300 p-2 rounded-lg hover:shadow-md hover:shadow-indigo-600"
+							: "text-lg text-violet-800 font-bold bg-zinc-300 p-2 rounded-md shadow shadow-indigo-800 hover:scale-125 hover:shadow-md hover:shadow-indigo-600"
+					}
+					onClick={() => handleSelect("following")}
+				>
+					Following
+				</li>
+				<li
+					className={
+						articlesSelected
+							? "text-xl text-indigo-600 font-bold bg-zinc-300 p-2 px-3 rounded-lg hover:shadow-md hover:shadow-indigo-600"
+							: "text-lg text-violet-800 font-bold bg-zinc-300 p-2 px-3 rounded-md shadow shadow-indigo-800 hover:scale-125 hover:shadow-md hover:shadow-indigo-600"
+					}
+					onClick={() => handleSelect("articles")}
+				>
+					Articles
+				</li>
+			</ul>
+
+			{followersSelected ? (
+				<p className="text-lg font-bold text-center text-gray-700 mt-4">
+					Followers
+				</p>
+			) : followingSelected ? (
+				<p className="text-lg font-bold text-center text-gray-700 mt-4">
+					Following
+				</p>
+			) : articlesSelected ? (
+				<div className="flex-grow w-full md:max-w-screen-2xl grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+					{loading && <Loader />}
+					{!loading &&
+						articles.map((article) => (
+							<ArticleCard
+								key={article._id}
+								article={article}
+								setArticleUpdate={setArticleUpdate}
+							/>
+						))}
+				</div>
+			) : (
+				""
+			)}
+		</div>
+	);
 }
 
 export default User;
