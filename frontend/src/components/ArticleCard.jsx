@@ -76,7 +76,7 @@ function ArticleCard({ article, setArticleUpdate }) {
 		e.stopPropagation();
 
 		const currentTime = new Date().getTime();
-		if (currentTime - lastClickTime < 500) {
+		if (currentTime - lastClickTime < 1000) {
 			return;
 		}
 		setLastClickTime(currentTime);
