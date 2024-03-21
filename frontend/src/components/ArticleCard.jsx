@@ -23,6 +23,7 @@ function ArticleCard({ article, setArticleUpdate }) {
 	const mode = import.meta.env.VITE_MODE;
 	const [likedStatus, setLikedStatus] = useState(false);
 	const [likes, setLikes] = useState(article.likes);
+	const [loading, setLoading] = useState(false);
 	const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
 	const [linkCopied, setLinkCopied] = useState(false);
 	const [lastClickTime, setLastClickTime] = useState(0);
@@ -77,6 +78,8 @@ function ArticleCard({ article, setArticleUpdate }) {
 		setLastClickTime(currentTime);
 
 		try {
+			setLoading(true);
+
 			dispatch(updateUserStart());
 			setArticleUpdate(true);
 
@@ -111,9 +114,12 @@ function ArticleCard({ article, setArticleUpdate }) {
 					likedArticles: Array.from(updatedLikedArticles),
 				}),
 			);
+
+			setLoading(false);
 		} catch (error) {
 			dispatch(updateUserFailure(error.message));
 			console.log(error.message);
+			setLoading(false);
 		}
 	}
 
@@ -260,7 +266,7 @@ function ArticleCard({ article, setArticleUpdate }) {
 								src={likedStatus ? "/liked.png" : "/like.png"}
 								alt="like"
 								className="h-5 w-5 hover:scale-125"
-								onClick={handleLike}
+								onClick={!loading ? handleLike : undefined}
 							/>
 							<p className="font-medium">{likes}</p>
 						</div>
