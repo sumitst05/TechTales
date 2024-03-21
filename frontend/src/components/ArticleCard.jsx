@@ -54,7 +54,7 @@ function ArticleCard({ article, setArticleUpdate }) {
 			channel.unbind("articleLiked");
 			pusher.unsubscribe("likes");
 		};
-	}, [likes, article._id]);
+	}, []);
 
 	useEffect(() => {
 		const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
@@ -77,7 +77,7 @@ function ArticleCard({ article, setArticleUpdate }) {
 		e.stopPropagation();
 
 		const currentTime = new Date().getTime();
-		if (currentTime - lastClickTime < 3000) {
+		if (currentTime - lastClickTime < 1000) {
 			return;
 		}
 		setLastClickTime(currentTime);
