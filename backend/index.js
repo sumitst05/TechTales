@@ -23,19 +23,8 @@ app.use(
       "https://techtales-564.firebaseapp.com",
     ],
     credentials: true,
-    maxAge: 86400,
-    preflightContinue: true, // Allow us to manually add to preflights
   }),
 );
-
-app.use((req, res, next) => {
-  if (req.method === "OPTIONS") {
-    res.setHeader("Cache-Control", "public, max-age=86400");
-    res.end();
-  } else {
-    next();
-  }
-});
 
 app.use(cookieParser());
 
