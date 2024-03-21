@@ -16,15 +16,27 @@ import userRouter from "./routes/users.js";
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
-	cors({
-		origin: [
-			"http://localhost:5173",
-			"https://tech-tales-io.vercel.app",
-			"https://techtales-564.firebaseapp.com",
-		],
-		credentials: true,
-	}),
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://tech-tales-io.vercel.app",
+      "https://techtales-564.firebaseapp.com",
+    ],
+    credentials: true,
+    maxAge: 86400,
+    preflightContinue: true, // Allow us to manually add to preflights
+  }),
 );
+
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    res.end();
+  } else {
+    next();
+  }
+});
+
 app.use(cookieParser());
 
 app.use("/api", indexRouter);
@@ -33,12 +45,12 @@ app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 
 mongoose
-	.connect(process.env.DB_URL)
-	.then(
-		app.listen(port, () => {
-			console.log(`Listening on port ${port}...`);
-		}),
-	)
-	.catch((error) =>
-		console.log(`Error while connecting to database: ${error}`),
-	);
+  .connect(process.env.DB_URL)
+  .then(
+    app.listen(port, () => {
+      console.log(`Listening on port ${port}...`);
+    }),
+  )
+  .catch((error) =>
+    console.log(`Error while connecting to database: ${error}`),
+  );
