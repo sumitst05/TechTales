@@ -54,7 +54,7 @@ function ArticleCard({ article, setArticleUpdate }) {
 			channel.unbind("articleLiked");
 			pusher.unsubscribe("likes");
 		};
-	}, [article._id, likedStatus]);
+	}, [article]);
 
 	useEffect(() => {
 		const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
@@ -82,8 +82,6 @@ function ArticleCard({ article, setArticleUpdate }) {
 		}
 		setLastClickTime(currentTime);
 
-		setLikedStatus((prevLikedStatus) => !prevLikedStatus);
-
 		try {
 			dispatch(updateUserStart());
 			setArticleUpdate(true);
@@ -110,6 +108,8 @@ function ArticleCard({ article, setArticleUpdate }) {
 					likedArticles: Array.from(updatedLikedArticles),
 				}),
 			);
+
+			setLikedStatus((prevLikedStatus) => !prevLikedStatus);
 		} catch (error) {
 			dispatch(updateUserFailure(error.message));
 			console.log(error.message);
