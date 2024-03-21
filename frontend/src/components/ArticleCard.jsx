@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import Pusher from "pusher-js/with-encryption";
+import Pusher from "pusher-js";
 
 import {
 	deleteUserFailure,
@@ -17,7 +17,6 @@ import {
 
 const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
 	cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-	encrypted: true,
 });
 
 function ArticleCard({ article, setArticleUpdate }) {
@@ -54,7 +53,7 @@ function ArticleCard({ article, setArticleUpdate }) {
 			channel.unbind("articleLiked");
 			pusher.unsubscribe("likes");
 		};
-	}, [article]);
+	}, [article.likes]);
 
 	useEffect(() => {
 		const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
@@ -94,6 +93,8 @@ function ArticleCard({ article, setArticleUpdate }) {
 				{ withCredentials: true },
 			);
 
+			setLikedStatus(!likedStatus);
+
 			const updatedLikedArticles = new Set(currentUser.likedArticles);
 
 			if (likedStatus) {
@@ -108,8 +109,6 @@ function ArticleCard({ article, setArticleUpdate }) {
 					likedArticles: Array.from(updatedLikedArticles),
 				}),
 			);
-
-			setLikedStatus(!likedStatus);
 		} catch (error) {
 			dispatch(updateUserFailure(error.message));
 			console.log(error.message);
