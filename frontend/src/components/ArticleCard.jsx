@@ -42,12 +42,7 @@ function ArticleCard({ article, setArticleUpdate }) {
 	useEffect(() => {
 		const channel = pusher.subscribe("likes");
 
-		channel.bind("articleLiked", function(data) {
-			if (data.articleId === article._id) {
-				setLikes(data.updatedLikes);
-				console.log(data.updatedLikes);
-			}
-		});
+		channel.bind("articleLiked", () => { });
 
 		return () => {
 			channel.unbind("articleLiked");
@@ -87,13 +82,20 @@ function ArticleCard({ article, setArticleUpdate }) {
 
 			setLikedStatus(!likedStatus);
 
-			await axios.patch(
+			const res = await axios.patch(
 				mode === "DEV"
 					? `/api/articles/like/${article._id}`
 					: `https://tech-tales-api.vercel.app/api/articles/like/${article._id}`,
 				{},
 				{ withCredentials: true },
 			);
+
+			const id = res.data.id;
+			const updatedLikes = res.data.likes;
+
+			if (id === article._id) {
+				setLikes(updatedLikes);
+			}
 
 			const updatedLikedArticles = new Set(currentUser.likedArticles);
 
