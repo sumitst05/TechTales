@@ -84,7 +84,7 @@ function Article() {
 		};
 
 		fetchArticle();
-	}, [slug, currentUser]);
+	}, [slug]);
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
