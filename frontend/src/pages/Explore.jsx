@@ -65,6 +65,8 @@ function Explore() {
 
   async function handleLike(articleId) {
     try {
+      setArticleUpdate(true);
+
       const res = await axios.patch(
         mode === "DEV"
           ? `/api/articles/like/${articleId}`

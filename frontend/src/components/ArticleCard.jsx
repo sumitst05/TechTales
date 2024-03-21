@@ -14,7 +14,7 @@ const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
   cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
 });
 
-function ArticleCard({ article, setArticleUpdate, onLike, onBookmark }) {
+function ArticleCard({ article, onLike, onBookmark }) {
   const mode = import.meta.env.VITE_MODE;
   const [likedStatus, setLikedStatus] = useState(false);
   const [likes, setLikes] = useState(article.likes);
@@ -41,11 +41,6 @@ function ArticleCard({ article, setArticleUpdate, onLike, onBookmark }) {
         setLikes(data.updatedLikes);
       }
     });
-
-    return () => {
-      channel.unbind("articleLiked");
-      pusher.unsubscribe("likes");
-    };
   }, [article.likes]);
 
   useEffect(() => {
