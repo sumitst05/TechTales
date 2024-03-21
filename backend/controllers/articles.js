@@ -205,14 +205,10 @@ export const likeArticle = async (req, res) => {
 			updatedLikes = article.likes + 1;
 			user.likedArticles.push(articleId);
 		}
-
 		await user.save();
 
-		await Article.findByIdAndUpdate(
-			articleId,
-			{ likes: updatedLikes },
-			{ new: true },
-		);
+		article.likes = updatedLikes;
+		await article.save();
 
 		pusher.trigger("likes", "articleLiked", {
 			articleId,
