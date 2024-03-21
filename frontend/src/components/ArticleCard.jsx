@@ -54,7 +54,7 @@ function ArticleCard({ article, setArticleUpdate }) {
 			channel.unbind("articleLiked");
 			pusher.unsubscribe("likes");
 		};
-	}, []);
+	}, [article._id, likedStatus]);
 
 	useEffect(() => {
 		const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
