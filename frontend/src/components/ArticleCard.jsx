@@ -109,7 +109,7 @@ function ArticleCard({ article, setArticleUpdate }) {
 				}),
 			);
 
-			setLikedStatus((prevLikedStatus) => !prevLikedStatus);
+			setLikedStatus(!likedStatus);
 		} catch (error) {
 			dispatch(updateUserFailure(error.message));
 			console.log(error.message);
