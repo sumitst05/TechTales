@@ -5,11 +5,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import Pusher from "pusher-js/with-encryption";
 
-import {
-	updateUserStart,
-	updateUserSuccess,
-	updateUserFailure,
-} from "../redux/user/userSlice";
+import { updateUserSuccess } from "../redux/user/userSlice";
 
 const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
 	cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
@@ -24,11 +20,8 @@ function Article() {
 	const [readTime, setReadTime] = useState(0);
 	const [showAllTags, setShowAllTags] = useState(false);
 	const [likedStatus, setLikedStatus] = useState(false);
-	const [likes, setLikes] = useState(article.likes);
 	const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
 	const [linkCopied, setLinkCopied] = useState(false);
-	const [lastLikeClickTime, setLastLikeClickTime] = useState(0);
-	const [lastBookmarkClickTime, setLastBookmarkClickTime] = useState(0);
 	const [readOnly, setReadOnly] = useState(true);
 
 	const { currentUser } = useSelector((state) => state.user);
@@ -45,17 +38,13 @@ function Article() {
 	useEffect(() => {
 		const channel = pusher.subscribe("likes");
 
-		channel.bind("articleLiked", function(data) {
-			if (data.articleId === article._id) {
-				setLikes(data.updatedLikes);
-			}
-		});
+		channel.bind("articleLiked", () => { });
 
 		return () => {
 			channel.unbind("articleLiked");
 			pusher.unsubscribe("likes");
 		};
-	}, [article._id]);
+	}, []);
 
 	useEffect(() => {
 		const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
@@ -110,84 +99,55 @@ function Article() {
 	}
 
 	async function handleLike() {
-		const currentTime = new Date().getTime();
-		if (currentTime - lastLikeClickTime < 3000) {
-			return;
-		}
-		setLastLikeClickTime(currentTime);
+		const articleId = article._id;
 
 		try {
-			dispatch(updateUserStart());
-
-			setLikedStatus(!likedStatus);
-
-			const updatedLikedArticles = new Set(currentUser.likedArticles);
-
-			if (likedStatus) {
-				updatedLikedArticles.delete(article._id);
-			} else {
-				updatedLikedArticles.add(article._id);
-			}
-
-			await axios.patch(
+			const res = await axios.patch(
 				mode === "DEV"
-					? `/api/articles/like/${article._id}`
-					: `https://tech-tales-api.vercel.app/api/articles/like/${article._id}`,
-				{
-					liked: likedStatus,
-					likes: article.likes,
-				},
+					? `/api/articles/like/${articleId}`
+					: `https://tech-tales-api.vercel.app/api/articles/like/${articleId}`,
+				{},
 				{ withCredentials: true },
+			);
+			const updatedLikes = res.data.article.likes;
+
+			setArticle(
+				article._id === articleId
+					? { ...article, likes: updatedLikes }
+					: article,
 			);
 
 			dispatch(
 				updateUserSuccess({
 					...currentUser,
-					likedArticles: Array.from(updatedLikedArticles),
+					likedArticles: res.data.user.likedArticles,
 				}),
 			);
 		} catch (error) {
-			error.message = error.response
-				? error.response.data.message
-				: error.response.statusText;
-			dispatch(updateUserFailure(error.message));
+			console.log(error.message);
 		}
 	}
 
 	async function handleBookmark() {
-		const currentTime = new Date().getTime();
-		if (currentTime - lastBookmarkClickTime < 1000) {
-			return;
-		}
-		setLastBookmarkClickTime(currentTime);
+		const articleId = article._id;
 
 		try {
-			dispatch(updateUserStart());
-
-			setBookmarkedStatus(!bookmarkedStatus);
-
-			const updatedBookmarkedArticles = bookmarkedStatus
-				? currentUser.bookmarkedArticles.filter((id) => id !== article._id)
-				: [...currentUser.bookmarkedArticles, article._id];
-
 			const res = await axios.patch(
 				mode === "DEV"
 					? "/api/user/update"
 					: "https://tech-tales-api.vercel.app/api/user/update",
 				{
-					bookmarkedArticles: updatedBookmarkedArticles,
+					...currentUser,
+					bookmarkedArticles: currentUser.bookmarkedArticles.includes(articleId)
+						? currentUser.bookmarkedArticles.filter((id) => id !== articleId)
+						: [...currentUser.bookmarkedArticles, articleId],
 				},
 				{ withCredentials: true },
 			);
-			const data = res.data;
 
-			dispatch(updateUserSuccess(data));
+			dispatch(updateUserSuccess(res.data));
 		} catch (error) {
-			console.log(error.message);
-			error.message = error.response
-				? error.response.data.message
-				: error.response.statusText;
-			dispatch(updateUserFailure(error.message));
+			console.log(error);
 		}
 	}
 
