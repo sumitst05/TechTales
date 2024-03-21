@@ -17,7 +17,6 @@ const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
 function ArticleCard({ article, onLike, onBookmark }) {
 	const mode = import.meta.env.VITE_MODE;
 	const [likedStatus, setLikedStatus] = useState(false);
-	const [likes, setLikes] = useState(article.likes);
 	const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
 	const [linkCopied, setLinkCopied] = useState(false);
 	const [showDelete, setShowDelete] = useState(false);
@@ -36,11 +35,7 @@ function ArticleCard({ article, onLike, onBookmark }) {
 	useEffect(() => {
 		const channel = pusher.subscribe("likes");
 
-		channel.bind("articleLiked", (data) => {
-			if (data.articleId === article._id) {
-				setLikes(data.updatedLikes);
-			}
-		});
+		channel.bind("articleLiked", () => { });
 	}, []);
 
 	useEffect(() => {
