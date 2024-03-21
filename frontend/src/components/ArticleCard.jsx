@@ -85,6 +85,8 @@ function ArticleCard({ article, setArticleUpdate }) {
 			dispatch(updateUserStart());
 			setArticleUpdate(true);
 
+			setLikedStatus(!likedStatus);
+
 			await axios.patch(
 				mode === "DEV"
 					? `/api/articles/like/${article._id}`
@@ -92,8 +94,6 @@ function ArticleCard({ article, setArticleUpdate }) {
 				{},
 				{ withCredentials: true },
 			);
-
-			setLikedStatus(!likedStatus);
 
 			const updatedLikedArticles = new Set(currentUser.likedArticles);
 
