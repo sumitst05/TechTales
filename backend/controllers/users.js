@@ -56,7 +56,12 @@ export const getBookmarkedArticles = async (req, res) => {
 		const skip = (page - 1) * pageSize;
 
 		const user = await User.findById(userId)
-			.populate("bookmarkedArticles")
+			.populate({
+				path: "bookmarkedArticles",
+				options: {
+					sort: { likes: 1 },
+				},
+			})
 			.skip(skip)
 			.limit(pageSize);
 
@@ -81,7 +86,12 @@ export const getLikedArticles = async (req, res) => {
 		const skip = (page - 1) * pageSize;
 
 		const user = await User.findById(userId)
-			.populate("likedArticles")
+			.populate({
+				path: "likedArticles",
+				options: {
+					sort: { likes: 1 },
+				},
+			})
 			.skip(skip)
 			.limit(pageSize);
 
