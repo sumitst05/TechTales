@@ -54,7 +54,7 @@ export const getArticles = async (req, res) => {
 export const getMyArticles = async (req, res) => {
 	try {
 		const { page = 1, pageSize = 10 } = req.query;
-		const userId = req.params.id;
+		const userId = req.params.id ? req.params.id : req.user.id;
 		const skip = (page - 1) * pageSize;
 
 		const articles = await Article.find({ author: userId })
