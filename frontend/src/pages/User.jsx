@@ -61,7 +61,7 @@ function User() {
 			const res = await axios.patch(
 				mode === "DEV"
 					? `/api/user/follow/${userId}?unfollow=${follow}`
-					: `https://tech-tales-api.vercel.app/user/follow/${userId}?unfollow=${follow}`,
+					: `https://tech-tales-api.vercel.app/api/user/follow/${userId}?unfollow=${follow}`,
 				{
 					following: currentUser.following.includes(userId)
 						? currentUser.following.filter((id) => id !== userId)
