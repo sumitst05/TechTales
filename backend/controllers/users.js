@@ -167,6 +167,7 @@ export const getFollowersAndFollowing = async (req, res) => {
 			profilePicture: item.profilePicture,
 			createdAt: item.createdAt,
 			bio: item.bio,
+			followerCount: item.followerCount,
 		}));
 
 		const rawFollowers = await User.find({ following: userId }).populate(
@@ -178,6 +179,7 @@ export const getFollowersAndFollowing = async (req, res) => {
 			profilePicture: item.profilePicture,
 			createdAt: item.createdAt,
 			bio: item.bio,
+			followerCount: item.followerCount,
 		}));
 
 		res.status(200).json({ following, followers });

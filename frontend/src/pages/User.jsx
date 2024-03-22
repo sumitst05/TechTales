@@ -57,7 +57,6 @@ function User() {
 	async function handleFollow() {
 		try {
 			dispatch(updateUserStart());
-			console.log([...currentUser.following, userId]);
 			const res = await axios.patch(
 				mode === "DEV"
 					? `/api/user/follow/${userId}?unfollow=${follow}`
@@ -255,7 +254,7 @@ function User() {
 				</button>
 			</div>
 
-			<ul className="flex justify-center items-center gap-6 select-none mt-6 ">
+			<ul className="flex justify-center items-center gap-4 lg:gap-6 select-none mt-6">
 				<li
 					className={
 						followersSelected
@@ -306,17 +305,26 @@ function User() {
 										className="h-16 w-16 object-cover flex-shrink-0 rounded-full bg-slate-200"
 									/>
 									<div className="flex flex-col overflow-hidden">
-										<p className="text-3xl font-bold truncate mt-1">
+										<p className="text-3xl font-bold truncate">
 											{user.data ? user.data.username : user.username}
 										</p>
-										<p className="text-sm truncate">
-											Joined:{" "}
-											{Intl.DateTimeFormat("en-US", {
-												month: "short",
-												day: "numeric",
-												year: "numeric",
-											}).format(new Date(user.createdAt))}
-										</p>
+										<div className="flex items-center">
+											<p className="text-sm truncate">
+												Joined:{" "}
+												{Intl.DateTimeFormat("en-US", {
+													month: "short",
+													day: "numeric",
+													year: "numeric",
+												}).format(new Date(user.createdAt))}
+											</p>
+											<p className="font-light mx-2">•</p>
+											<p className="text-sm truncate">
+												{user.followerCount +
+													(user.followerCount == 1
+														? " Follower"
+														: " Followers")}
+											</p>
+										</div>
 										<p className="text-lg break-words line-clamp-1 mt-2">
 											{user?.bio}
 										</p>
@@ -343,17 +351,26 @@ function User() {
 										className="h-16 w-16 object-cover flex-shrink-0 rounded-full bg-slate-200"
 									/>
 									<div className="flex flex-col overflow-hidden">
-										<p className="text-3xl font-bold truncate mt-1">
+										<p className="text-3xl font-bold truncate">
 											{user.data ? user.data.username : user.username}
 										</p>
-										<p className="text-sm truncate">
-											Joined:{" "}
-											{Intl.DateTimeFormat("en-US", {
-												month: "short",
-												day: "numeric",
-												year: "numeric",
-											}).format(new Date(user.createdAt))}
-										</p>
+										<div className="flex items-center">
+											<p className="text-sm truncate">
+												Joined:{" "}
+												{Intl.DateTimeFormat("en-US", {
+													month: "short",
+													day: "numeric",
+													year: "numeric",
+												}).format(new Date(user.createdAt))}
+											</p>
+											<p className="font-light mx-2">•</p>
+											<p className="text-sm truncate">
+												{user.followerCount +
+													(user.followerCount == 1
+														? " Follower"
+														: " Followers")}
+											</p>
+										</div>
 										<p className="text-lg break-words line-clamp-1 mt-2">
 											{user?.bio}
 										</p>

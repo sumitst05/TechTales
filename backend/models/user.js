@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import { getRandomQuote } from "randoquoter";
+
+const randomQuote = getRandomQuote();
 
 const userSchema = new mongoose.Schema(
 	{
@@ -27,6 +30,7 @@ const userSchema = new mongoose.Schema(
 		},
 		bio: {
 			type: String,
+			default: randomQuote.text,
 		},
 		xAccount: {
 			type: String,
