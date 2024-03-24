@@ -68,10 +68,7 @@ export const reply = async (req, res) => {
 		});
 
 		const result = await reply.save();
-		result.populate("writer");
-		result.populate("replyingTo");
-
-		console.log(result.replyingTo);
+		result.populate(["writer", "replyingTo"]);
 
 		await Comment.findOneAndUpdate(
 			{ _id: commentId, article: articleId },

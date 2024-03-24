@@ -21,7 +21,7 @@ function Comments({ articleId }) {
         const res = await axios.get(
           mode === "DEV"
             ? `/api/comment/${articleId}?page=${page}`
-            : `https://tech-tales-api.vercel.app/comment/${articleId}?page=${page}`,
+            : `https://tech-tales-api.vercel.app/api/comment/${articleId}?page=${page}`,
           { withCredentials: true },
         );
 
