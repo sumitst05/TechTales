@@ -12,11 +12,7 @@ export const getComments = async (req, res) => {
 			.populate("writer")
 			.populate({
 				path: "replies",
-				populate: [
-					{
-						path: "writer",
-					},
-				],
+				populate: [{ path: "writer" }, { path: "replyingTo" }],
 			});
 
 		res.status(201).json(comments);
