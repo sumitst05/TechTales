@@ -7,7 +7,7 @@ import Tags from "../components/Tags";
 import Pagination from "../components/Pagination";
 import Loader from "../components/Loader";
 
-import { updateUserSuccess } from "../redux/user/userSlice";
+import { updateUserFailure, updateUserSuccess } from "../redux/user/userSlice";
 
 function Explore() {
 	const mode = import.meta.env.VITE_MODE;
@@ -91,6 +91,7 @@ function Explore() {
 				}),
 			);
 		} catch (error) {
+			dispatch(updateUserFailure(error.message));
 			console.log(error.message);
 		}
 	}

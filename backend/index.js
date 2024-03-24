@@ -12,34 +12,36 @@ import indexRouter from "./routes/index.js";
 import articleRouter from "./routes/articles.js";
 import authRouter from "./routes/auth.js";
 import userRouter from "./routes/users.js";
+import commentRouter from "./routes/comments.js";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://tech-tales-io.vercel.app",
-      "https://techtales-564.firebaseapp.com",
-    ],
-    credentials: true,
-  }),
+	cors({
+		origin: [
+			"http://localhost:5173",
+			"https://tech-tales-io.vercel.app",
+			"https://techtales-564.firebaseapp.com",
+		],
+		credentials: true,
+	}),
 );
 
 app.use(cookieParser());
 
 app.use("/api", indexRouter);
-app.use("/api/articles", articleRouter);
-app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
+app.use("/api/articles", articleRouter);
+app.use("/api/comment", commentRouter);
 
 mongoose
-  .connect(process.env.DB_URL)
-  .then(
-    app.listen(port, () => {
-      console.log(`Listening on port ${port}...`);
-    }),
-  )
-  .catch((error) =>
-    console.log(`Error while connecting to database: ${error}`),
-  );
+	.connect(process.env.DB_URL)
+	.then(
+		app.listen(port, () => {
+			console.log(`Listening on port ${port}...`);
+		}),
+	)
+	.catch((error) =>
+		console.log(`Error while connecting to database: ${error}`),
+	);

@@ -160,12 +160,12 @@ function PublishArticle({ setShowPublish, newArticle }) {
   return (
     <div className="fixed top-0 left-0 z-50 bg-slate-50 bg-opacity-50 w-full h-full flex justify-center items-center">
       <div className="p-6 bg-gray-100 shadow-2xl fixed z-15 items-center md:w-1/3 select-none">
-        <img
-          alt="close"
-          src="/close.png"
-          className="absolute w-5 h-5 top-2 right-2 hover:bg-zinc-300 cursor-pointer rounded-full"
+        <button
+          className="absolute top-0 right-2 text-violet-700 hover:text-indigo-700 text-3xl font-semibold"
           onClick={() => setShowPublish(false)}
-        />
+        >
+          &times;
+        </button>
         <h2 className="text-lg text-center font-semibold p-4 text-transparent bg-clip-text bg-gradient-to-r from-violet-800 to-indigo-600">
           {!next ? "Enter Tags" : "Add Cover Image"}
         </h2>

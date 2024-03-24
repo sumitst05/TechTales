@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Pusher from "pusher-js/with-encryption";
 
 import { updateUserSuccess } from "../redux/user/userSlice";
+import CommentSection from "../components/CommentSection";
 
 const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
 	cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
@@ -23,6 +24,7 @@ function Article() {
 	const [bookmarkedStatus, setBookmarkedStatus] = useState(false);
 	const [linkCopied, setLinkCopied] = useState(false);
 	const [readOnly, setReadOnly] = useState(true);
+	const [showCommentSection, setShowCommentSection] = useState(false);
 
 	const { currentUser } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
@@ -247,6 +249,7 @@ function Article() {
 						src="/comment.png"
 						alt="comment"
 						className="h-6 w-6 hover:scale-125 ml-5 cursor-pointer"
+						onClick={() => setShowCommentSection(!showCommentSection)}
 					/>
 				</div>
 
@@ -286,6 +289,13 @@ function Article() {
 					readOnly={readOnly}
 				/>
 			</div>
+
+			{showCommentSection && (
+				<CommentSection
+					onClose={() => setShowCommentSection(false)}
+					articleId={article._id}
+				/>
+			)}
 		</div>
 	);
 }
