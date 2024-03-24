@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import Loader from "./Loader";
 import axios from "axios";
 
 function Comments({ articleId }) {
@@ -121,6 +122,7 @@ function Comments({ articleId }) {
 
   return (
     <>
+      {loading && <Loader />}
       {comments
         .filter((comment) => comment.parentComment === null)
         .map((comment) => (
