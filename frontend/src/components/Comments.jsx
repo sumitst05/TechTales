@@ -132,7 +132,7 @@ function Comments({ articleId }) {
 			const res = await axios.patch(
 				mode === "DEV"
 					? `/api/comment/${commentId}/like/${articleId}`
-					: `https://tech-tales-api.vercel.app/api/comment/${articleId}/like/${commentId}`,
+					: `https://tech-tales-api.vercel.app/api/comment/${commentId}/like/${articleId}`,
 				{},
 				{ withCredentials: true },
 			);
