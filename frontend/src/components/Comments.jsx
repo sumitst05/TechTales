@@ -133,7 +133,7 @@ function Comments({ articleId }) {
 				mode === "DEV"
 					? `/api/comment/${commentId}/like/${articleId}`
 					: `https://tech-tales-api.vercel.app/api/comment/${articleId}/like/${commentId}`,
-				null,
+				{},
 				{ withCredentials: true },
 			);
 
