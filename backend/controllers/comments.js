@@ -2,18 +2,27 @@ import Comment from "../models/comments.js";
 
 export const getComments = async (req, res) => {
 	const articleId = req.params.id;
+	const page = parseInt(req.query.page);
 
 	try {
 		if (!articleId) {
 			return res.status(404).json({ message: "Article not found!" });
 		}
 
-		const comments = await Comment.find({ article: articleId })
+		const limit = 5;
+		const skip = (page - 1) * limit;
+
+		const comments = await Comment.find({
+			article: articleId,
+			parentComment: null,
+		})
 			.populate("writer")
 			.populate({
 				path: "replies",
 				populate: [{ path: "writer" }, { path: "replyingTo" }],
-			});
+			})
+			.skip(skip)
+			.limit(limit);
 
 		res.status(201).json(comments);
 	} catch (error) {

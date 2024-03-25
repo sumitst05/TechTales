@@ -8,14 +8,31 @@ function Comments({ articleId }) {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [replyTo, setReplyTo] = useState(null);
   const [replyContent, setReplyContent] = useState("");
+  const [hasMore, setHasMore] = useState(true);
+  const [isComponentMounted, setIsComponentMounted] = useState(true);
 
-  const observer = useRef();
-  const lastCommentRef = useRef();
+  const commentsEndRef = useRef(null);
 
   useEffect(() => {
+    return () => {
+      setIsComponentMounted(false);
+    };
+  }, []);
+
+  useEffect(() => {
+    setIsComponentMounted(true);
+    setPage(1);
+    setHasMore(true);
+    setComments([]);
+  }, [articleId]);
+
+  useEffect(() => {
+    if (!hasMore || !isComponentMounted) {
+      return;
+    }
+
     const fetchComments = async () => {
       setLoading(true);
       try {
@@ -25,18 +42,18 @@ function Comments({ articleId }) {
             : `https://tech-tales-api.vercel.app/api/comment/${articleId}?page=${page}`,
           { withCredentials: true },
         );
-
-        setComments((prevComments) => {
-          const newComments = res.data.filter(
-            (comment) =>
-              !prevComments.some(
-                (prevComment) => prevComment.id === comment.id,
+        if (res.data.length === 0) {
+          setHasMore(false);
+        } else {
+          setComments((prevComments) => {
+            const newComments = res.data.filter((newComment) =>
+              prevComments.every(
+                (prevComment) => prevComment._id !== newComment._id,
               ),
-          );
-          return [...prevComments, ...newComments];
-        });
-
-        setHasMore(res.data.length > 0);
+            );
+            return [...prevComments, ...newComments];
+          });
+        }
         setLoading(false);
       } catch (error) {
         console.error(error.message);
@@ -45,35 +62,32 @@ function Comments({ articleId }) {
     };
 
     fetchComments();
-  }, [articleId, page]);
+  }, [articleId, page, hasMore, isComponentMounted]);
 
   useEffect(() => {
-    if (!hasMore) {
-      return;
-    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 1.0,
+      },
+    );
 
-    const options = {
-      root: null,
-      rootMargin: "0px",
-      threshold: 1.0,
-    };
-
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        setPage((prevPage) => prevPage + 1);
-      }
-    }, options);
-
-    if (lastCommentRef.current) {
-      observer.current.observe(lastCommentRef.current);
+    if (commentsEndRef.current) {
+      observer.observe(commentsEndRef.current);
     }
 
     return () => {
-      if (observer.current) {
-        observer.current.disconnect();
+      if (commentsEndRef.current) {
+        observer.unobserve(commentsEndRef.current);
       }
     };
-  }, [hasMore]);
+  }, [loading]);
 
   function handleReply(commentId) {
     setReplyTo((prevReplyTo) => (prevReplyTo === commentId ? null : commentId));
@@ -123,104 +137,112 @@ function Comments({ articleId }) {
   return (
     <>
       {loading && <Loader />}
-      {comments
-        .filter((comment) => comment.parentComment === null)
-        .map((comment) => (
-          <div
-            key={comment._id}
-            className="flex flex-col items-start mb-2 p-3 w-full rounded-xl text-slate-700"
-          >
-            <div className="flex justify-between w-full">
-              <div className="flex items-center gap-2 font-semibold">
-                <img className="h-5 w-5" src={comment.writer.profilePicture} />
-                <p>{comment.writer.username}</p>
-              </div>
-              <button className="">Like</button>
+      {comments.map((comment, index) => (
+        <div
+          key={comment._id}
+          className="flex flex-col items-start p-3 w-full rounded-xl text-slate-700"
+          ref={commentsEndRef}
+        >
+          <div className="flex justify-between w-full">
+            <div className="flex items-center gap-2 font-semibold">
+              <img
+                className="h-5 w-5"
+                src={comment.writer.profilePicture}
+                alt="Profile"
+              />
+              <p>{comment.writer.username}</p>
             </div>
-            <p>{comment.content}</p>
-            <button className="" onClick={() => handleReply(comment._id)}>
-              Reply
-            </button>
-            {replyTo === comment._id && (
-              <div className="flex justify-between gap-2 w-full">
-                <textarea
-                  className="w-full bg-gray-100 mt-2 p-2 rounded-lg outline-none outline-zinc-400 focus:outline-violet-700 resize-none"
-                  rows={1}
-                  placeholder="Write your reply..."
-                  value={replyContent}
-                  onChange={handleReplyChange}
-                ></textarea>
-                <button
-                  className="p-2 mt-2 text-white rounded bg-gradient-to-r from-violet-800 to-indigo-600 hover:opacity-90"
-                  onClick={() => handleReplyPost(comment._id, comment.writer)}
-                >
-                  Post
-                </button>
-              </div>
-            )}
-            {comment.replies.length > 0 && !comment.showReplies && (
-              <p
-                className="text-sm cursor-pointer"
-                onClick={() => toggleReplies(comment._id)}
+            <button className="">Like</button>
+          </div>
+          <p>{comment.content}</p>
+          <button onClick={() => handleReply(comment._id)}>Reply</button>
+          {replyTo === comment._id && (
+            <div className="flex justify-between gap-2 w-full">
+              <textarea
+                className="w-full bg-gray-100 mb-2 mt-2 p-2 rounded-lg outline-none outline-zinc-400 focus:outline-violet-700 resize-none"
+                rows={1}
+                placeholder="Write your reply..."
+                value={replyContent}
+                onChange={handleReplyChange}
+              ></textarea>
+              <button
+                className="p-2 mt-2 text-white rounded bg-gradient-to-r from-violet-800 to-indigo-600 hover:opacity-90"
+                onClick={() => handleReplyPost(comment._id, comment.writer)}
               >
-                View {comment.replies.length} replies
-              </p>
-            )}
-            {comment.showReplies && comment.replies.length > 0 && (
-              <>
-                {comment.replies.map((reply) => (
-                  <div
-                    key={reply._id}
-                    className="flex flex-col items-start ml-3 mb-2 p-3 w-full rounded-xl text-slate-700"
-                  >
-                    <div className="flex justify-between w-full">
-                      <div className="flex items-center gap-2 font-semibold">
-                        <img
-                          className="h-5 w-5"
-                          src={reply.writer.profilePicture}
-                        />
-                        <p>{reply.writer.username}</p>
-                        <p>@{reply.replyingTo.username}</p>
-                      </div>
-                      <button className="">Like</button>
+                Post
+              </button>
+            </div>
+          )}
+          {comment.replies.length > 0 && !comment.showReplies && (
+            <p
+              className="text-sm cursor-pointer"
+              onClick={() => toggleReplies(comment._id)}
+            >
+              View {comment.replies.length} replies
+            </p>
+          )}
+          {comment.showReplies && comment.replies.length > 0 && (
+            <>
+              {comment.replies.map((reply) => (
+                <div
+                  key={reply._id}
+                  className="flex flex-col items-start ml-3 mb-2 p-3 w-full rounded-xl text-slate-700"
+                >
+                  <div className="flex justify-between w-full">
+                    <div className="flex items-center gap-2 font-semibold">
+                      <img
+                        className="h-5 w-5"
+                        src={reply.writer.profilePicture}
+                        alt="Profile"
+                      />
+                      <p>{reply.writer.username}</p>
+                      <p>@{reply.replyingTo.username}</p>
                     </div>
-                    <p>{reply.content}</p>
-                    <button className="" onClick={() => handleReply(reply._id)}>
-                      Reply
-                    </button>
-                    {replyTo === reply._id && (
-                      <div className="flex justify-between gap-2 w-full">
-                        <textarea
-                          className="w-full bg-gray-100 mt-2 p-2 rounded-lg outline-none outline-zinc-400 focus:outline-violet-700 resize-none"
-                          rows={1}
-                          placeholder="Write your reply..."
-                          value={replyContent}
-                          onChange={handleReplyChange}
-                        ></textarea>
-                        <button
-                          className="p-2 mt-2 text-white rounded bg-gradient-to-r from-violet-800 to-indigo-600 hover:opacity-90"
-                          onClick={() =>
-                            handleReplyPost(comment._id, reply.writer)
-                          }
-                        >
-                          Post
-                        </button>
-                      </div>
-                    )}
+                    <button className="">Like</button>
                   </div>
-                ))}
-              </>
-            )}
-            {comment.showReplies && (
+                  <p>{reply.content}</p>
+                  <button
+                    className="mt-1"
+                    onClick={() => handleReply(reply._id)}
+                  >
+                    Reply
+                  </button>
+                  {replyTo === reply._id && (
+                    <div className="flex justify-between gap-2 w-full">
+                      <textarea
+                        className="w-full bg-gray-100 mt-2 p-2 rounded-lg outline-none outline-zinc-400 focus:outline-violet-700 resize-none"
+                        rows={1}
+                        placeholder="Write your reply..."
+                        value={replyContent}
+                        onChange={handleReplyChange}
+                      ></textarea>
+                      <button
+                        className="p-2 mt-2 text-white rounded bg-gradient-to-r from-violet-800 to-indigo-600 hover:opacity-90"
+                        onClick={() =>
+                          handleReplyPost(comment._id, reply.writer)
+                        }
+                      >
+                        Post
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </>
+          )}
+          {comment.showReplies && (
+            <>
               <p
                 className="text-sm mb-2 self-start cursor-pointer"
                 onClick={() => toggleReplies(comment._id)}
               >
                 Hide replies
               </p>
-            )}
-          </div>
-        ))}
+            </>
+          )}
+          <hr className="w-full mt-5" />
+        </div>
+      ))}
     </>
   );
 }

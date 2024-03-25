@@ -36,6 +36,12 @@ function ArticleCard({ article, onLike, onBookmark }) {
     const channel = pusher.subscribe("likes");
 
     channel.bind("articleLiked", () => {});
+
+    return () => {
+      channel.unbind("articleLiked");
+      channel.unsubscribe();
+      pusher.disconnect();
+    };
   }, []);
 
   useEffect(() => {
