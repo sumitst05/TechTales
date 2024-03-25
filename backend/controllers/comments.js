@@ -116,7 +116,7 @@ export const likeComment = async (req, res) => {
 	const { commentId, articleId } = req.params;
 
 	try {
-		const comment = Comment.findOne({
+		const comment = await Comment.findOne({
 			_id: commentId,
 			article: articleId,
 		});
@@ -130,13 +130,13 @@ export const likeComment = async (req, res) => {
 		if (userLikedIndex !== -1) {
 			comment.likes.splice(userLikedIndex, 1);
 		} else {
-			comment.likes.push(userId);
+			comment.likes.push(req.user.id);
 		}
 
 		await comment.save();
 
-		res.status(200).json({ message: "Comment liked!" });
+		res.status(200).json({ likes: comment.likes });
 	} catch (error) {
-		res.status(500).json({ message: "Internal server error!" });
+		res.status(500).json({ message: error.message });
 	}
 };

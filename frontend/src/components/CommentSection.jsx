@@ -54,7 +54,7 @@ const CommentSection = ({ onClose, articleId }) => {
       <div
         className={`mt-16 fixed inset-0 z-10 flex justify-start items-center transition-transform ease-in-out duration-300 transform ${isVisible ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="max-w-full md:w-5/12 h-full bg-white overflow-auto">
+        <div className="w-full md:w-5/12 h-full bg-white overflow-auto">
           <div className="p-4">
             <div className="flex justify-between items-center">
               <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-800 to-indigo-600">
