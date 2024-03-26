@@ -9,7 +9,6 @@ import Explore from "./pages/Explore";
 import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import Notifications from "./pages/Notifications";
 import YourArticles from "./pages/YourArticles";
 import Article from "./pages/Article";
 import User from "./pages/User";
@@ -65,9 +64,6 @@ export default function App() {
           </Route>
           <Route element={<PrivateRoute />}>
             <Route path="/user/:slug" element={<User />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
-            <Route path="/notifications" element={<Notifications />} />
           </Route>
           <Route element={<PrivateRoute />}>
             <Route path="/article/:slug" element={<Article />} />
