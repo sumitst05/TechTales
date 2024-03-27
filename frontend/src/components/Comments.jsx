@@ -106,7 +106,7 @@ function Comments({ articleId }) {
 			const res = await axios.post(
 				mode === "DEV"
 					? `/api/comment/${commentId}/reply/${articleId}`
-					: `https://tech-tales-api.vercel.app/api/comment/${articleId}/reply/${commentId}`,
+					: `https://tech-tales-api.vercel.app/api/comment/${commentId}/reply/${articleId}`,
 				{ content: replyContent, replyingTo: replyingTo },
 				{ withCredentials: true },
 			);
