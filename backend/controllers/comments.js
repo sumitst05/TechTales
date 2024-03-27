@@ -72,13 +72,13 @@ export const reply = async (req, res) => {
 			replyingTo: req.body.replyingTo,
 		});
 
-		const result = await reply.save();
-		result.populate(["writer", "replyingTo"]);
-
 		await Comment.findOneAndUpdate(
 			{ _id: commentId, article: articleId },
 			{ $push: { replies: reply._id } },
 		);
+
+		const result = await reply.save();
+		result.populate(["writer", "replyingTo"]);
 
 		res.status(201).json(result);
 	} catch (error) {
@@ -132,6 +132,6 @@ export const likeComment = async (req, res) => {
 
 		res.status(200).json({ likes: comment.likes });
 	} catch (error) {
-		res.status(500).json({ message: error.message, comment });
+		res.status(500).json({ message: error.message, comment: comment });
 	}
 };
