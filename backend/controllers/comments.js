@@ -115,12 +115,11 @@ export const deleteComment = async (req, res) => {
 export const likeComment = async (req, res) => {
 	const { commentId, articleId } = req.params;
 
+	const comment = await Comment.findOne({
+		_id: commentId,
+		article: articleId,
+	});
 	try {
-		const comment = await Comment.findOne({
-			_id: commentId,
-			article: articleId,
-		});
-
 		const userLikedIndex = comment.likes.indexOf(req.user.id);
 
 		if (userLikedIndex !== -1) {
@@ -133,6 +132,6 @@ export const likeComment = async (req, res) => {
 
 		res.status(200).json({ likes: comment.likes });
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		res.status(500).json({ message: error.message, comment });
 	}
 };
