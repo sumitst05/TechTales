@@ -173,7 +173,6 @@ function Comments({ articleId }) {
 				mode === "DEV"
 					? `/api/comment/${commentId}/delete/${articleId}`
 					: `https://tech-tales-api.vercel.app/api/comment/${commentId}/delete/${articleId}`,
-				{},
 				{ withCredentials: true },
 			);
 
