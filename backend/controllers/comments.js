@@ -121,10 +121,6 @@ export const likeComment = async (req, res) => {
 			article: articleId,
 		});
 
-		if (!comment) {
-			return res.status(404).json({ message: "Comment not found!" });
-		}
-
 		const userLikedIndex = comment.likes.indexOf(req.user.id);
 
 		if (userLikedIndex !== -1) {
