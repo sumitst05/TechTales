@@ -132,6 +132,6 @@ export const likeComment = async (req, res) => {
 
 		res.status(200).json({ likes: comment.likes });
 	} catch (error) {
-		res.status(500).json({ message: error.message, comment: comment });
+		res.status(500).json({ message: error.message });
 	}
 };
