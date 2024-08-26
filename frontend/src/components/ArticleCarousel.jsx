@@ -52,7 +52,7 @@ function ArticleCarousel() {
         const res = await axios.get(
           mode === "DEV"
             ? `/api/articles?pageSize=5`
-            : `https://tech-tales-api.vercel.app/api/articles?pageSize=5`,
+            : `/api/articles?pageSize=5`,
         );
 
         const data = res.data.articles;
