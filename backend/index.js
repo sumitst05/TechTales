@@ -2,11 +2,14 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import path from "path";
 import "dotenv/config";
 
 const app = express();
 
 const port = process.env.PORT || 3000;
+
+const __dirname = path.resolve();
 
 import indexRouter from "./routes/index.js";
 import articleRouter from "./routes/articles.js";
@@ -34,6 +37,11 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/articles", articleRouter);
 app.use("/api/comment", commentRouter);
+
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "..", "frontend", "dist", "index.html"));
+});
 
 mongoose
 	.connect(process.env.DB_URL)
