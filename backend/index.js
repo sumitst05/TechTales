@@ -25,6 +25,7 @@ app.use(
 			"http://localhost:5173",
 			"https://tech-tales-io.vercel.app",
 			"https://techtales-564.firebaseapp.com",
+			"https://techtales-9xh0.onrender.com/",
 		],
 		credentials: true,
 	}),
