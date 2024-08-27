@@ -21,10 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
 	cors({
-		origin: [
-			"http://localhost:5173",
-			"https://techtales-564.firebaseapp.com",
-		],
+		origin: ["http://localhost:5173", "https://techtales-564.firebaseapp.com"],
 		credentials: true,
 	}),
 );
@@ -39,7 +36,7 @@ app.use("/api/comment", commentRouter);
 
 app.use(express.static(path.join(__dirname, "/frontend/dist")));
 app.use("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"))
+	res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
 });
 
 mongoose

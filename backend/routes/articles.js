@@ -1,14 +1,14 @@
 import express from "express";
 
 import {
-  getArticles,
-  getMyArticles,
-  getArticleById,
-  createArticle,
-  updateArticle,
-  deleteArticle,
-  getTags,
-  likeArticle,
+	getArticles,
+	getMyArticles,
+	getArticleById,
+	createArticle,
+	updateArticle,
+	deleteArticle,
+	getTags,
+	likeArticle,
 } from "../controllers/articles.js";
 import { auth } from "../middleware/auth.js";
 
