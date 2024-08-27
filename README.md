@@ -57,8 +57,4 @@
 
   - **Pusher**: Implemented for real-time updates, enabling instant like updates to all clients.
 
-## Deployment
-
-TechTales is deployed on [Vercel](https://vercel.com/), ensuring high availability and scalability for users accessing the platform.
-
 #### Feel free to contribute by opening a PR
