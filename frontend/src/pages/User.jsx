@@ -13,8 +13,6 @@ import {
 } from "../redux/user/userSlice";
 
 function User() {
-	const mode = import.meta.env.VITE_MODE;
-
 	const { slug } = useParams();
 	const userId = slug.split("-").pop();
 
@@ -58,9 +56,7 @@ function User() {
 		try {
 			dispatch(updateUserStart());
 			const res = await axios.patch(
-				mode === "DEV"
-					? `/api/user/follow/${userId}?unfollow=${follow}`
-					: `https://tech-tales-api.vercel.app/api/user/follow/${userId}?unfollow=${follow}`,
+				`/api/user/follow/${userId}?unfollow=${follow}`,
 				{
 					following: currentUser.following.includes(userId)
 						? currentUser.following.filter((id) => id !== userId)
@@ -82,9 +78,7 @@ function User() {
 			setArticleUpdate(true);
 
 			const res = await axios.patch(
-				mode === "DEV"
-					? `/api/articles/like/${articleId}`
-					: `https://tech-tales-api.vercel.app/api/articles/like/${articleId}`,
+				`/api/articles/like/${articleId}`,
 				{},
 				{ withCredentials: true },
 			);
@@ -112,9 +106,7 @@ function User() {
 	async function handleArticleBookmark(articleId) {
 		try {
 			const res = await axios.patch(
-				mode === "DEV"
-					? "/api/user/update"
-					: "https://tech-tales-api.vercel.app/api/user/update",
+				"/api/user/update",
 				{
 					...currentUser,
 					bookmarkedArticles: currentUser.bookmarkedArticles.includes(articleId)
@@ -133,12 +125,9 @@ function User() {
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
-				const res = await axios.get(
-					mode === "DEV"
-						? `/api/user/${userId}`
-						: `https://tech-tales-api.vercel.app/api/user/${userId}`,
-					{ withCredentials: true },
-				);
+				const res = await axios.get(`/api/user/${userId}`, {
+					withCredentials: true,
+				});
 
 				setUser(res.data);
 				setFollow(currentUser.following.indexOf(userId) === -1 ? false : true);
@@ -154,12 +143,9 @@ function User() {
 				setLoading(false);
 			}
 			try {
-				const res = await axios.get(
-					mode === "DEV"
-						? `/api/articles/myarticles/${userId}`
-						: `https://tech-tales-api.vercel.app/api/articles/myarticles/${userId}`,
-					{ withCredentials: true },
-				);
+				const res = await axios.get(`/api/articles/myarticles/${userId}`, {
+					withCredentials: true,
+				});
 
 				setArticles(res.data.articles);
 				setLoading(false);
@@ -179,12 +165,9 @@ function User() {
 	useEffect(() => {
 		const fetchFollowersAndFollowing = async () => {
 			try {
-				const res = await axios.get(
-					mode === "DEV"
-						? `/api/user/followers-following/${userId}`
-						: `https://tech-tales-api.vercel.app/api/user/followers-following/${userId}`,
-					{ withCredentials: true },
-				);
+				const res = await axios.get(`/api/user/followers-following/${userId}`, {
+					withCredentials: true,
+				});
 
 				setFollowers(res.data.followers);
 				setFollowing(res.data.following);

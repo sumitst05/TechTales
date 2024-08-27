@@ -6,8 +6,6 @@ import { signOut } from "../redux/user/userSlice";
 import { resetCurrentArticle } from "../redux/article/articleSlice";
 
 function Dropdown({ dropdownRef, showDeleteModal }) {
-	const mode = import.meta.env.VITE_MODE;
-
 	const dispatch = useDispatch();
 
 	async function handleSignout() {
@@ -17,12 +15,7 @@ function Dropdown({ dropdownRef, showDeleteModal }) {
 			localStorage.removeItem("likedArticlesPage");
 			localStorage.removeItem("explorePage");
 
-			await axios.post(
-				mode === "DEV"
-					? `/api/auth/signout`
-					: `https://tech-tales-api.vercel.app/api/auth/signout`,
-				{ withCredentials: true },
-			);
+			await axios.post(`/api/auth/signout`, { withCredentials: true });
 
 			dispatch(resetCurrentArticle());
 			dispatch(signOut());

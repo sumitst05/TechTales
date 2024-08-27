@@ -9,8 +9,6 @@ import Loader from "../components/Loader";
 import { updateUserSuccess } from "../redux/user/userSlice";
 
 function LikedArticles() {
-	const mode = import.meta.env.VITE_MODE;
-
 	const [articles, setArticles] = useState([]);
 	const [page, setPage] = useState(
 		parseInt(localStorage.getItem("likedArticlesPage")) || 1,
@@ -30,9 +28,7 @@ function LikedArticles() {
 					setLoading(true);
 				}
 				const res = await axios.get(
-					mode === "DEV"
-						? `/api/user/liked/?page=${page}&pageSize=${pageSize}`
-						: `https://tech-tales-api.vercel.app/api/user/liked/?page=${page}&pageSize=${pageSize}`,
+					`/api/user/liked/?page=${page}&pageSize=${pageSize}`,
 					{ withCredentials: true },
 				);
 
@@ -63,9 +59,7 @@ function LikedArticles() {
 			setArticleUpdate(true);
 
 			const res = await axios.patch(
-				mode === "DEV"
-					? `/api/articles/like/${articleId}`
-					: `https://tech-tales-api.vercel.app/api/articles/like/${articleId}`,
+				`/api/articles/like/${articleId}`,
 				{},
 				{ withCredentials: true },
 			);
@@ -93,9 +87,7 @@ function LikedArticles() {
 	async function handleArticleBookmark(articleId) {
 		try {
 			const res = await axios.patch(
-				mode === "DEV"
-					? "/api/user/update"
-					: "https://tech-tales-api.vercel.app/api/user/update",
+				"/api/user/update",
 				{
 					...currentUser,
 					bookmarkedArticles: currentUser.bookmarkedArticles.includes(articleId)

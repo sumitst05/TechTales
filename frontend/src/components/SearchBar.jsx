@@ -3,8 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 function SearchBar() {
-	const mode = import.meta.env.VITE_MODE;
-
 	const [search, setSearch] = useState("");
 	const [suggestions, setSuggestions] = useState({ people: [], articles: [] });
 	const [toggleSuggestions, setToggleSuggestions] = useState(false);
@@ -64,15 +62,9 @@ function SearchBar() {
 
 		const fetchSuggestions = async () => {
 			try {
-				const people = await axios.get(
-					mode === "DEV"
-						? `/api/user/?query=${search}`
-						: `https://tech-tales-api.vercel.app/api/user/?query=${search}`,
-				);
+				const people = await axios.get(`/api/user/?query=${search}`);
 				const articles = await axios.get(
-					mode === "DEV"
-						? `/api/articles?query=${search}&pageSize=3`
-						: `https://tech-tales-api.vercel.app/api/articles?query=${search}&pageSize=3`,
+					`/api/articles?query=${search}&pageSize=3`,
 				);
 
 				setSuggestions({
@@ -139,8 +131,9 @@ function SearchBar() {
 								key={person._id}
 							>
 								<div
-									className={`flex mt-2 justify-center items-center hover:bg-slate-200 ${highlightIndex === index ? "bg-slate-200" : ""
-										}`}
+									className={`flex mt-2 justify-center items-center hover:bg-slate-200 ${
+										highlightIndex === index ? "bg-slate-200" : ""
+									}`}
 								>
 									<img
 										src={person.profilePicture}
@@ -168,10 +161,11 @@ function SearchBar() {
 								key={article._id}
 							>
 								<div
-									className={`flex mt-2 justify-center items-center hover:bg-slate-200 ${highlightIndex === suggestions.people.length + index
+									className={`flex mt-2 justify-center items-center hover:bg-slate-200 ${
+										highlightIndex === suggestions.people.length + index
 											? "bg-slate-200"
 											: ""
-										}`}
+									}`}
 								>
 									<img
 										src={article.coverImage}

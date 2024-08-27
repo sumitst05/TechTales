@@ -10,8 +10,6 @@ import Loader from "../components/Loader";
 import { updateUserFailure, updateUserSuccess } from "../redux/user/userSlice";
 
 function Explore() {
-	const mode = import.meta.env.VITE_MODE;
-
 	const [articles, setArticles] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [page, setPage] = useState(
@@ -39,9 +37,7 @@ function Explore() {
 					setLoading(false);
 				}
 				const res = await axios.get(
-					mode === "DEV"
-						? `/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`
-						: `https://tech-tales-api.vercel.app/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`,
+					`/api/articles/?query=${selectedTag}&page=${page}&pageSize=${pageSize}`,
 				);
 				setArticles(res.data.articles);
 				setTotalPages(Math.ceil(res.data.totalArticles / pageSize));
@@ -68,9 +64,7 @@ function Explore() {
 			setArticleUpdate(true);
 
 			const res = await axios.patch(
-				mode === "DEV"
-					? `/api/articles/like/${articleId}`
-					: `https://tech-tales-api.vercel.app/api/articles/like/${articleId}`,
+				`/api/articles/like/${articleId}`,
 				{},
 				{ withCredentials: true },
 			);
@@ -99,9 +93,7 @@ function Explore() {
 	async function handleBookmark(articleId) {
 		try {
 			const res = await axios.patch(
-				mode === "DEV"
-					? "/api/user/update"
-					: "https://tech-tales-api.vercel.app/api/user/update",
+				"/api/user/update",
 				{
 					...currentUser,
 					bookmarkedArticles: currentUser.bookmarkedArticles.includes(articleId)

@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 function Tags({ handleTagSelection }) {
-	const mode = import.meta.env.VITE_MODE;
-
 	const [value, setValue] = useState("");
 	const [suggestions, setSuggestions] = useState({ tags: [] });
 	const [toggleSuggestions, setToggleSuggestions] = useState(false);
@@ -48,12 +46,9 @@ function Tags({ handleTagSelection }) {
 
 		const fetchSuggestions = async () => {
 			try {
-				const tags = await axios.get(
-					mode === "DEV"
-						? `/api/articles/tags?query=${value}`
-						: `https://tech-tales-api.vercel.app/api/articles/tags?query=${value}`,
-					{ withCredentials: true },
-				);
+				const tags = await axios.get(`/api/articles/tags?query=${value}`, {
+					withCredentials: true,
+				});
 				setSuggestions({ tags: tags.data });
 			} catch (error) {
 				error.message = error.response
@@ -126,8 +121,9 @@ function Tags({ handleTagSelection }) {
 							<div
 								key={index}
 								onClick={() => handleTagClick(tag)}
-								className={`flex justify-center items-center hover:bg-slate-200 ${highlightIndex === index ? "bg-slate-200" : ""
-									}`}
+								className={`flex justify-center items-center hover:bg-slate-200 ${
+									highlightIndex === index ? "bg-slate-200" : ""
+								}`}
 							>
 								<p className="font-medium text-slate-500">{tag}</p>
 							</div>

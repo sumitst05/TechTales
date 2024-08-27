@@ -5,8 +5,6 @@ import Loader from "./Loader";
 import axios from "axios";
 
 function Comments({ articleId }) {
-	const mode = import.meta.env.VITE_MODE;
-
 	const [comments, setComments] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [page, setPage] = useState(1);
@@ -27,12 +25,9 @@ function Comments({ articleId }) {
 	const fetchComments = async () => {
 		setLoading(true);
 		try {
-			const res = await axios.get(
-				mode === "DEV"
-					? `/api/comment/${articleId}?page=${page}`
-					: `https://tech-tales-api.vercel.app/api/comment/${articleId}?page=${page}`,
-				{ withCredentials: true },
-			);
+			const res = await axios.get(`/api/comment/${articleId}?page=${page}`, {
+				withCredentials: true,
+			});
 			if (res.data.length === 0) {
 				setHasMore(false);
 			} else {
@@ -104,9 +99,7 @@ function Comments({ articleId }) {
 	async function handleReplyPost(commentId, replyingTo) {
 		try {
 			const res = await axios.post(
-				mode === "DEV"
-					? `/api/comment/${commentId}/reply/${articleId}`
-					: `https://tech-tales-api.vercel.app/api/comment/${commentId}/reply/${articleId}`,
+				`/api/comment/${commentId}/reply/${articleId}`,
 				{ content: replyContent, replyingTo: replyingTo },
 				{ withCredentials: true },
 			);
@@ -131,9 +124,7 @@ function Comments({ articleId }) {
 	async function handleLike(commentId) {
 		try {
 			const res = await axios.patch(
-				mode === "DEV"
-					? `/api/comment/${commentId}/like/${articleId}`
-					: `https://tech-tales-api.vercel.app/api/comment/${commentId}/like/${articleId}`,
+				`/api/comment/${commentId}/like/${articleId}`,
 				{},
 				{ withCredentials: true },
 			);
@@ -151,9 +142,9 @@ function Comments({ articleId }) {
 							replies: comment.replies.map((reply) =>
 								reply._id === commentId
 									? {
-										...reply,
-										likes: res.data.likes,
-									}
+											...reply,
+											likes: res.data.likes,
+										}
 									: reply,
 							),
 						};
@@ -169,12 +160,9 @@ function Comments({ articleId }) {
 
 	async function handleDelete(commentId, parentCommentId) {
 		try {
-			await axios.delete(
-				mode === "DEV"
-					? `/api/comment/${commentId}/delete/${articleId}`
-					: `https://tech-tales-api.vercel.app/api/comment/${commentId}/delete/${articleId}`,
-				{ withCredentials: true },
-			);
+			await axios.delete(`/api/comment/${commentId}/delete/${articleId}`, {
+				withCredentials: true,
+			});
 
 			setComments((prevComments) => {
 				const isReply = parentCommentId !== null;

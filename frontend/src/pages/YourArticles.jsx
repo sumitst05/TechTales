@@ -32,9 +32,7 @@ function YourArticles() {
 					setLoading(true);
 				}
 				const res = await axios.get(
-					mode === "DEV"
-						? `/api/articles/myarticles/${currentUser._id}?page=${page}&pageSize=${pageSize}`
-						: `https://tech-tales-api.vercel.app/api/articles/myarticles/?page=${page}&pageSize=${pageSize}`,
+					`/api/articles/myarticles/${currentUser._id}?page=${page}&pageSize=${pageSize}`,
 					{ withCredentials: true },
 				);
 				setArticles(res.data.articles);
@@ -63,9 +61,7 @@ function YourArticles() {
 			setArticleUpdate(true);
 
 			const res = await axios.patch(
-				mode === "DEV"
-					? `/api/articles/like/${articleId}`
-					: `https://tech-tales-api.vercel.app/api/articles/like/${articleId}`,
+				`/api/articles/like/${articleId}`,
 				{},
 				{ withCredentials: true },
 			);
@@ -93,9 +89,7 @@ function YourArticles() {
 	async function handleArticleBookmark(articleId) {
 		try {
 			const res = await axios.patch(
-				mode === "DEV"
-					? "/api/user/update"
-					: "https://tech-tales-api.vercel.app/api/user/update",
+				"/api/user/update",
 				{
 					...currentUser,
 					bookmarkedArticles: currentUser.bookmarkedArticles.includes(articleId)

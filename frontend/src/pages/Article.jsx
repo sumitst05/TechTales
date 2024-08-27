@@ -8,8 +8,6 @@ import { updateUserSuccess } from "../redux/user/userSlice";
 import CommentSection from "../components/CommentSection";
 
 function Article() {
-	const mode = import.meta.env.VITE_MODE;
-
 	const { slug } = useParams();
 	const [article, setArticle] = useState({});
 	const [readTime, setReadTime] = useState(0);
@@ -25,10 +23,10 @@ function Article() {
 
 	const publishDate = article.createdAt
 		? new Intl.DateTimeFormat("en-US", {
-			month: "short",
-			day: "numeric",
-			year: "numeric",
-		}).format(new Date(article.createdAt))
+				month: "short",
+				day: "numeric",
+				year: "numeric",
+			}).format(new Date(article.createdAt))
 		: "";
 
 	useEffect(() => {
@@ -51,12 +49,9 @@ function Article() {
 			const articleId = slug.split("-").pop();
 
 			try {
-				const res = await axios.get(
-					mode === "DEV"
-						? `/api/articles/${articleId}`
-						: `https://tech-tales-api.vercel.app/api/articles/${articleId}`,
-					{ withCredentials: true },
-				);
+				const res = await axios.get(`/api/articles/${articleId}`, {
+					withCredentials: true,
+				});
 
 				setReadTime(Math.ceil(res.data.content.split(" ").length / 200));
 				setArticle(res.data);
@@ -88,9 +83,7 @@ function Article() {
 
 		try {
 			const res = await axios.patch(
-				mode === "DEV"
-					? `/api/articles/like/${articleId}`
-					: `https://tech-tales-api.vercel.app/api/articles/like/${articleId}`,
+				`/api/articles/like/${articleId}`,
 				{},
 				{ withCredentials: true },
 			);
@@ -118,9 +111,7 @@ function Article() {
 
 		try {
 			const res = await axios.patch(
-				mode === "DEV"
-					? "/api/user/update"
-					: "https://tech-tales-api.vercel.app/api/user/update",
+				"/api/user/update",
 				{
 					...currentUser,
 					bookmarkedArticles: currentUser.bookmarkedArticles.includes(articleId)
@@ -140,10 +131,10 @@ function Article() {
 		try {
 			await navigator.clipboard.writeText(
 				location.origin +
-				"/article/" +
-				article.title.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "") +
-				"-" +
-				article._id,
+					"/article/" +
+					article.title.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "") +
+					"-" +
+					article._id,
 			);
 			setLinkCopied(true);
 		} catch (error) {
@@ -190,21 +181,21 @@ function Article() {
 			<div className="flex flex-wrap items-center w-full gap-4 overflow-x-auto select-none">
 				{showAllTags
 					? article.tags &&
-					article.tags.map((tag, index) => (
-						<div key={index}>
-							<p className="px-2 py-1 bg-slate-200 text-slate-600 text-sm rounded-lg">
-								{tag}
-							</p>
-						</div>
-					))
+						article.tags.map((tag, index) => (
+							<div key={index}>
+								<p className="px-2 py-1 bg-slate-200 text-slate-600 text-sm rounded-lg">
+									{tag}
+								</p>
+							</div>
+						))
 					: article.tags &&
-					article.tags.slice(0, 5).map((tag, index) => (
-						<div key={index}>
-							<p className="px-2 py-1 bg-slate-200 text-slate-600 text-sm rounded-lg">
-								{tag}
-							</p>
-						</div>
-					))}
+						article.tags.slice(0, 5).map((tag, index) => (
+							<div key={index}>
+								<p className="px-2 py-1 bg-slate-200 text-slate-600 text-sm rounded-lg">
+									{tag}
+								</p>
+							</div>
+						))}
 
 				{article.tags && article.tags.length > 5 && (
 					<span

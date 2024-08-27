@@ -9,8 +9,6 @@ import Loader from "../components/Loader";
 import { updateUserSuccess } from "../redux/user/userSlice";
 
 function Bookmarks() {
-	const mode = import.meta.env.VITE_MODE;
-
 	const [articles, setArticles] = useState([]);
 	const [page, setPage] = useState(
 		parseInt(localStorage.getItem("bookmarkPage")) || 1,
@@ -32,9 +30,7 @@ function Bookmarks() {
 					setLoading(true);
 				}
 				const res = await axios.get(
-					mode === "DEV"
-						? `/api/user/bookmarks/?page=${page}&pageSize=${pageSize}`
-						: `https://tech-tales-api.vercel.app/api/user/bookmarks/?page=${page}&pageSize=${pageSize}`,
+					`/api/user/bookmarks/?page=${page}&pageSize=${pageSize}`,
 					{ withCredentials: true },
 				);
 
@@ -65,9 +61,7 @@ function Bookmarks() {
 			setArticleUpdate(true);
 
 			const res = await axios.patch(
-				mode === "DEV"
-					? `/api/articles/like/${articleId}`
-					: `https://tech-tales-api.vercel.app/api/articles/like/${articleId}`,
+				`/api/articles/like/${articleId}`,
 				{},
 				{ withCredentials: true },
 			);
@@ -97,9 +91,7 @@ function Bookmarks() {
 			setArticleUpdate(true);
 
 			const res = await axios.patch(
-				mode === "DEV"
-					? "/api/user/update"
-					: "https://tech-tales-api.vercel.app/api/user/update",
+				"/api/user/update",
 				{
 					...currentUser,
 					bookmarkedArticles: currentUser.bookmarkedArticles.includes(articleId)
