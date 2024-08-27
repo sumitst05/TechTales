@@ -3,15 +3,9 @@ import { useParams, Link } from "react-router-dom";
 import ReactQuill from "react-quill";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import Pusher from "pusher-js/with-encryption";
 
 import { updateUserSuccess } from "../redux/user/userSlice";
 import CommentSection from "../components/CommentSection";
-
-const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
-	cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-	encrypted: true,
-});
 
 function Article() {
 	const mode = import.meta.env.VITE_MODE;
@@ -36,17 +30,6 @@ function Article() {
 			year: "numeric",
 		}).format(new Date(article.createdAt))
 		: "";
-
-	useEffect(() => {
-		const channel = pusher.subscribe("likes");
-
-		channel.bind("articleLiked", () => { });
-
-		return () => {
-			channel.unbind("articleLiked");
-			pusher.unsubscribe("likes");
-		};
-	}, []);
 
 	useEffect(() => {
 		const likedArticleIdsSet = new Set(currentUser.likedArticles || []);

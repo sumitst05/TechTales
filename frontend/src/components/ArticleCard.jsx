@@ -2,17 +2,12 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import Pusher from "pusher-js";
 
 import { deleteUserFailure } from "../redux/user/userSlice";
 import {
   deleteArticleStart,
   deleteArticleSuccess,
 } from "../redux/article/articleSlice";
-
-const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
-  cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-});
 
 function ArticleCard({ article, onLike, onBookmark }) {
   const mode = import.meta.env.VITE_MODE;
@@ -31,18 +26,6 @@ function ArticleCard({ article, onLike, onBookmark }) {
     day: "numeric",
     year: "numeric",
   }).format(new Date(article.createdAt));
-
-  useEffect(() => {
-    const channel = pusher.subscribe("likes");
-
-    channel.bind("articleLiked", () => {});
-
-    return () => {
-      channel.unbind("articleLiked");
-      channel.unsubscribe();
-      pusher.disconnect();
-    };
-  }, []);
 
   useEffect(() => {
     const likedArticleIdsSet = new Set(currentUser.likedArticles || []);
