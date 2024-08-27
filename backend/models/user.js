@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
-import { getRandomQuote } from "randomquoter";
+import { getRandomQuote } from "randoquoter";
 
 const randomQuote = getRandomQuote();
 
