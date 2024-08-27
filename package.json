@@ -20,7 +20,6 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
-    "pusher": "^5.2.0",
     "randoquoter": "^1.2.0",
     "super-random-quotes": "^3.0.1",
     "validator": "^13.11.0"
